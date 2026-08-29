@@ -2,126 +2,126 @@
   "gleam": {
     "id": "gleam",
     "name": "Gleam",
-    "type": "Wisp",
+    "type": "Light",
     "power": 14,
     "desc": "A cold flash from the living flame."
   },
   "lantern_veil": {
     "id": "lantern_veil",
     "name": "Lantern Veil",
-    "type": "Wisp",
+    "type": "Light",
     "power": 8,
     "desc": "Light bunches into a shielding flare."
   },
   "spark_pinch": {
     "id": "spark_pinch",
     "name": "Spark Pinch",
-    "type": "Wisp",
+    "type": "Light",
     "power": 11,
     "desc": "A needle of heat nipped from the wick."
   },
   "ember_sip": {
     "id": "ember_sip",
     "name": "Ember Sip",
-    "type": "Wisp",
+    "type": "Light",
     "power": 13,
     "desc": "Drinks a spark and coughs it back."
   },
   "soot_cloud": {
     "id": "soot_cloud",
     "name": "Soot Cloud",
-    "type": "Wisp",
+    "type": "Light",
     "power": 9,
     "desc": "A breath of cinder-dark that stings the eyes."
   },
   "rivet": {
     "id": "rivet",
     "name": "Rivet",
-    "type": "Iron",
+    "type": "Metal",
     "power": 12,
     "desc": "Drives a nail-head into the foe."
   },
   "shell_grind": {
     "id": "shell_grind",
     "name": "Shell Grind",
-    "type": "Iron",
+    "type": "Metal",
     "power": 10,
     "desc": "Scrapes cobble against cobble until something yields."
   },
   "burden": {
     "id": "burden",
     "name": "Burden",
-    "type": "Iron",
+    "type": "Metal",
     "power": 8,
     "desc": "Drops the weight of a wall on the target."
   },
   "file_bite": {
     "id": "file_bite",
     "name": "File Bite",
-    "type": "Iron",
+    "type": "Metal",
     "power": 15,
     "desc": "Chews with a metal mouth and spatters filings."
   },
   "wire_snap": {
     "id": "wire_snap",
     "name": "Wire Snap",
-    "type": "Iron",
+    "type": "Metal",
     "power": 12,
     "desc": "A taut filament loosed like a whip."
   },
   "thorn_shot": {
     "id": "thorn_shot",
     "name": "Thorn Shot",
-    "type": "Bloom",
+    "type": "Nature",
     "power": 13,
     "desc": "A barb loosed from the hull."
   },
   "root_tether": {
     "id": "root_tether",
     "name": "Root Tether",
-    "type": "Bloom",
+    "type": "Nature",
     "power": 9,
     "desc": "Toes of root snare and squeeze."
   },
   "leaf_gnash": {
     "id": "leaf_gnash",
     "name": "Leaf Gnash",
-    "type": "Bloom",
+    "type": "Nature",
     "power": 11,
     "desc": "Green edges saw at the wound."
   },
   "bone_hoot": {
     "id": "bone_hoot",
     "name": "Bone Hoot",
-    "type": "Dusk",
+    "type": "Spirit",
     "power": 12,
     "desc": "A hollow call that rattles the marrow."
   },
   "shadow_stoop": {
     "id": "shadow_stoop",
     "name": "Shadow Stoop",
-    "type": "Dusk",
+    "type": "Spirit",
     "power": 15,
     "desc": "Drops from a hush that was not there a breath ago."
   },
   "quiet_talon": {
     "id": "quiet_talon",
     "name": "Quiet Talon",
-    "type": "Dusk",
+    "type": "Spirit",
     "power": 10,
     "desc": "A cut placed between heartbeats."
   },
   "shroud_creep": {
     "id": "shroud_creep",
     "name": "Shroud Creep",
-    "type": "Dusk",
+    "type": "Void",
     "power": 11,
     "desc": "Darkness peels off the wall and wraps the foe."
   },
   "peel_light": {
     "id": "peel_light",
     "name": "Peel Light",
-    "type": "Dusk",
+    "type": "Void",
     "power": 13,
     "desc": "Strips the lantern-glow and feeds on it."
   },

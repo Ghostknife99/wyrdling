@@ -2,7 +2,7 @@
   "glimmerling": {
     "id": "glimmerling",
     "name": "Glimmerling",
-    "type": "Wisp",
+    "type": "Light",
     "starter": true,
     "hp": 38,
     "atk": 12,
@@ -18,7 +18,7 @@
   "wickmoth": {
     "id": "wickmoth",
     "name": "Wickmoth",
-    "type": "Gleam",
+    "type": "Light",
     "starter": false,
     "hp": 30,
     "atk": 14,
@@ -33,7 +33,7 @@
   "cobbleback": {
     "id": "cobbleback",
     "name": "Cobbleback",
-    "type": "Iron",
+    "type": "Metal",
     "starter": true,
     "hp": 48,
     "atk": 10,
@@ -49,7 +49,7 @@
   "nailbit": {
     "id": "nailbit",
     "name": "Nailbit",
-    "type": "Iron",
+    "type": "Metal",
     "starter": false,
     "hp": 34,
     "atk": 16,
@@ -64,7 +64,7 @@
   "briarseed": {
     "id": "briarseed",
     "name": "Briarseed",
-    "type": "Bloom",
+    "type": "Nature",
     "starter": true,
     "hp": 42,
     "atk": 13,
@@ -80,7 +80,7 @@
   "marrowl": {
     "id": "marrowl",
     "name": "Marrowl",
-    "type": "Dusk",
+    "type": "Spirit",
     "starter": false,
     "hp": 36,
     "atk": 15,

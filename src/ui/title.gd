@@ -32,17 +32,26 @@ func _build() -> void:
 	word.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	root.add_child(word)
 
-	var icons := HBoxContainer.new()
-	icons.alignment = BoxContainer.ALIGNMENT_CENTER
-	icons.add_theme_constant_override("separation", 18)
+	var icon_col := VBoxContainer.new()
+	icon_col.alignment = BoxContainer.ALIGNMENT_CENTER
+	icon_col.add_theme_constant_override("separation", 8)
+	var row_a := HBoxContainer.new()
+	var row_b := HBoxContainer.new()
+	for row in [row_a, row_b]:
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 12)
+	var i := 0
 	for tid in DataDB.TYPES:
 		var ic := TextureRect.new()
 		ic.texture = load("res://art/ui/icon_%s.png" % tid.to_lower())
 		ic.custom_minimum_size = Vector2(32, 32)
 		ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icons.add_child(ic)
-	root.add_child(icons)
+		(row_a if i < 8 else row_b).add_child(ic)
+		i += 1
+	icon_col.add_child(row_a)
+	icon_col.add_child(row_b)
+	root.add_child(icon_col)
 
 	var sub := Label.new()
 	sub.text = "Delve rifts, bind Wyrdlings."
@@ -75,14 +84,14 @@ func _build() -> void:
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.add_theme_font_size_override("font_size", 18)
 	body.add_theme_color_override("font_color", INK)
-	body.text = "A rift-delver binds living shards of other worlds. Party of three. Permadeath.\n\nTypes: pentagon Wisp > Iron > Bloom > Dusk > Tide > Wisp. Triangle Gleam > Dusk > Void > Gleam. Cross: Gleam > Tide, Void > Iron, Wisp > Void.\nSuper-effective 1.5×   ·   Reverse 0.7×   ·   Otherwise 1.0×\n\nWASD / arrows to walk. Bump a wild Wyrdling to clash.  1 Strike  2 Bind  3 Swap  4 Flee.\nReach the gold stairs to descend. If the whole party falls, the run ends."
+	body.text = "A rift-delver binds living shards of other worlds. Party of three. Permadeath.\n\nSixteen types: Light, Void, Flame, Tide, Nature, Terra, Gale, Storm, Frost, Blood, Spirit, Mind, Metal, Primal, Blight, Arcane.\nSuper-effective 1.5× if you beat them  ·  Reverse 0.7×  ·  Otherwise 1.0×  ·  No immunities.\n\nWASD / arrows to walk. Bump a wild Wyrdling to clash.  1 Strike  2 Bind  3 Swap  4 Flee.\nReach the gold stairs to descend. If the whole party falls, the run ends."
 	root.add_child(body)
 
 	var roster := Label.new()
 	roster.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	roster.add_theme_font_size_override("font_size", 16)
 	roster.add_theme_color_override("font_color", MUTED)
-	roster.text = "Roster:  Glimmerling (Wisp) · Wickmoth (Gleam) · Cobbleback (Iron) · Nailbit (Iron) · Briarseed (Bloom) · Marrowl (Dusk) · Veilcrawler (Void) · Brinekit (Tide)"
+	roster.text = "Roster:  Glimmerling (Light) · Wickmoth (Light) · Cobbleback (Metal) · Nailbit (Metal) · Briarseed (Nature) · Marrowl (Spirit) · Veilcrawler (Void) · Brinekit (Tide)"
 	root.add_child(roster)
 
 	var orig := Label.new()

@@ -54,37 +54,42 @@ Headless smoke test (no window):
 
 ## Type chart
 
-Seven original types. Super-effective **1.5×**, reverse **0.7×**, otherwise **1.0×** (including same-type). No Pokémon type names.
+Sixteen original types. Super-effective **1.5×** if the attacker beats the defender, reverse **0.7×**, otherwise **1.0×**. No immunities. No Pokémon type names.
 
-Pentagon: `Wisp > Iron > Bloom > Dusk > Tide > Wisp`
+Light, Void, Flame, Tide, Nature, Terra, Gale, Storm, Frost, Blood, Spirit, Mind, Metal, Primal, Blight, Arcane.
 
-Triangle: `Gleam > Dusk > Void > Gleam` (Gleam = light, Dusk = dark, Void = void)
+Beats (from `data/types.json`):
 
-Cross: Gleam > Tide · Void > Iron · Wisp > Void
-
-| Attacker | Beats (1.5×) | Resisted by (0.7×) |
-|----------|----------------|---------------------|
-| Wisp     | Iron, Void     | Tide                |
-| Iron     | Bloom          | Wisp, Void          |
-| Bloom    | Dusk           | Iron                |
-| Dusk     | Tide, Void     | Bloom, Gleam        |
-| Tide     | Wisp           | Dusk, Gleam         |
-| Gleam    | Dusk, Tide     | Void                |
-| Void     | Gleam, Iron    | Wisp, Dusk          |
-
-Colors: Wisp `#F4E4A6` · Iron `#6B7280` · Bloom `#3F6B3A` · Dusk `#2D1B4E` · Tide `#0F4C5C` · Gleam `#E8C872` · Void `#3D2A5C`.
+| Attacker | Beats |
+|----------|-------|
+| Light | Blight, Blood, Mind |
+| Void | Light, Spirit, Arcane |
+| Flame | Nature, Frost, Metal |
+| Tide | Flame, Terra, Blight |
+| Nature | Terra, Tide |
+| Terra | Storm, Gale |
+| Gale | Nature, Blight |
+| Storm | Tide, Metal |
+| Frost | Tide, Gale, Nature |
+| Blood | Nature, Primal |
+| Spirit | Mind, Blood |
+| Mind | Spirit, Primal |
+| Metal | Nature, Frost |
+| Primal | Metal, Terra, Mind |
+| Blight | Nature, Blood, Primal |
+| Arcane | Metal, Mind, Storm |
 
 ## Roster
 
 | Wyrd        | Type  | Role |
 |-------------|-------|------|
-| Glimmerling | Wisp  | Starter. A moth-sprite whose wings cup a cold, living flame. |
-| Wickmoth    | Gleam | Soot-winged and oil-slick, it coughs cinders when startled. |
-| Cobbleback  | Iron  | Starter. A squat beetle of packed cobbles and rusted nail-heads. |
-| Nailbit     | Iron  | A fidget of wire that chews metal and spits bright filings. |
-| Briarseed   | Bloom | Starter. A walking seed-hull, thorns for a coat and roots for toes. |
-| Marrowl     | Dusk  | Bone-pale owl that hunts in the hush between heartbeats. |
-| Veilcrawler | Void  | A shroud-long crawler that peels darkness off the walls. |
+| Glimmerling | Light | Starter. A moth-sprite whose wings cup a cold, living flame. |
+| Wickmoth    | Light | Soot-winged and oil-slick, it coughs cinders when startled. |
+| Cobbleback  | Metal | Starter. A squat beetle of packed cobbles and rusted nail-heads. |
+| Nailbit     | Metal | A fidget of wire that chews metal and spits bright filings. |
+| Briarseed   | Nature | Starter. A walking seed-hull, thorns for a coat and roots for toes. |
+| Marrowl     | Spirit | Bone-pale owl that hunts in the hush between heartbeats. |
+| Veilcrawler | Void | A shroud-long crawler that peels darkness off the walls. |
 | Brinekit    | Tide  | A slick kit with gill-frills and a pouch of black-water brine. |
 
 Each has 2–3 moves and HP / Atk / Def / Spd in `data/creatures.json` and `data/moves.json`.
@@ -101,7 +106,10 @@ art/creatures/glimmerling.png cobbleback.png briarseed.png
 art/tiles/floor.png floor_alt.png wall.png stairs.png         32×32
 art/ui/wordmark.png hp_frame.png hp_fill.png btn_panel.png
       icon_wisp.png icon_iron.png icon_bloom.png
-      icon_dusk.png icon_tide.png icon_gleam.png icon_void.png
+      icon_light.png icon_void.png icon_flame.png icon_tide.png
+      icon_nature.png icon_terra.png icon_gale.png icon_storm.png
+      icon_frost.png icon_blood.png icon_spirit.png icon_mind.png
+      icon_metal.png icon_primal.png icon_blight.png icon_arcane.png
 ```
 
 The delver is a small brass-lantern humanoid blob. Creature art is geometric silhouettes in the type colors.

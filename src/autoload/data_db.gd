@@ -1,18 +1,10 @@
 extends Node
 
-var TYPES: Array[String] = ["Wisp", "Iron", "Bloom", "Dusk", "Tide", "Gleam", "Void"]
+var TYPES: Array[String] = ["Light", "Void", "Flame", "Tide", "Nature", "Terra", "Gale", "Storm", "Frost", "Blood", "Spirit", "Mind", "Metal", "Primal", "Blight", "Arcane"]
 var super_mult: float = 1.5
 var resist_mult: float = 0.7
 var type_beats: Dictionary = {}
-var type_colors: Dictionary = {
-	"Wisp": Color("F4E4A6"),
-	"Iron": Color("6B7280"),
-	"Bloom": Color("3F6B3A"),
-	"Dusk": Color("2D1B4E"),
-	"Tide": Color("0F4C5C"),
-	"Gleam": Color("E8C872"),
-	"Void": Color("3D2A5C"),
-}
+var type_colors: Dictionary = {}
 
 var creatures: Dictionary = {}
 var moves: Dictionary = {}

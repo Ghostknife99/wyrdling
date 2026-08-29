@@ -1,59 +1,133 @@
 {
   "order": [
-    "Wisp",
-    "Iron",
-    "Bloom",
-    "Dusk",
+    "Light",
+    "Void",
+    "Flame",
     "Tide",
-    "Gleam",
-    "Void"
+    "Nature",
+    "Terra",
+    "Gale",
+    "Storm",
+    "Frost",
+    "Blood",
+    "Spirit",
+    "Mind",
+    "Metal",
+    "Primal",
+    "Blight",
+    "Arcane"
   ],
   "super": 1.5,
   "resist": 0.7,
-  "cycle": "Pentagon Wisp>Iron>Bloom>Dusk>Tide>Wisp. Triangle Gleam>Dusk>Void>Gleam. Cross Gleam>Tide, Void>Iron, Wisp>Void.",
+  "cycle": "16 original types. Super 1.5x if attacker beats defender; reverse 0.7x; else 1.0x. No immunities.",
   "beats": {
-    "Wisp": [
-      "Iron",
-      "Void"
-    ],
-    "Iron": [
-      "Bloom"
-    ],
-    "Bloom": [
-      "Dusk"
-    ],
-    "Dusk": [
-      "Tide",
-      "Void"
-    ],
-    "Tide": [
-      "Wisp"
-    ],
-    "Gleam": [
-      "Dusk",
-      "Tide"
+    "Light": [
+      "Blight",
+      "Blood",
+      "Mind"
     ],
     "Void": [
-      "Gleam",
-      "Iron"
+      "Light",
+      "Spirit",
+      "Arcane"
+    ],
+    "Flame": [
+      "Nature",
+      "Frost",
+      "Metal"
+    ],
+    "Tide": [
+      "Flame",
+      "Terra",
+      "Blight"
+    ],
+    "Nature": [
+      "Terra",
+      "Tide"
+    ],
+    "Terra": [
+      "Storm",
+      "Gale"
+    ],
+    "Gale": [
+      "Nature",
+      "Blight"
+    ],
+    "Storm": [
+      "Tide",
+      "Metal"
+    ],
+    "Frost": [
+      "Tide",
+      "Gale",
+      "Nature"
+    ],
+    "Blood": [
+      "Nature",
+      "Primal"
+    ],
+    "Spirit": [
+      "Mind",
+      "Blood"
+    ],
+    "Mind": [
+      "Spirit",
+      "Primal"
+    ],
+    "Metal": [
+      "Nature",
+      "Frost"
+    ],
+    "Primal": [
+      "Metal",
+      "Terra",
+      "Mind"
+    ],
+    "Blight": [
+      "Nature",
+      "Blood",
+      "Primal"
+    ],
+    "Arcane": [
+      "Metal",
+      "Mind",
+      "Storm"
     ]
   },
   "colors": {
-    "Wisp": "#F4E4A6",
-    "Iron": "#6B7280",
-    "Bloom": "#3F6B3A",
-    "Dusk": "#2D1B4E",
+    "Light": "#E8C872",
+    "Void": "#3D2A5C",
+    "Flame": "#C45C2A",
     "Tide": "#0F4C5C",
-    "Gleam": "#E8C872",
-    "Void": "#3D2A5C"
+    "Nature": "#3F6B3A",
+    "Terra": "#6B5344",
+    "Gale": "#8FBFB8",
+    "Storm": "#4A5C8A",
+    "Frost": "#A8D4E8",
+    "Blood": "#8B2E3A",
+    "Spirit": "#F4E4A6",
+    "Mind": "#7B5EA7",
+    "Metal": "#6B7280",
+    "Primal": "#C4A35A",
+    "Blight": "#4A5C2A",
+    "Arcane": "#5B3A8C"
   },
   "icons": {
-    "Wisp": "res://art/ui/icon_wisp.png",
-    "Iron": "res://art/ui/icon_iron.png",
-    "Bloom": "res://art/ui/icon_bloom.png",
-    "Dusk": "res://art/ui/icon_dusk.png",
+    "Light": "res://art/ui/icon_light.png",
+    "Void": "res://art/ui/icon_void.png",
+    "Flame": "res://art/ui/icon_flame.png",
     "Tide": "res://art/ui/icon_tide.png",
-    "Gleam": "res://art/ui/icon_gleam.png",
-    "Void": "res://art/ui/icon_void.png"
+    "Nature": "res://art/ui/icon_nature.png",
+    "Terra": "res://art/ui/icon_terra.png",
+    "Gale": "res://art/ui/icon_gale.png",
+    "Storm": "res://art/ui/icon_storm.png",
+    "Frost": "res://art/ui/icon_frost.png",
+    "Blood": "res://art/ui/icon_blood.png",
+    "Spirit": "res://art/ui/icon_spirit.png",
+    "Mind": "res://art/ui/icon_mind.png",
+    "Metal": "res://art/ui/icon_metal.png",
+    "Primal": "res://art/ui/icon_primal.png",
+    "Blight": "res://art/ui/icon_blight.png",
+    "Arcane": "res://art/ui/icon_arcane.png"
   }
 }
