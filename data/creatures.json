@@ -1,0 +1,98 @@
+{
+  "glimmerling": {
+    "id": "glimmerling",
+    "name": "Glimmerling",
+    "type": "Wisp",
+    "starter": true,
+    "hp": 38,
+    "atk": 12,
+    "def": 8,
+    "spd": 14,
+    "moves": ["gleam", "lantern_veil", "spark_pinch"],
+    "description": "A moth-sprite whose wings cup a cold, living flame."
+  },
+  "wickmoth": {
+    "id": "wickmoth",
+    "name": "Wickmoth",
+    "type": "Wisp",
+    "starter": false,
+    "hp": 30,
+    "atk": 14,
+    "def": 6,
+    "spd": 17,
+    "moves": ["ember_sip", "soot_cloud"],
+    "description": "Soot-winged and oil-slick, it coughs cinders when startled."
+  },
+  "cobbleback": {
+    "id": "cobbleback",
+    "name": "Cobbleback",
+    "type": "Iron",
+    "starter": true,
+    "hp": 48,
+    "atk": 10,
+    "def": 16,
+    "spd": 6,
+    "moves": ["rivet", "shell_grind", "burden"],
+    "description": "A squat beetle of packed cobbles and rusted nail-heads."
+  },
+  "nailbit": {
+    "id": "nailbit",
+    "name": "Nailbit",
+    "type": "Iron",
+    "starter": false,
+    "hp": 34,
+    "atk": 16,
+    "def": 9,
+    "spd": 12,
+    "moves": ["file_bite", "wire_snap"],
+    "description": "A fidget of wire that chews metal and spits bright filings."
+  },
+  "briarseed": {
+    "id": "briarseed",
+    "name": "Briarseed",
+    "type": "Bloom",
+    "starter": true,
+    "hp": 42,
+    "atk": 13,
+    "def": 12,
+    "spd": 9,
+    "moves": ["thorn_shot", "root_tether", "leaf_gnash"],
+    "description": "A walking seed-hull, thorns for a coat and roots for toes."
+  },
+  "marrowl": {
+    "id": "marrowl",
+    "name": "Marrowl",
+    "type": "Dusk",
+    "starter": false,
+    "hp": 36,
+    "atk": 15,
+    "def": 8,
+    "spd": 16,
+    "moves": ["bone_hoot", "shadow_stoop", "quiet_talon"],
+    "description": "Bone-pale owl that hunts in the hush between heartbeats."
+  },
+  "veilcrawler": {
+    "id": "veilcrawler",
+    "name": "Veilcrawler",
+    "type": "Dusk",
+    "starter": false,
+    "hp": 44,
+    "atk": 12,
+    "def": 12,
+    "spd": 10,
+    "moves": ["shroud_creep", "peel_light"],
+    "description": "A shroud-long crawler that peels darkness off the walls."
+  },
+  "brinekit": {
+    "id": "brinekit",
+    "name": "Brinekit",
+    "type": "Tide",
+    "starter": false,
+    "hp": 36,
+    "atk": 13,
+    "def": 10,
+    "spd": 13,
+    "moves": ["salt_spray", "pouch_slap", "undertow"],
+    "description": "A slick kit with gill-frills and a pouch of black-water brine."
+  }
+}

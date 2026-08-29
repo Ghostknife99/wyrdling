@@ -1,0 +1,20 @@
+{
+  "order": ["Wisp", "Iron", "Bloom", "Dusk", "Tide"],
+  "super": 1.5,
+  "resist": 0.7,
+  "cycle": "Wisp > Iron > Bloom > Dusk > Tide > Wisp",
+  "colors": {
+    "Wisp": "#F4E4A6",
+    "Iron": "#6B7280",
+    "Bloom": "#3F6B3A",
+    "Dusk": "#2D1B4E",
+    "Tide": "#0F4C5C"
+  },
+  "icons": {
+    "Wisp": "res://art/ui/icon_wisp.png",
+    "Iron": "res://art/ui/icon_iron.png",
+    "Bloom": "res://art/ui/icon_bloom.png",
+    "Dusk": "res://art/ui/icon_dusk.png",
+    "Tide": "res://art/ui/icon_tide.png"
+  }
+}

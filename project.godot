@@ -1,0 +1,29 @@
+; Wyrdling v0 — original creature-collecting roguelike
+config_version=5
+
+[application]
+
+config/name="Wyrdling"
+config/description="Delve rifts, bind Wyrdlings. An original 2D creature-collecting roguelike."
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.4", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+DataDB="*res://src/autoload/data_db.gd"
+GameState="*res://src/autoload/game_state.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/canvas_textures/default_texture_filter=0
+environment/defaults/default_clear_color=Color(0.078, 0.067, 0.098, 1)
