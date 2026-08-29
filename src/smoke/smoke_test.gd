@@ -22,6 +22,18 @@ func _initialize() -> void:
 	failed += _expect(is_equal_approx(db.type_mod("Iron", "Wisp"), 0.7), "Iron resists Wisp 0.7x")
 	failed += _expect(is_equal_approx(db.type_mod("Wisp", "Wisp"), 1.0), "same-type 1.0x")
 	failed += _expect(is_equal_approx(db.type_mod("Wisp", "Bloom"), 1.0), "skip-one 1.0x")
+	failed += _expect(is_equal_approx(db.type_mod("Gleam", "Dusk"), 1.5), "Gleam beats Dusk 1.5x")
+	failed += _expect(is_equal_approx(db.type_mod("Dusk", "Void"), 1.5), "Dusk beats Void 1.5x")
+	failed += _expect(is_equal_approx(db.type_mod("Void", "Gleam"), 1.5), "Void beats Gleam 1.5x")
+	failed += _expect(is_equal_approx(db.type_mod("Dusk", "Gleam"), 0.7), "Dusk resists Gleam 0.7x")
+	failed += _expect(is_equal_approx(db.type_mod("Gleam", "Tide"), 1.5), "Gleam beats Tide 1.5x")
+	failed += _expect(is_equal_approx(db.type_mod("Tide", "Gleam"), 0.7), "Tide resists Gleam 0.7x")
+	failed += _expect(is_equal_approx(db.type_mod("Void", "Iron"), 1.5), "Void beats Iron 1.5x")
+	failed += _expect(is_equal_approx(db.type_mod("Iron", "Void"), 0.7), "Iron resists Void 0.7x")
+	failed += _expect(is_equal_approx(db.type_mod("Wisp", "Void"), 1.5), "Wisp beats Void 1.5x")
+	failed += _expect(is_equal_approx(db.type_mod("Void", "Wisp"), 0.7), "Void resists Wisp 0.7x")
+	failed += _expect(str(db.creatures["wickmoth"]["type"]) == "Gleam", "Wickmoth is Gleam")
+	failed += _expect(str(db.creatures["veilcrawler"]["type"]) == "Void", "Veilcrawler is Void")
 
 	gs.rng.seed = 42
 	gs.start_run("glimmerling")

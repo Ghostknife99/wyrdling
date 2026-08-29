@@ -54,33 +54,37 @@ Headless smoke test (no window):
 
 ## Type chart
 
-Pentagon. Super-effective **1.5×**, reverse **0.7×**, otherwise **1.0×** (including same-type).
+Seven original types. Super-effective **1.5×**, reverse **0.7×**, otherwise **1.0×** (including same-type). No Pokémon type names.
 
-```
-Wisp > Iron > Bloom > Dusk > Tide > Wisp
-```
+Pentagon: `Wisp > Iron > Bloom > Dusk > Tide > Wisp`
+
+Triangle: `Gleam > Dusk > Void > Gleam` (Gleam = light, Dusk = dark, Void = void)
+
+Cross: Gleam > Tide · Void > Iron · Wisp > Void
 
 | Attacker | Beats (1.5×) | Resisted by (0.7×) |
 |----------|----------------|---------------------|
-| Wisp     | Iron           | Tide                |
-| Iron     | Bloom          | Wisp                |
+| Wisp     | Iron, Void     | Tide                |
+| Iron     | Bloom          | Wisp, Void          |
 | Bloom    | Dusk           | Iron                |
-| Dusk     | Tide           | Bloom               |
-| Tide     | Wisp           | Dusk                |
+| Dusk     | Tide, Void     | Bloom, Gleam        |
+| Tide     | Wisp           | Dusk, Gleam         |
+| Gleam    | Dusk, Tide     | Void                |
+| Void     | Gleam, Iron    | Wisp, Dusk          |
 
-Placeholder type colors: Wisp `#F4E4A6` · Iron `#6B7280` · Bloom `#3F6B3A` · Dusk `#2D1B4E` · Tide `#0F4C5C`.
+Colors: Wisp `#F4E4A6` · Iron `#6B7280` · Bloom `#3F6B3A` · Dusk `#2D1B4E` · Tide `#0F4C5C` · Gleam `#E8C872` · Void `#3D2A5C`.
 
 ## Roster
 
 | Wyrd        | Type  | Role |
 |-------------|-------|------|
 | Glimmerling | Wisp  | Starter. A moth-sprite whose wings cup a cold, living flame. |
-| Wickmoth    | Wisp  | Soot-winged and oil-slick, it coughs cinders when startled. |
+| Wickmoth    | Gleam | Soot-winged and oil-slick, it coughs cinders when startled. |
 | Cobbleback  | Iron  | Starter. A squat beetle of packed cobbles and rusted nail-heads. |
 | Nailbit     | Iron  | A fidget of wire that chews metal and spits bright filings. |
 | Briarseed   | Bloom | Starter. A walking seed-hull, thorns for a coat and roots for toes. |
 | Marrowl     | Dusk  | Bone-pale owl that hunts in the hush between heartbeats. |
-| Veilcrawler | Dusk  | A shroud-long crawler that peels darkness off the walls. |
+| Veilcrawler | Void  | A shroud-long crawler that peels darkness off the walls. |
 | Brinekit    | Tide  | A slick kit with gill-frills and a pouch of black-water brine. |
 
 Each has 2–3 moves and HP / Atk / Def / Spd in `data/creatures.json` and `data/moves.json`.
@@ -97,7 +101,7 @@ art/creatures/glimmerling.png cobbleback.png briarseed.png
 art/tiles/floor.png floor_alt.png wall.png stairs.png         32×32
 art/ui/wordmark.png hp_frame.png hp_fill.png btn_panel.png
       icon_wisp.png icon_iron.png icon_bloom.png
-      icon_dusk.png icon_tide.png
+      icon_dusk.png icon_tide.png icon_gleam.png icon_void.png
 ```
 
 The delver is a small brass-lantern humanoid blob. Creature art is geometric silhouettes in the type colors.

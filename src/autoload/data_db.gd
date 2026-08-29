@@ -1,14 +1,17 @@
 extends Node
 
-var TYPES: Array[String] = ["Wisp", "Iron", "Bloom", "Dusk", "Tide"]
+var TYPES: Array[String] = ["Wisp", "Iron", "Bloom", "Dusk", "Tide", "Gleam", "Void"]
 var super_mult: float = 1.5
 var resist_mult: float = 0.7
+var type_beats: Dictionary = {}
 var type_colors: Dictionary = {
 	"Wisp": Color("F4E4A6"),
 	"Iron": Color("6B7280"),
 	"Bloom": Color("3F6B3A"),
-	"Dusk": Color("6B4AA0"),
+	"Dusk": Color("2D1B4E"),
 	"Tide": Color("0F4C5C"),
+	"Gleam": Color("E8C872"),
+	"Void": Color("3D2A5C"),
 }
 
 var creatures: Dictionary = {}
@@ -46,6 +49,13 @@ func _load_types() -> void:
 	if data.has("colors"):
 		for k in data["colors"]:
 			type_colors[str(k)] = Color(str(data["colors"][k]))
+	type_beats.clear()
+	if data.has("beats"):
+		for k in data["beats"]:
+			var arr: Array = []
+			for v in data["beats"][k]:
+				arr.append(str(v))
+			type_beats[str(k)] = arr
 
 
 func _ingest_table(text: String, is_creatures: bool) -> void:
@@ -81,14 +91,13 @@ func _ingest_table(text: String, is_creatures: bool) -> void:
 
 
 func type_mod(atk_type: String, def_type: String) -> float:
-	var ai: int = TYPES.find(atk_type)
-	var di: int = TYPES.find(def_type)
-	if ai < 0 or di < 0:
+	if atk_type == def_type:
 		return 1.0
-	var n: int = TYPES.size()
-	if di == (ai + 1) % n:
+	var atk_list: Array = type_beats.get(atk_type, [])
+	if def_type in atk_list:
 		return super_mult
-	if ai == (di + 1) % n:
+	var def_list: Array = type_beats.get(def_type, [])
+	if atk_type in def_list:
 		return resist_mult
 	return 1.0
 

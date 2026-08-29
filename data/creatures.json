@@ -8,19 +8,26 @@
     "atk": 12,
     "def": 8,
     "spd": 14,
-    "moves": ["gleam", "lantern_veil", "spark_pinch"],
+    "moves": [
+      "gleam",
+      "lantern_veil",
+      "spark_pinch"
+    ],
     "description": "A moth-sprite whose wings cup a cold, living flame."
   },
   "wickmoth": {
     "id": "wickmoth",
     "name": "Wickmoth",
-    "type": "Wisp",
+    "type": "Gleam",
     "starter": false,
     "hp": 30,
     "atk": 14,
     "def": 6,
     "spd": 17,
-    "moves": ["ember_sip", "soot_cloud"],
+    "moves": [
+      "ember_sip",
+      "soot_cloud"
+    ],
     "description": "Soot-winged and oil-slick, it coughs cinders when startled."
   },
   "cobbleback": {
@@ -32,7 +39,11 @@
     "atk": 10,
     "def": 16,
     "spd": 6,
-    "moves": ["rivet", "shell_grind", "burden"],
+    "moves": [
+      "rivet",
+      "shell_grind",
+      "burden"
+    ],
     "description": "A squat beetle of packed cobbles and rusted nail-heads."
   },
   "nailbit": {
@@ -44,7 +55,10 @@
     "atk": 16,
     "def": 9,
     "spd": 12,
-    "moves": ["file_bite", "wire_snap"],
+    "moves": [
+      "file_bite",
+      "wire_snap"
+    ],
     "description": "A fidget of wire that chews metal and spits bright filings."
   },
   "briarseed": {
@@ -56,7 +70,11 @@
     "atk": 13,
     "def": 12,
     "spd": 9,
-    "moves": ["thorn_shot", "root_tether", "leaf_gnash"],
+    "moves": [
+      "thorn_shot",
+      "root_tether",
+      "leaf_gnash"
+    ],
     "description": "A walking seed-hull, thorns for a coat and roots for toes."
   },
   "marrowl": {
@@ -68,19 +86,26 @@
     "atk": 15,
     "def": 8,
     "spd": 16,
-    "moves": ["bone_hoot", "shadow_stoop", "quiet_talon"],
+    "moves": [
+      "bone_hoot",
+      "shadow_stoop",
+      "quiet_talon"
+    ],
     "description": "Bone-pale owl that hunts in the hush between heartbeats."
   },
   "veilcrawler": {
     "id": "veilcrawler",
     "name": "Veilcrawler",
-    "type": "Dusk",
+    "type": "Void",
     "starter": false,
     "hp": 44,
     "atk": 12,
     "def": 12,
     "spd": 10,
-    "moves": ["shroud_creep", "peel_light"],
+    "moves": [
+      "shroud_creep",
+      "peel_light"
+    ],
     "description": "A shroud-long crawler that peels darkness off the walls."
   },
   "brinekit": {
@@ -92,7 +117,11 @@
     "atk": 13,
     "def": 10,
     "spd": 13,
-    "moves": ["salt_spray", "pouch_slap", "undertow"],
+    "moves": [
+      "salt_spray",
+      "pouch_slap",
+      "undertow"
+    ],
     "description": "A slick kit with gill-frills and a pouch of black-water brine."
   }
 }

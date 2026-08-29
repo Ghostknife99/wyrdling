@@ -35,7 +35,7 @@ func _build() -> void:
 	var icons := HBoxContainer.new()
 	icons.alignment = BoxContainer.ALIGNMENT_CENTER
 	icons.add_theme_constant_override("separation", 18)
-	for tid in ["Wisp", "Iron", "Bloom", "Dusk", "Tide"]:
+	for tid in DataDB.TYPES:
 		var ic := TextureRect.new()
 		ic.texture = load("res://art/ui/icon_%s.png" % tid.to_lower())
 		ic.custom_minimum_size = Vector2(32, 32)
@@ -75,14 +75,14 @@ func _build() -> void:
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.add_theme_font_size_override("font_size", 18)
 	body.add_theme_color_override("font_color", INK)
-	body.text = "A rift-delver binds living shards of other worlds. Party of three. Permadeath.\n\nTypes (pentagon):  Wisp beats Iron  ·  Iron beats Bloom  ·  Bloom beats Dusk  ·  Dusk beats Tide  ·  Tide beats Wisp\nSuper-effective 1.5×   ·   Resist 0.7×   ·   Otherwise 1.0×\n\nWASD / arrows to walk. Bump a wild Wyrdling to clash.  1 Strike  2 Bind  3 Swap  4 Flee.\nReach the gold stairs to descend. If the whole party falls, the run ends."
+	body.text = "A rift-delver binds living shards of other worlds. Party of three. Permadeath.\n\nTypes: pentagon Wisp > Iron > Bloom > Dusk > Tide > Wisp. Triangle Gleam > Dusk > Void > Gleam. Cross: Gleam > Tide, Void > Iron, Wisp > Void.\nSuper-effective 1.5×   ·   Reverse 0.7×   ·   Otherwise 1.0×\n\nWASD / arrows to walk. Bump a wild Wyrdling to clash.  1 Strike  2 Bind  3 Swap  4 Flee.\nReach the gold stairs to descend. If the whole party falls, the run ends."
 	root.add_child(body)
 
 	var roster := Label.new()
 	roster.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	roster.add_theme_font_size_override("font_size", 16)
 	roster.add_theme_color_override("font_color", MUTED)
-	roster.text = "Roster:  Glimmerling (Wisp) · Wickmoth (Wisp) · Cobbleback (Iron) · Nailbit (Iron) · Briarseed (Bloom) · Marrowl (Dusk) · Veilcrawler (Dusk) · Brinekit (Tide)"
+	roster.text = "Roster:  Glimmerling (Wisp) · Wickmoth (Gleam) · Cobbleback (Iron) · Nailbit (Iron) · Briarseed (Bloom) · Marrowl (Dusk) · Veilcrawler (Void) · Brinekit (Tide)"
 	root.add_child(roster)
 
 	var orig := Label.new()

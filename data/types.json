@@ -1,20 +1,59 @@
 {
-  "order": ["Wisp", "Iron", "Bloom", "Dusk", "Tide"],
+  "order": [
+    "Wisp",
+    "Iron",
+    "Bloom",
+    "Dusk",
+    "Tide",
+    "Gleam",
+    "Void"
+  ],
   "super": 1.5,
   "resist": 0.7,
-  "cycle": "Wisp > Iron > Bloom > Dusk > Tide > Wisp",
+  "cycle": "Pentagon Wisp>Iron>Bloom>Dusk>Tide>Wisp. Triangle Gleam>Dusk>Void>Gleam. Cross Gleam>Tide, Void>Iron, Wisp>Void.",
+  "beats": {
+    "Wisp": [
+      "Iron",
+      "Void"
+    ],
+    "Iron": [
+      "Bloom"
+    ],
+    "Bloom": [
+      "Dusk"
+    ],
+    "Dusk": [
+      "Tide",
+      "Void"
+    ],
+    "Tide": [
+      "Wisp"
+    ],
+    "Gleam": [
+      "Dusk",
+      "Tide"
+    ],
+    "Void": [
+      "Gleam",
+      "Iron"
+    ]
+  },
   "colors": {
     "Wisp": "#F4E4A6",
     "Iron": "#6B7280",
     "Bloom": "#3F6B3A",
     "Dusk": "#2D1B4E",
-    "Tide": "#0F4C5C"
+    "Tide": "#0F4C5C",
+    "Gleam": "#E8C872",
+    "Void": "#3D2A5C"
   },
   "icons": {
     "Wisp": "res://art/ui/icon_wisp.png",
     "Iron": "res://art/ui/icon_iron.png",
     "Bloom": "res://art/ui/icon_bloom.png",
     "Dusk": "res://art/ui/icon_dusk.png",
-    "Tide": "res://art/ui/icon_tide.png"
+    "Tide": "res://art/ui/icon_tide.png",
+    "Gleam": "res://art/ui/icon_gleam.png",
+    "Void": "res://art/ui/icon_void.png"
   }
 }
