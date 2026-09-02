@@ -48,7 +48,7 @@ Headless smoke test (no window):
 - Autoload run state (`GameState`) plus data tables (`DataDB`). Creatures and moves live in JSON, not scene nodes.
 - Party of **3**. Bind during the run. There is no box and no dex.
 - If the party is full, a successful Bind **replaces** a chosen member. The released wyrd is gone for this run.
-- One continuous outdoor floor (64×48 tiles): fenced clearing, winding path, grass, tall-grass patches, a water feature, tree groves. Camera follows the delver. Runtime tiles load from `art/tiles/wilds/` (32×32, tree 32×64); a larger painted kit also lives at `art/tiles/overworld/`.
+- One continuous outdoor floor (64×48 tiles): fenced clearing, winding path, grass, tall-grass patches, a water feature, tree groves. Camera follows the delver. Runtime tiles load from `art/tiles/overworld/` (32×32 folklore-granite kit, 2×2 trees; `tree.png` 64×64 fallback).
 - **4–8** wanderers spawn on tall grass, gold rift-gate at the north end of the path.
 - You step, then wilds wander (or chase if close). Bump starts combat. Trees Y-sort over the delver.
 - If every party member is KO, the run ends and you return to the title (permadeath).
@@ -155,7 +155,6 @@ Regenerate placeholders:
 
 ```bash
 python3 tools/generate_placeholders.py          # tiles, UI, original 8 (overwrites those 8)
-python3 tools/gen_wilds_tiles.py                 # outdoor wilds tiles (skips files that already exist)
 python3 tools/gen_roster.py                     # data/creatures.json, moves.json, ROSTER.md
 python3 tools/gen_roster_placeholders.py        # 162 new creature silhouettes; skips the original 8
 ```

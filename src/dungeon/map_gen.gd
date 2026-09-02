@@ -59,6 +59,8 @@ static func generate(width: int, height: int, floor_num: int, rng: RandomNumberG
 		if x != opening.x and absi(x - opening.x) > 1:
 			_stamp_fence(grid, fence, Vector2i(x, cy), width, height, "h")
 
+	_label_fences(grid, fence)
+
 	grid[start.y][start.x] = DIRT
 	grid[opening.y][opening.x] = DIRT
 	if _inner(opening.x - 1, opening.y, width, height):
@@ -192,6 +194,39 @@ static func _stamp_fence(grid: Array, fence: Array, pos: Vector2i, width: int, h
 		if f["pos"] == pos:
 			return
 	fence.append({"pos": pos, "kind": kind})
+
+
+
+static func _label_fences(grid: Array, fence: Array) -> void:
+	for f in fence:
+		var p: Vector2i = f["pos"]
+		var n := _cell_is(grid, p.x, p.y - 1, FENCE)
+		var s := _cell_is(grid, p.x, p.y + 1, FENCE)
+		var e := _cell_is(grid, p.x + 1, p.y, FENCE)
+		var w := _cell_is(grid, p.x - 1, p.y, FENCE)
+		if e and s and not n and not w:
+			f["kind"] = "nw"
+		elif w and s and not n and not e:
+			f["kind"] = "ne"
+		elif e and n and not s and not w:
+			f["kind"] = "sw"
+		elif w and n and not s and not e:
+			f["kind"] = "se"
+		elif (e or w) and not (n or s):
+			f["kind"] = "h"
+		elif (n or s) and not (e or w):
+			f["kind"] = "v"
+		else:
+			f["kind"] = "post"
+
+
+static func _cell_is(grid: Array, x: int, y: int, want: int) -> bool:
+	if y < 0 or y >= grid.size():
+		return false
+	var row: Array = grid[y]
+	if x < 0 or x >= row.size():
+		return false
+	return int(row[x]) == want
 
 
 static func _blocked_prop(p: Vector2i, trees: Array) -> bool:
@@ -387,6 +422,29 @@ static func _place_trees(grid: Array, width: int, height: int, start: Vector2i, 
 		_try_tree(grid, width, height, Vector2i(2, y), start, stairs, trees)
 		_try_tree(grid, width, height, Vector2i(width - 4, y), start, stairs, trees)
 
+	# Groves 2 tiles off the dirt so they sit in the walking shot.
+	var path_cells: Array[Vector2i] = []
+	for y in height:
+		for x in width:
+			if int(grid[y][x]) == DIRT:
+				path_cells.append(Vector2i(x, y))
+	var band_lo: int = start.y - 26
+	var band_hi: int = start.y - 6
+	var route_trees := 0
+	var yi: int = path_cells.size() - 1
+	while yi >= 0 and route_trees < 16:
+		var p: Vector2i = path_cells[yi]
+		yi -= 1
+		if p.y < band_lo or p.y > band_hi:
+			continue
+		for side in [-1, 1]:
+			_try_tree(grid, width, height, Vector2i(p.x + side * 2, p.y - 1), start, stairs, trees)
+			route_trees = trees.size()
+			if route_trees >= 80:
+				break
+		if route_trees >= 80:
+			break
+
 	var groves: int = rng.randi_range(6, 9)
 	for _i in groves:
 		var gx: int = rng.randi_range(8, width - 10)
@@ -422,7 +480,7 @@ static func _try_tree(grid: Array, width: int, height: int, nw: Vector2i, start:
 			if not _inner(p.x, p.y, width, height):
 				return
 			var t: int = int(grid[p.y][p.x])
-			if t != GRASS:
+			if t != GRASS and t != TALLGRASS:
 				return
 			if p == start or p == stairs:
 				return
