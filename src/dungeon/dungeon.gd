@@ -18,10 +18,6 @@ const TALL_GRASS := 5
 const TREE := 6
 const FENCE := 7
 
-const T_GRASS := 0
-const T_PATH := 1
-const T_WATER := 2
-
 const C := {
 	"grass": Vector2i(0, 0),
 	"grass_alt": Vector2i(1, 0),
@@ -45,8 +41,9 @@ const C := {
 
 var tex_player: Texture2D
 var player_facing: Dictionary = {}
-var last_dir: String = "down"
+var last_dir := "down"
 var creature_tex: Dictionary = {}
+var prop_textures: Dictionary = {}
 var combat_open := false
 var moving := false
 
@@ -58,6 +55,10 @@ var toast_panel: Panel
 var log_label: Label
 var toast_timer: Timer
 var last_toast := ""
+var dialog_panel: Panel
+var dialog_title: Label
+var dialog_label: Label
+var dialog_timer: Timer
 var cam: Camera2D
 
 var world: Node2D
@@ -66,6 +67,7 @@ var deco: TileMapLayer
 var overlay: TileMapLayer
 var player_sprite: Sprite2D
 var wild_sprites: Array[Sprite2D] = []
+var prop_sprites: Array[Sprite2D] = []
 var tileset: TileSet
 var rustle_cell := Vector2i(-999, -999)
 
@@ -76,14 +78,30 @@ func _ready() -> void:
 		var path := "res://art/player/delver_idle_%s.png" % facing
 		if ResourceLoader.exists(path):
 			player_facing[facing] = load(path)
-	if ResourceLoader.exists("res://art/player/delver_idle_down.png"):
-		tex_player = load("res://art/player/delver_idle_down.png")
-	else:
-		tex_player = load("res://art/player/player.png")
+	tex_player = load("res://art/player/delver_idle_down.png") if ResourceLoader.exists("res://art/player/delver_idle_down.png") else load("res://art/player/player.png")
+
 	for id in DataDB.creatures.keys():
 		var cpath := "res://art/creatures/%s.png" % id
 		if ResourceLoader.exists(cpath):
 			creature_tex[id] = load(cpath)
+
+	var prop_paths := {
+		"lodge": "res://art/world/route_lodge.png",
+		"cave": "res://art/world/cave_entrance.png",
+		"sign": "res://art/world/sign.png",
+		"bush": "res://art/world/bush.png",
+		"flowers_a": "res://art/world/flowers_a.png",
+		"flowers_b": "res://art/world/flowers_b.png",
+		"rock": "res://art/world/rock.png",
+		"stump": "res://art/world/stump.png",
+		"npc_0": "res://art/world/npc_scout.png",
+		"npc_1": "res://art/world/npc_watcher.png",
+		"npc_2": "res://art/world/npc_courier.png",
+	}
+	for key in prop_paths:
+		if ResourceLoader.exists(prop_paths[key]):
+			prop_textures[key] = load(prop_paths[key])
+
 	_ensure_world()
 	_build_camera()
 	_build_hud()
@@ -194,13 +212,13 @@ func _build_hud() -> void:
 
 	location_panel = Panel.new()
 	location_panel.position = Vector2(14, 14)
-	location_panel.size = Vector2(212, 44)
+	location_panel.size = Vector2(260, 44)
 	location_panel.add_theme_stylebox_override("panel", _style(Color(0.97, 0.98, 0.91, 0.96), GREEN_DARK, 3))
 	hud.add_child(location_panel)
 
 	floor_label = Label.new()
 	floor_label.position = Vector2(12, 8)
-	floor_label.size = Vector2(188, 28)
+	floor_label.size = Vector2(236, 28)
 	floor_label.add_theme_font_size_override("font_size", 16)
 	floor_label.add_theme_color_override("font_color", INK)
 	floor_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -208,7 +226,7 @@ func _build_hud() -> void:
 
 	location_timer = Timer.new()
 	location_timer.one_shot = true
-	location_timer.wait_time = 2.4
+	location_timer.wait_time = 2.8
 	location_timer.timeout.connect(func() -> void: location_panel.visible = false)
 	hud.add_child(location_timer)
 
@@ -233,9 +251,46 @@ func _build_hud() -> void:
 	toast_timer.timeout.connect(func() -> void: toast_panel.visible = false)
 	hud.add_child(toast_timer)
 
+	dialog_panel = Panel.new()
+	dialog_panel.position = Vector2(34, 268)
+	dialog_panel.size = Vector2(572, 78)
+	dialog_panel.visible = false
+	dialog_panel.add_theme_stylebox_override("panel", _style(PAPER, Color("40535D"), 4))
+	hud.add_child(dialog_panel)
+
+	dialog_title = Label.new()
+	dialog_title.position = Vector2(14, 8)
+	dialog_title.size = Vector2(544, 22)
+	dialog_title.add_theme_font_size_override("font_size", 14)
+	dialog_title.add_theme_color_override("font_color", GREEN_DARK)
+	dialog_panel.add_child(dialog_title)
+
+	dialog_label = Label.new()
+	dialog_label.position = Vector2(14, 29)
+	dialog_label.size = Vector2(544, 40)
+	dialog_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	dialog_label.add_theme_font_size_override("font_size", 12)
+	dialog_label.add_theme_color_override("font_color", INK)
+	dialog_panel.add_child(dialog_label)
+
+	dialog_timer = Timer.new()
+	dialog_timer.one_shot = true
+	dialog_timer.wait_time = 4.5
+	dialog_timer.timeout.connect(func() -> void: dialog_panel.visible = false)
+	hud.add_child(dialog_timer)
+
+	var hint := Label.new()
+	hint.text = "E / SPACE  INTERACT"
+	hint.position = Vector2(472, 338)
+	hint.size = Vector2(156, 16)
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	hint.add_theme_font_size_override("font_size", 9)
+	hint.add_theme_color_override("font_color", Color(0.12, 0.22, 0.16, 0.62))
+	hud.add_child(hint)
+
 
 func _show_location() -> void:
-	floor_label.text = "RIFT WILDS  •  AREA %02d" % GameState.floor_num
+	floor_label.text = "%s  •  %02d" % [GameState.area_name.to_upper(), GameState.floor_num]
 	location_panel.visible = true
 	location_timer.start()
 
@@ -247,6 +302,14 @@ func _show_toast(text: String) -> void:
 	log_label.text = text
 	toast_panel.visible = true
 	toast_timer.start()
+
+
+func _show_dialog(title: String, text: String) -> void:
+	toast_panel.visible = false
+	dialog_title.text = title.to_upper()
+	dialog_label.text = text
+	dialog_panel.visible = true
+	dialog_timer.start()
 
 
 func _paint_map() -> void:
@@ -310,8 +373,38 @@ func _paint_map() -> void:
 		overlay.erase_cell(tp + Vector2i(0, 1))
 		overlay.erase_cell(tp + Vector2i(1, 1))
 
+	_render_world_props()
 	rustle_cell = Vector2i(-999, -999)
 	_apply_rustle()
+
+
+func _render_world_props() -> void:
+	for sprite in prop_sprites:
+		if is_instance_valid(sprite):
+			sprite.queue_free()
+	prop_sprites.clear()
+
+	for prop in GameState.world_props:
+		var kind := str(prop.get("kind", ""))
+		var tex_key := kind
+		if kind == "npc":
+			tex_key = "npc_%d" % int(prop.get("variant", 0))
+		if not prop_textures.has(tex_key):
+			continue
+		var tex: Texture2D = prop_textures[tex_key]
+		var spr := Sprite2D.new()
+		spr.texture = tex
+		spr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		spr.centered = false
+		var p: Vector2i = prop.get("pos", Vector2i.ZERO)
+		var tw := float(tex.get_width())
+		var th := float(tex.get_height())
+		var tiles_w := maxf(1.0, tw / float(TILE))
+		var tiles_h := maxf(1.0, th / float(TILE))
+		spr.position = Vector2((float(p.x) + tiles_w / 2.0) * TILE, (float(p.y) + tiles_h) * TILE)
+		spr.offset = Vector2(-tw / 2.0, -th)
+		world.add_child(spr)
+		prop_sprites.append(spr)
 
 
 func _apply_rustle() -> void:
@@ -406,10 +499,42 @@ func _sync_actors() -> void:
 		_fit_sprite(wild_sprites[i], ctex)
 
 
+func _facing_vec() -> Vector2i:
+	match last_dir:
+		"up": return Vector2i(0, -1)
+		"down": return Vector2i(0, 1)
+		"left": return Vector2i(-1, 0)
+		"right": return Vector2i(1, 0)
+	return Vector2i(0, 1)
+
+
+func _interact() -> void:
+	var target := GameState.player_pos + _facing_vec()
+	var prop: Dictionary = GameState.interactable_at(target)
+	if prop.is_empty():
+		return
+	_interact_prop(prop)
+
+
+func _interact_prop(prop: Dictionary) -> void:
+	var kind := str(prop.get("kind", ""))
+	var title := str(prop.get("name", "Rift Wilds"))
+	var text := str(prop.get("text", ""))
+	if kind == "lodge":
+		var healed := GameState.mend_party(0.35)
+		text = "%s\nYour party recovers %d HP." % [text, healed]
+		GameState.push_log("Rested at the Riftkeeper Lodge.")
+	_show_dialog(title, text)
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if combat_open or moving:
 		return
 	if not (event is InputEventKey and event.pressed and not event.echo):
+		return
+	if event.keycode in [KEY_E, KEY_ENTER, KEY_KP_ENTER, KEY_SPACE]:
+		_interact()
+		get_viewport().set_input_as_handled()
 		return
 	var dir := Vector2i.ZERO
 	match event.keycode:
@@ -438,6 +563,9 @@ func _try_step(dir: Vector2i) -> void:
 		_open_combat(wi)
 		return
 	if not GameState.walkable(np):
+		var prop := GameState.interactable_at(np)
+		if not prop.is_empty():
+			_interact_prop(prop)
 		return
 
 	var start_pos := player_sprite.position
@@ -501,6 +629,7 @@ func _open_combat(wild_index: int) -> void:
 	combat_open = true
 	location_panel.visible = false
 	toast_panel.visible = false
+	dialog_panel.visible = false
 	var wild: WyrdlingCreature = GameState.wilds[wild_index]["creature"]
 	GameState.push_log("A wild %s bars the way." % wild.display_name)
 	var combat: Control = preload("res://scenes/combat.tscn").instantiate()
