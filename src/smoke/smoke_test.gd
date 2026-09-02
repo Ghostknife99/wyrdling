@@ -73,6 +73,15 @@ func _initialize() -> void:
 	failed += _expect(gs.floor_num == 2, "descended to floor 2")
 	failed += _expect(wc2 >= 4 and wc2 <= 8, "floor 2 wilds 4-8 (got %d)" % wc2)
 	failed += _expect(_no_legend_myth(gs, db), "floor 2 wilds exclude legendary/mythical")
+	var later_ok := true
+	for _i in 4:
+		gs.descend()
+		if not _no_legend_myth(gs, db):
+			later_ok = false
+			failed += _expect(false, "floor %d wilds exclude legendary/mythical" % gs.floor_num)
+			break
+	if later_ok:
+		failed += _expect(true, "floors 3-6 wilds exclude legendary/mythical")
 
 	var atk: WyrdlingCreature = gs.make_creature("cobbleback", 1.0)
 	var nature: WyrdlingCreature = gs.make_creature("briarseed", 1.0)
