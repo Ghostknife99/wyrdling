@@ -17,7 +17,7 @@ const PLAYER_FRAME_W := 24
 const PLAYER_FRAME_H := 34
 const WALK_FRAME_MS := 35
 const PLAYER_ART = preload("res://src/dungeon/delver_art.gd")
-const SCENERY_ART = preload("res://src/dungeon/scenery_art.gd")
+const SCENERY_ART = preload("res://src/dungeon/scenery_art_v2.gd")
 
 var polished_player_idle: Dictionary = {}
 var polished_player_walk: Dictionary = {}
@@ -35,8 +35,6 @@ func _ready() -> void:
 		tex_player = polished_player_idle["down"]
 		_sync_actors()
 
-	# The base scene initially loads the legacy prop files. Replace those with the
-	# approved Willowmere sheet and rerender once so the live route uses the new art.
 	_load_polished_scenery()
 	_render_world_props()
 
