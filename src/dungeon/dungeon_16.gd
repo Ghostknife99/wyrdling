@@ -6,13 +6,89 @@ extends "res://src/dungeon/dungeon.gd"
 ## an exact 0.5 scale, making every map cell occupy 16 logical world pixels.
 ## The camera renders the world at 2x, so the final screen remains crisp and the
 ## route framing stays close to the previous 32px presentation.
+##
+## The Delver uses a dedicated 24x34 polished sprite sheet with four directional
+## walk frames. Movement remains grid based; only the presentation animates.
 
 const TILE_16 := 16
 const TERRAIN_SCALE := 0.5
 const CAMERA_SCALE := 2.0
 const ACTOR_MAX_W := 20.0
 const ACTOR_MAX_H := 28.0
+const PLAYER_MAX_W := 20.0
+const PLAYER_MAX_H := 28.0
 const PROP_SOURCE_SCALE := 0.5
+
+const PLAYER_FRAME_W := 24
+const PLAYER_FRAME_H := 34
+const WALK_FRAME_MS := 35
+const PLAYER_SHEET_PATH := "res://art/player/delver_polished_sheet.png"
+
+var polished_player_idle: Dictionary = {}
+var polished_player_walk: Dictionary = {}
+
+
+func _ready() -> void:
+	_load_polished_player()
+	super._ready()
+
+	# Keep the base movement/facing code pointed at the new artwork too. This
+	# prevents even a single old-frame flash when a tile step starts.
+	if not polished_player_idle.is_empty():
+		for facing in ["down", "up", "left", "right"]:
+			player_facing[facing] = polished_player_idle[facing]
+		tex_player = polished_player_idle["down"]
+		_sync_actors()
+
+
+func _load_polished_player() -> void:
+	if not ResourceLoader.exists(PLAYER_SHEET_PATH):
+		return
+
+	var sheet: Texture2D = load(PLAYER_SHEET_PATH)
+	var rows := {
+		"down": 0,
+		"left": 1,
+		"right": 2,
+		"up": 3,
+	}
+
+	for facing in rows:
+		var row: int = int(rows[facing])
+		var frames: Array[Texture2D] = []
+		for column in 4:
+			var frame := AtlasTexture.new()
+			frame.atlas = sheet
+			frame.region = Rect2(
+				column * PLAYER_FRAME_W,
+				row * PLAYER_FRAME_H,
+				PLAYER_FRAME_W,
+				PLAYER_FRAME_H
+			)
+			frames.append(frame)
+		polished_player_walk[facing] = frames
+		polished_player_idle[facing] = frames[0]
+
+
+func _current_player_frame() -> Texture2D:
+	if polished_player_idle.is_empty():
+		return tex_player
+
+	if moving and polished_player_walk.has(last_dir):
+		var frames: Array = polished_player_walk[last_dir]
+		if not frames.is_empty():
+			var frame_index := int(Time.get_ticks_msec() / WALK_FRAME_MS) % frames.size()
+			return frames[frame_index] as Texture2D
+
+	return polished_player_idle.get(last_dir, polished_player_idle["down"]) as Texture2D
+
+
+func _process(_delta: float) -> void:
+	if player_sprite == null or polished_player_idle.is_empty():
+		return
+	var frame := _current_player_frame()
+	if frame != null and player_sprite.texture != frame:
+		_fit_texture(player_sprite, frame, PLAYER_MAX_W, PLAYER_MAX_H)
 
 
 func _ensure_world() -> void:
@@ -26,13 +102,20 @@ func _ensure_world() -> void:
 
 
 func _fit_sprite(spr: Sprite2D, tex: Texture2D) -> void:
+	if spr == player_sprite and not polished_player_idle.is_empty():
+		_fit_texture(spr, _current_player_frame(), PLAYER_MAX_W, PLAYER_MAX_H)
+		return
+	_fit_texture(spr, tex, ACTOR_MAX_W, ACTOR_MAX_H)
+
+
+func _fit_texture(spr: Sprite2D, tex: Texture2D, max_width: float, max_height: float) -> void:
 	if tex == null:
 		return
 	spr.texture = tex
 	spr.centered = false
 	var tw := float(maxi(tex.get_width(), 1))
 	var th := float(maxi(tex.get_height(), 1))
-	var scale_factor: float = minf(ACTOR_MAX_W / tw, ACTOR_MAX_H / th)
+	var scale_factor: float = minf(max_width / tw, max_height / th)
 	spr.scale = Vector2(scale_factor, scale_factor)
 	spr.offset = Vector2(-tw / 2.0, -th)
 
