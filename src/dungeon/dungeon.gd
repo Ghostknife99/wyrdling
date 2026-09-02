@@ -370,12 +370,6 @@ func _draw_fence_kind(fp: Vector2i, kind: String) -> void:
 
 
 func _draw_tree_canopy(tp: Vector2i) -> void:
-	var nw_tex: Texture2D = _ow("tree_nw")
-	var ne_tex: Texture2D = _ow("tree_ne")
-	if nw_tex and ne_tex:
-		draw_texture_rect(nw_tex, Rect2(tp.x * TILE, tp.y * TILE, TILE, TILE), false)
-		draw_texture_rect(ne_tex, Rect2((tp.x + 1) * TILE, tp.y * TILE, TILE, TILE), false)
-		return
 	var tree_tex: Texture2D = _ow("tree")
 	if tree_tex:
 		draw_texture_rect(tree_tex, Rect2(tp.x * TILE, tp.y * TILE, TILE * 2, TILE * 2), false)
