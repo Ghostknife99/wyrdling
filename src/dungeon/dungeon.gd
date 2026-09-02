@@ -67,23 +67,12 @@ func _ready() -> void:
 
 
 func _load_tex(tile_name: String, fallback_path: String) -> Texture2D:
-	var aliases := {
-		"path": "dirt",
-		"tallgrass": "tall_grass",
-	}
-	var wilds_name: String = str(aliases.get(tile_name, tile_name))
-	var wilds_path := "res://art/tiles/wilds/%s.png" % wilds_name
-	if ResourceLoader.exists(wilds_path):
-		return load(wilds_path) as Texture2D
+	# Arthur's painted overworld kit wins. Never use placeholder wilds tiles.
 	var p := "res://art/tiles/overworld/%s.png" % tile_name
 	if ResourceLoader.exists(p):
 		return load(p) as Texture2D
 	if fallback_path != "" and ResourceLoader.exists(fallback_path):
 		return load(fallback_path) as Texture2D
-	if tile_name in ["grass", "grass_alt", "path", "dirt"] and ResourceLoader.exists("res://art/tiles/floor.png"):
-		return load("res://art/tiles/floor.png") as Texture2D
-	if tile_name in ["cliff", "wall"] and ResourceLoader.exists("res://art/tiles/wall.png"):
-		return load("res://art/tiles/wall.png") as Texture2D
 	return null
 
 
@@ -210,7 +199,12 @@ func _draw() -> void:
 					if tex_stairs:
 						draw_texture_rect(tex_stairs, dest, false)
 				TREE:
-					_blit(_grass_name(x, y), dest)
+					if role == "sw":
+						_blit("tree_sw", dest)
+					elif role == "se":
+						_blit("tree_se", dest)
+					else:
+						_blit(_grass_name(x, y), dest)
 				FENCE:
 					_blit(_grass_name(x, y), dest)
 				TALLGRASS:
@@ -283,24 +277,8 @@ func _tree_role(x: int, y: int) -> String:
 
 
 func _draw_stitches(x: int, y: int, dest: Rect2) -> void:
-	var dirs: Array = [
-		[Vector2i(0, -1), "n"],
-		[Vector2i(1, 0), "e"],
-		[Vector2i(0, 1), "s"],
-		[Vector2i(-1, 0), "w"],
-		[Vector2i(1, -1), "ne"],
-		[Vector2i(-1, -1), "nw"],
-		[Vector2i(1, 1), "se"],
-		[Vector2i(-1, 1), "sw"],
-	]
-	for pair in dirs:
-		var d: Vector2i = pair[0]
-		var key: String = str(pair[1])
-		var nt: int = _tile_at(x + d.x, y + d.y)
-		if nt == WATER:
-			_blit("water_" + key, dest)
-		if _is_pathish(nt):
-			_blit("path_" + key, dest)
+	_blit_ortho_stitches(x, y, dest, PATH, "path", true)
+	_blit_ortho_stitches(x, y, dest, WATER, "water", false)
 	if _tile_at(x, y) == GRASS:
 		_blit_ortho_stitches(x, y, dest, TALLGRASS, "tallgrass", false)
 
