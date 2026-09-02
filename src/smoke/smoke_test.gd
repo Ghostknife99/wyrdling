@@ -67,12 +67,14 @@ func _initialize() -> void:
 	failed += _expect(wc >= 4 and wc <= 8, "4-8 wilds (got %d)" % wc)
 	failed += _expect(gs.wild_at(gs.player_pos) < 0, "no wild on player")
 	failed += _expect(_no_legend_myth(gs, db), "floor 1 wilds exclude legendary/mythical")
-	failed += _expect(gs.MAP_W > 40 and gs.MAP_H > 21, "map larger than 40x21 (got %dx%d)" % [gs.MAP_W, gs.MAP_H])
+	failed += _expect(gs.MAP_W == 64 and gs.MAP_H == 48, "map 64x48 (got %dx%d)" % [gs.MAP_W, gs.MAP_H])
 	failed += _expect(_has_tile(gs, 5), "TALLGRASS on floor 1")
 	failed += _expect(_has_tile(gs, 3), "PATH on floor 1")
 	failed += _expect(_has_tile(gs, 4), "water on floor 1")
 	failed += _expect(gs.player_pos != gs.stairs_pos, "start != stairs")
 	failed += _expect(_path_exists(gs), "walkable path from start to stairs")
+	failed += _expect(gs.trees.size() > 0, "trees placed (got %d)" % gs.trees.size())
+	failed += _expect(_fence_corners(gs), "fence yard corners nw/ne/sw/se")
 
 	gs.descend()
 	var wc2: int = gs.wilds.size()
@@ -159,6 +161,13 @@ func _path_exists(gs: Node) -> bool:
 			seen[n] = true
 			q.append(n)
 	return false
+
+
+func _fence_corners(gs: Node) -> bool:
+	var seen: Dictionary = {}
+	for f in gs.fence:
+		seen[str(f["kind"])] = true
+	return seen.get("nw", false) and seen.get("ne", false) and seen.get("sw", false) and seen.get("se", false)
 
 
 func _no_legend_myth(gs: Node, db: Node) -> bool:

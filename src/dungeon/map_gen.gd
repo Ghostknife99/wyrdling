@@ -47,17 +47,17 @@ static func generate(width: int, height: int, floor_num: int, rng: RandomNumberG
 	var fence: Array = []
 	var south_y: int = cy + ch - 1
 	var east_x: int = cx + cw - 1
-	_stamp_fence(grid, fence, Vector2i(cx, cy), width, height)
-	_stamp_fence(grid, fence, Vector2i(east_x, cy), width, height)
-	_stamp_fence(grid, fence, Vector2i(cx, south_y), width, height)
-	_stamp_fence(grid, fence, Vector2i(east_x, south_y), width, height)
+	_stamp_fence(grid, fence, Vector2i(cx, cy), width, height, "nw")
+	_stamp_fence(grid, fence, Vector2i(east_x, cy), width, height, "ne")
+	_stamp_fence(grid, fence, Vector2i(cx, south_y), width, height, "sw")
+	_stamp_fence(grid, fence, Vector2i(east_x, south_y), width, height, "se")
 	for y in range(cy + 1, south_y):
-		_stamp_fence(grid, fence, Vector2i(cx, y), width, height)
-		_stamp_fence(grid, fence, Vector2i(east_x, y), width, height)
+		_stamp_fence(grid, fence, Vector2i(cx, y), width, height, "v")
+		_stamp_fence(grid, fence, Vector2i(east_x, y), width, height, "v")
 	for x in range(cx + 1, east_x):
-		_stamp_fence(grid, fence, Vector2i(x, south_y), width, height)
+		_stamp_fence(grid, fence, Vector2i(x, south_y), width, height, "h")
 		if x != opening.x and absi(x - opening.x) > 1:
-			_stamp_fence(grid, fence, Vector2i(x, cy), width, height)
+			_stamp_fence(grid, fence, Vector2i(x, cy), width, height, "h")
 
 	grid[start.y][start.x] = DIRT
 	grid[opening.y][opening.x] = DIRT
@@ -184,14 +184,14 @@ static func _inner(x: int, y: int, width: int, height: int) -> bool:
 	return x >= 2 and y >= 2 and x < width - 2 and y < height - 2
 
 
-static func _stamp_fence(grid: Array, fence: Array, pos: Vector2i, width: int, height: int) -> void:
+static func _stamp_fence(grid: Array, fence: Array, pos: Vector2i, width: int, height: int, kind: String = "post") -> void:
 	if not _inner(pos.x, pos.y, width, height):
 		return
 	grid[pos.y][pos.x] = FENCE
 	for f in fence:
 		if f["pos"] == pos:
 			return
-	fence.append({"pos": pos, "kind": "post"})
+	fence.append({"pos": pos, "kind": kind})
 
 
 static func _blocked_prop(p: Vector2i, trees: Array) -> bool:

@@ -157,7 +157,20 @@ func walkable(p: Vector2i) -> bool:
 	if grid.is_empty():
 		return false
 	var t: int = int(grid[p.y][p.x])
-	return t == 1 or t == 2 or t == 3 or t == 5
+	if not (t == 1 or t == 2 or t == 3 or t == 5):
+		return false
+	return not prop_blocks(p)
+
+
+func prop_blocks(p: Vector2i) -> bool:
+	for f in fence:
+		if f["pos"] == p:
+			return true
+	for nw in trees:
+		var tpos: Vector2i = nw
+		if p.x >= tpos.x and p.x <= tpos.x + 1 and p.y >= tpos.y and p.y <= tpos.y + 1:
+			return true
+	return false
 
 
 func occupied_by_wild(p: Vector2i, skip: int = -1) -> bool:

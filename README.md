@@ -120,10 +120,10 @@ art/creatures/{id}.png                                        64×64
                (all 170 ids; do not overwrite the original 8 painted sprites)
 art/tiles/overworld/  grass, grass_alt, path, water,           32×32
                       tallgrass, cliff, cliff_top,
-                      path_{n,e,s,w,ne,nw,se,sw}, water_*,
-                      fence_h, fence_v, fence_post,
-                      tree.png                                64×64
-art/tiles/stairs.png  gold rift-gate (no Arthur stairs tile)
+                      path_*, water_*, tallgrass_*, cliff_*,
+                      fence_{h,v,post,nw,ne,sw,se},
+                      tree_nw/ne/sw/se (2×2); tree.png        64×64
+art/tiles/stairs.png  gold rift-gate, drawn on a path underlay
 art/tiles/floor.png wall.png   unused indoor leftovers
 art/ui/wordmark.png hp_frame.png hp_fill.png btn_panel.png
       icon_wisp.png icon_iron.png icon_bloom.png

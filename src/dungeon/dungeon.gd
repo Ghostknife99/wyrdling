@@ -185,7 +185,6 @@ func _draw() -> void:
 		for x in gw:
 			var t: int = int(GameState.grid[y][x])
 			var dest := Rect2(x * TILE, y * TILE, TILE, TILE)
-			var role := _tree_role(x, y)
 			match t:
 				CLIFF:
 					_blit("cliff", dest)
@@ -215,11 +214,6 @@ func _draw() -> void:
 				_draw_stitches(x, y, dest)
 			if t == GRASS or t == PATH or t == TALLGRASS or t == STAIRS:
 				_draw_cliff_top(x, y, dest)
-
-	for nw in GameState.trees:
-		var tp: Vector2i = nw
-		_blit("tree_sw", Rect2(tp.x * TILE, (tp.y + 1) * TILE, TILE, TILE))
-		_blit("tree_se", Rect2((tp.x + 1) * TILE, (tp.y + 1) * TILE, TILE, TILE))
 
 	# 2. Fence deco from map_gen kinds (h/v/post + yard corners)
 	for f in GameState.fence:
@@ -375,12 +369,6 @@ func _draw_fence_kind(fp: Vector2i, kind: String) -> void:
 
 
 func _draw_tree_canopy(tp: Vector2i) -> void:
-	var nw_tex: Texture2D = _ow("tree_nw")
-	var ne_tex: Texture2D = _ow("tree_ne")
-	if nw_tex and ne_tex:
-		draw_texture_rect(nw_tex, Rect2(tp.x * TILE, tp.y * TILE, TILE, TILE), false)
-		draw_texture_rect(ne_tex, Rect2((tp.x + 1) * TILE, tp.y * TILE, TILE, TILE), false)
-		return
 	var tree_tex: Texture2D = _ow("tree")
 	if tree_tex:
 		draw_texture_rect(tree_tex, Rect2(tp.x * TILE, tp.y * TILE, TILE * 2, TILE * 2), false)

@@ -36,7 +36,7 @@ func _run() -> void:
 
 	var parked: Array = gs.wilds
 	gs.wilds = []
-	_pan_along_dirt(dungeon, 18)
+	_pan_along_dirt(dungeon, 15)
 	await _wait_frames(10)
 	await _capture_pair()
 	print("player_pos=", gs.player_pos, " stairs=", gs.stairs_pos)
@@ -127,6 +127,14 @@ func _pan_along_dirt(dungeon: Node, steps: int) -> void:
 				found = true
 		if not found or best == from:
 			break
+		if best.x > from.x:
+			dungeon.last_dir = "right"
+		elif best.x < from.x:
+			dungeon.last_dir = "left"
+		elif best.y < from.y:
+			dungeon.last_dir = "up"
+		else:
+			dungeon.last_dir = "down"
 		gs.player_pos = best
 	if dungeon.has_method("_refresh"):
 		dungeon._refresh()
