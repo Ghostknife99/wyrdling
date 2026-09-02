@@ -17,7 +17,7 @@ const PLAYER_FRAME_W := 24
 const PLAYER_FRAME_H := 34
 const WALK_FRAME_MS := 35
 const PLAYER_ART = preload("res://src/dungeon/delver_art.gd")
-const SCENERY_ART = preload("res://src/dungeon/scenery_art_v2.gd")
+const SCENERY_ART = preload("res://src/dungeon/scenery_art_hd.gd")
 
 var polished_player_idle: Dictionary = {}
 var polished_player_walk: Dictionary = {}
@@ -232,14 +232,14 @@ func _render_scenery_details() -> void:
 			if occupied.has(p) or int(GameState.grid[y][x]) != GRASS:
 				continue
 			var seed: int = abs(x * 73 + y * 37 + GameState.floor_num * 101)
-			var mark: int = seed % 233
+			var mark: int = seed % 197
 			if mark == 0:
 				_spawn_scenery_detail(prop_textures["flowers_a"], p, 1, 1)
 			elif mark == 1:
 				_spawn_scenery_detail(prop_textures["flowers_b"], p, 1, 1)
 			elif mark == 2:
 				_spawn_scenery_detail(prop_textures["mushrooms"], p, 1, 1)
-			elif seed % 521 == 9:
+			elif seed % 419 == 9:
 				var right := p + Vector2i(1, 0)
 				if not occupied.has(right) and int(GameState.grid[right.y][right.x]) == GRASS:
 					_spawn_scenery_detail(prop_textures["fallen_log"], p, 2, 1)
