@@ -14,6 +14,8 @@ var stairs_pos := Vector2i.ZERO
 var wilds: Array = []
 var trees: Array = []
 var fence: Array = []
+var world_props: Array = []
+var area_name := "Rift Wilds"
 var dungeon_log: PackedStringArray = PackedStringArray()
 
 
@@ -31,26 +33,28 @@ func start_run(starter_id: String) -> void:
 	dungeon_log = PackedStringArray()
 	generate_floor()
 	if party.size() > 0 and party[0] != null:
-		push_log("Bound to %s. The rift-wilds open." % party[0].display_name)
+		push_log("Bound to %s. %s opens ahead." % [party[0].display_name, area_name])
 
 
 func generate_floor() -> void:
-	var result: Dictionary = preload("res://src/dungeon/map_gen.gd").generate(MAP_W, MAP_H, floor_num, rng)
+	var result: Dictionary = preload("res://src/dungeon/route_gen.gd").generate(MAP_W, MAP_H, floor_num, rng)
 	grid = result["grid"]
 	player_pos = result["start"]
 	stairs_pos = result["stairs"]
 	trees = result.get("trees", [])
 	fence = result.get("fence", [])
+	world_props = result.get("props", [])
+	area_name = str(result.get("area_name", "Rift Wilds"))
 	wilds = []
 	var ids: Array[String] = DataDB.wild_ids()
 	var mult: float = 1.0 + float(floor_num - 1) * 0.15
 	if ids.is_empty():
-		push_warning("Wyrdling: no creature data; floor has no wilds")
+		push_warning("Wyrdling: no creature data; route has no wilds")
 	else:
 		for p in result["wilds"]:
 			var sid: String = ids[rng.randi_range(0, ids.size() - 1)]
 			wilds.append({"pos": p, "creature": make_creature(sid, mult)})
-	push_log("The rift-wilds open — floor %d. Tall grass hides encounters." % floor_num)
+	push_log("%s — tall grass hides encounters." % area_name)
 
 
 func make_creature(species_id: String, stat_mult: float = 1.0) -> WyrdlingCreature:
@@ -119,11 +123,19 @@ func replace_member(index: int, wild: WyrdlingCreature) -> String:
 	return dropped
 
 
+func mend_party(ratio: float) -> int:
+	var total := 0
+	for c in party:
+		var before: int = c.hp
+		var heal_amt: int = maxi(1, int(ceil(float(c.max_hp) * ratio)))
+		c.heal(heal_amt)
+		total += c.hp - before
+	return total
+
+
 func descend() -> void:
 	floor_num += 1
-	for c in party:
-		var heal_amt: int = int(ceil(float(c.max_hp) * 0.3))
-		c.heal(heal_amt)
+	mend_party(0.3)
 	generate_floor()
 	push_log("You descend. The rift knits a little of your wounds.")
 
@@ -134,7 +146,9 @@ func end_run() -> void:
 	wilds.clear()
 	trees.clear()
 	fence.clear()
+	world_props.clear()
 	grid.clear()
+	area_name = "Rift Wilds"
 	dungeon_log = PackedStringArray()
 
 
@@ -170,7 +184,21 @@ func prop_blocks(p: Vector2i) -> bool:
 		var tpos: Vector2i = nw
 		if p.y == tpos.y + 1 and p.x >= tpos.x and p.x <= tpos.x + 1:
 			return true
+	for prop in world_props:
+		var blocks: Array = prop.get("blocks", [])
+		for cell in blocks:
+			if cell == p:
+				return true
 	return false
+
+
+func interactable_at(p: Vector2i) -> Dictionary:
+	for prop in world_props:
+		if not prop.has("interact_pos"):
+			continue
+		if prop["interact_pos"] == p:
+			return prop
+	return {}
 
 
 func occupied_by_wild(p: Vector2i, skip: int = -1) -> bool:
