@@ -1,0 +1,22 @@
+name: Godot smoke
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Godot
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.4.1
+          use-dotnet: false
+          include-templates: false
+      - name: Import project and register script classes
+        run: godot --headless --editor --path . --quit
+      - name: Boot project smoke test
+        run: godot --headless --path . -s res://src/smoke/smoke_test.gd

@@ -1,11 +1,11 @@
 extends Node2D
 
 const TILE := 32
-const SPRITE := 48
-const HUD_H := 48
-const GOLD := Color("E8C872")
-const INK := Color(0.94, 0.91, 0.84)
-const MUTED := Color(0.70, 0.66, 0.58)
+const SPRITE := 42
+const INK := Color("26333A")
+const PAPER := Color("F8F7E8")
+const GREEN_DARK := Color("245C49")
+const MUTED := Color("66766F")
 
 const CLIFF := 0
 const GRASS := 1
@@ -48,10 +48,16 @@ var player_facing: Dictionary = {}
 var last_dir: String = "down"
 var creature_tex: Dictionary = {}
 var combat_open := false
+var moving := false
+
 var hud: CanvasLayer
 var floor_label: Label
-var party_label: Label
+var location_panel: Panel
+var location_timer: Timer
+var toast_panel: Panel
 var log_label: Label
+var toast_timer: Timer
+var last_toast := ""
 var cam: Camera2D
 
 var world: Node2D
@@ -83,6 +89,19 @@ func _ready() -> void:
 	_build_hud()
 	_paint_map()
 	_refresh()
+	_show_location()
+
+
+func _style(fill: Color, border: Color = GREEN_DARK, width: int = 3) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = fill
+	sb.border_color = border
+	sb.set_border_width_all(width)
+	sb.corner_radius_top_left = 2
+	sb.corner_radius_top_right = 2
+	sb.corner_radius_bottom_left = 2
+	sb.corner_radius_bottom_right = 2
+	return sb
 
 
 func _ensure_world() -> void:
@@ -95,6 +114,7 @@ func _ensure_world() -> void:
 		add_child(world)
 	world.y_sort_enabled = true
 	world.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+
 	ground = world.get_node_or_null("Ground") as TileMapLayer
 	if ground == null:
 		ground = TileMapLayer.new()
@@ -115,6 +135,7 @@ func _ensure_world() -> void:
 		player_sprite = Sprite2D.new()
 		player_sprite.name = "Player"
 		world.add_child(player_sprite)
+
 	for layer in [ground, deco, overlay]:
 		layer.tile_set = tileset
 		layer.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -138,6 +159,10 @@ func _fit_sprite(spr: Sprite2D, tex: Texture2D) -> void:
 	spr.offset = Vector2(-tw / 2.0, -th)
 
 
+func _actor_pos(p: Vector2i) -> Vector2:
+	return Vector2(p.x * TILE + TILE / 2.0, p.y * TILE + TILE)
+
+
 func _build_camera() -> void:
 	cam = get_node_or_null("Camera2D") as Camera2D
 	if cam == null:
@@ -146,8 +171,9 @@ func _build_camera() -> void:
 		add_child(cam)
 	cam.enabled = true
 	cam.anchor_mode = Camera2D.ANCHOR_MODE_DRAG_CENTER
-	cam.position_smoothing_enabled = false
-	cam.zoom = Vector2(2, 2)
+	cam.position_smoothing_enabled = true
+	cam.position_smoothing_speed = 11.0
+	cam.zoom = Vector2.ONE
 	cam.make_current()
 
 
@@ -165,34 +191,62 @@ func _update_camera() -> void:
 func _build_hud() -> void:
 	hud = CanvasLayer.new()
 	add_child(hud)
-	var bar := ColorRect.new()
-	bar.color = Color(0.06, 0.05, 0.08, 0.94)
-	bar.position = Vector2(0, 0)
-	bar.size = Vector2(1280, HUD_H)
-	hud.add_child(bar)
+
+	location_panel = Panel.new()
+	location_panel.position = Vector2(14, 14)
+	location_panel.size = Vector2(212, 44)
+	location_panel.add_theme_stylebox_override("panel", _style(Color(0.97, 0.98, 0.91, 0.96), GREEN_DARK, 3))
+	hud.add_child(location_panel)
+
 	floor_label = Label.new()
 	floor_label.position = Vector2(12, 8)
-	floor_label.size = Vector2(280, 32)
-	floor_label.add_theme_font_size_override("font_size", 20)
-	floor_label.add_theme_color_override("font_color", GOLD)
-	hud.add_child(floor_label)
-	party_label = Label.new()
-	party_label.position = Vector2(300, 8)
-	party_label.size = Vector2(960, 32)
-	party_label.add_theme_font_size_override("font_size", 18)
-	party_label.add_theme_color_override("font_color", INK)
-	hud.add_child(party_label)
-	var bot := ColorRect.new()
-	bot.color = Color(0.06, 0.05, 0.08, 0.88)
-	bot.position = Vector2(0, 672)
-	bot.size = Vector2(1280, 48)
-	hud.add_child(bot)
+	floor_label.size = Vector2(188, 28)
+	floor_label.add_theme_font_size_override("font_size", 16)
+	floor_label.add_theme_color_override("font_color", INK)
+	floor_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	location_panel.add_child(floor_label)
+
+	location_timer = Timer.new()
+	location_timer.one_shot = true
+	location_timer.wait_time = 2.4
+	location_timer.timeout.connect(func() -> void: location_panel.visible = false)
+	hud.add_child(location_timer)
+
+	toast_panel = Panel.new()
+	toast_panel.position = Vector2(14, 312)
+	toast_panel.size = Vector2(392, 34)
+	toast_panel.visible = false
+	toast_panel.add_theme_stylebox_override("panel", _style(Color(0.97, 0.98, 0.91, 0.94), Color("6B776F"), 2))
+	hud.add_child(toast_panel)
+
 	log_label = Label.new()
-	log_label.position = Vector2(12, 676)
-	log_label.size = Vector2(1256, 40)
-	log_label.add_theme_font_size_override("font_size", 16)
+	log_label.position = Vector2(10, 5)
+	log_label.size = Vector2(372, 24)
+	log_label.add_theme_font_size_override("font_size", 11)
 	log_label.add_theme_color_override("font_color", MUTED)
-	hud.add_child(log_label)
+	log_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	toast_panel.add_child(log_label)
+
+	toast_timer = Timer.new()
+	toast_timer.one_shot = true
+	toast_timer.wait_time = 2.2
+	toast_timer.timeout.connect(func() -> void: toast_panel.visible = false)
+	hud.add_child(toast_timer)
+
+
+func _show_location() -> void:
+	floor_label.text = "RIFT WILDS  •  AREA %02d" % GameState.floor_num
+	location_panel.visible = true
+	location_timer.start()
+
+
+func _show_toast(text: String) -> void:
+	if text.is_empty() or text == last_toast:
+		return
+	last_toast = text
+	log_label.text = text
+	toast_panel.visible = true
+	toast_timer.start()
 
 
 func _paint_map() -> void:
@@ -201,52 +255,25 @@ func _paint_map() -> void:
 	ground.clear()
 	deco.clear()
 	overlay.clear()
-	var grass_cells: Array[Vector2i] = []
-	var path_cells: Array[Vector2i] = []
-	var water_cells: Array[Vector2i] = []
 	var gw: int = GameState.MAP_W
 	var gh: int = GameState.MAP_H
-	for y in gh:
-		for x in gw:
-			var t: int = int(GameState.grid[y][x])
-			var c := Vector2i(x, y)
-			match t:
-				CLIFF:
-					ground.set_cell(c, 0, C["cliff"])
-				WATER:
-					water_cells.append(c)
-				PATH, STAIRS:
-					path_cells.append(c)
-				_:
-					grass_cells.append(c)
-	for c in grass_cells:
-		if (c.x + c.y) % 2 == 0:
-			ground.set_cell(c, 0, C["grass"])
-		else:
-			ground.set_cell(c, 0, C["grass_alt"])
-	ground.set_cells_terrain_connect(path_cells, 0, T_PATH, true)
-	ground.set_cells_terrain_connect(water_cells, 0, T_WATER, true)
-	# Force 47-blob atlas tiles so unmatched peering never blanks a cell
-	# and inner/outer corners always show (Godot terrain can miss 3-way mixes).
 	var WT = preload("res://src/dungeon/wilds_tileset.gd")
+
 	for y in gh:
 		for x in gw:
 			var t: int = int(GameState.grid[y][x])
 			var c := Vector2i(x, y)
 			if t == CLIFF:
 				ground.set_cell(c, 0, C["cliff"])
-				continue
-			if t == WATER:
+			elif t == WATER:
 				var idx: int = int(WT.atlas_index(_blob_mask(x, y, WATER, false)))
 				ground.set_cell(c, 0, WT.water_coords(idx))
 			elif t == PATH or t == STAIRS:
 				var idx2: int = int(WT.atlas_index(_blob_mask(x, y, PATH, true)))
 				ground.set_cell(c, 0, WT.path_coords(idx2))
 			else:
-				if (x + y) % 5 == 0:
-					ground.set_cell(c, 0, C["grass_alt"])
-				else:
-					ground.set_cell(c, 0, C["grass"])
+				ground.set_cell(c, 0, C["grass_alt"] if (x + y) % 5 == 0 else C["grass"])
+
 	deco.set_cell(GameState.stairs_pos, 0, C["stairs"])
 	for y in gh:
 		for x in gw:
@@ -255,38 +282,34 @@ func _paint_map() -> void:
 				continue
 			if y + 1 < gh and int(GameState.grid[y + 1][x]) == CLIFF:
 				deco.set_cell(Vector2i(x, y), 0, C["cliff_top"])
+
 	for f in GameState.fence:
 		var kind := str(f["kind"])
 		var key := "fence_post"
 		match kind:
-			"h":
-				key = "fence_h"
-			"v":
-				key = "fence_v"
-			"nw":
-				key = "fence_nw"
-			"ne":
-				key = "fence_ne"
-			"sw":
-				key = "fence_sw"
-			"se":
-				key = "fence_se"
-			_:
-				key = "fence_post"
+			"h": key = "fence_h"
+			"v": key = "fence_v"
+			"nw": key = "fence_nw"
+			"ne": key = "fence_ne"
+			"sw": key = "fence_sw"
+			"se": key = "fence_se"
+			_: key = "fence_post"
 		deco.set_cell(f["pos"], 0, C[key])
+
 	for y in gh:
 		for x in gw:
 			if int(GameState.grid[y][x]) == TALLGRASS:
 				overlay.set_cell(Vector2i(x, y), 0, C["tallgrass"])
+
 	for nw in GameState.trees:
 		var tp: Vector2i = nw
-		# Canopy on overlay (Y-sorts with the delver). Trunks on deco, collision only.
 		overlay.set_cell(tp, 0, C["tree_nw"])
 		overlay.set_cell(tp + Vector2i(1, 0), 0, C["tree_ne"])
 		deco.set_cell(tp + Vector2i(0, 1), 0, C["tree_sw"])
 		deco.set_cell(tp + Vector2i(1, 1), 0, C["tree_se"])
 		overlay.erase_cell(tp + Vector2i(0, 1))
 		overlay.erase_cell(tp + Vector2i(1, 1))
+
 	rustle_cell = Vector2i(-999, -999)
 	_apply_rustle()
 
@@ -314,22 +337,14 @@ func _blob_mask(x: int, y: int, want: int, pathish: bool) -> int:
 	var sw := _blob_match(_tile_at(x - 1, y + 1), want, pathish)
 	var nw := _blob_match(_tile_at(x - 1, y - 1), want, pathish)
 	var m := 0
-	if n:
-		m |= 1
-	if e:
-		m |= 2
-	if s:
-		m |= 4
-	if w:
-		m |= 8
-	if n and e and ne:
-		m |= 16
-	if e and s and se:
-		m |= 32
-	if s and w and sw:
-		m |= 64
-	if w and n and nw:
-		m |= 128
+	if n: m |= 1
+	if e: m |= 2
+	if s: m |= 4
+	if w: m |= 8
+	if n and e and ne: m |= 16
+	if e and s and se: m |= 32
+	if s and w and sw: m |= 64
+	if w and n and nw: m |= 128
 	return m
 
 
@@ -359,28 +374,19 @@ func _refresh() -> void:
 	_update_camera()
 	_sync_actors()
 	_apply_rustle()
-	floor_label.text = "Wilds %d" % GameState.floor_num
-	var bits: PackedStringArray = PackedStringArray()
-	for i in GameState.party.size():
-		var c: WyrdlingCreature = GameState.party[i]
-		if c == null:
-			continue
-		var mark := ">" if i == GameState.active_index else " "
-		bits.append("%s%s %d/%d" % [mark, c.display_name, c.hp, c.max_hp])
-	party_label.text = "  ·  ".join(bits)
 	if GameState.dungeon_log.size() > 0:
-		log_label.text = str(GameState.dungeon_log[GameState.dungeon_log.size() - 1])
-	else:
-		log_label.text = "Walking the wilds. Tall grass hides encounters. Gold rift-gate descends."
+		_show_toast(str(GameState.dungeon_log[GameState.dungeon_log.size() - 1]))
 
 
 func _sync_actors() -> void:
 	if player_sprite == null:
 		return
 	var pp: Vector2i = GameState.player_pos
-	player_sprite.position = Vector2(pp.x * TILE + TILE / 2.0, pp.y * TILE + TILE)
+	if not moving:
+		player_sprite.position = _actor_pos(pp)
 	var ptex: Texture2D = player_facing.get(last_dir, tex_player)
 	_fit_sprite(player_sprite, ptex)
+
 	while wild_sprites.size() < GameState.wilds.size():
 		var s := Sprite2D.new()
 		s.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -396,12 +402,12 @@ func _sync_actors() -> void:
 		var cr: WyrdlingCreature = w["creature"]
 		var ctex: Texture2D = creature_tex.get(cr.species_id, tex_player)
 		wild_sprites[i].visible = true
-		wild_sprites[i].position = Vector2(p.x * TILE + TILE / 2.0, p.y * TILE + TILE)
+		wild_sprites[i].position = _actor_pos(p)
 		_fit_sprite(wild_sprites[i], ctex)
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if combat_open:
+	if combat_open or moving:
 		return
 	if not (event is InputEventKey and event.pressed and not event.echo):
 		return
@@ -433,12 +439,27 @@ func _try_step(dir: Vector2i) -> void:
 		return
 	if not GameState.walkable(np):
 		return
+
+	var start_pos := player_sprite.position
 	GameState.player_pos = np
+	moving = true
+	_update_camera()
+	var ptex: Texture2D = player_facing.get(last_dir, tex_player)
+	_fit_sprite(player_sprite, ptex)
+	player_sprite.position = start_pos
+	var tween := create_tween()
+	tween.set_trans(Tween.TRANS_LINEAR)
+	tween.tween_property(player_sprite, "position", _actor_pos(np), 0.12)
+	await tween.finished
+	moving = false
+
 	if np == GameState.stairs_pos:
 		GameState.descend()
 		_paint_map()
 		_refresh()
+		_show_location()
 		return
+
 	_wild_turn()
 	_refresh()
 
@@ -455,7 +476,6 @@ func _wild_turn() -> void:
 		else:
 			var dirs: Array[Vector2i] = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
 			dirs.shuffle()
-			nxt = pos
 			for d in dirs:
 				var cand: Vector2i = pos + d
 				if GameState.walkable(cand) and not GameState.occupied_by_wild(cand, i) and cand != player:
@@ -479,13 +499,14 @@ func _open_combat(wild_index: int) -> void:
 	if combat_open:
 		return
 	combat_open = true
+	location_panel.visible = false
+	toast_panel.visible = false
 	var wild: WyrdlingCreature = GameState.wilds[wild_index]["creature"]
 	GameState.push_log("A wild %s bars the way." % wild.display_name)
 	var combat: Control = preload("res://scenes/combat.tscn").instantiate()
 	combat.setup(wild)
 	combat.combat_over.connect(_on_combat_over)
 	hud.add_child(combat)
-	_refresh()
 
 
 func _on_combat_over(result: String) -> void:
@@ -495,12 +516,8 @@ func _on_combat_over(result: String) -> void:
 		get_tree().change_scene_to_file("res://scenes/title.tscn")
 		return
 	match result:
-		"won":
-			GameState.push_log("The wild Wyrdling scattered into rift-dust.")
-		"caught":
-			GameState.push_log("Bound. The party shifts.")
-		"fled":
-			GameState.push_log("You slipped back into the wilds.")
-		_:
-			pass
+		"won": GameState.push_log("The wild Wyrdling scattered into rift-dust.")
+		"caught": GameState.push_log("Bound. The party shifts.")
+		"fled": GameState.push_log("You slipped back into the wilds.")
+		_: pass
 	_refresh()
