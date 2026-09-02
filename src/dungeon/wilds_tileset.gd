@@ -20,7 +20,7 @@ const PATH_ROW0 := 2
 const WATER_ROW0 := 5
 const WATER_PER_ROW := 5
 const WATER_FRAMES := 3
-const SCENERY = preload("res://src/dungeon/scenery_art_v2.gd")
+const SCENERY = preload("res://src/dungeon/scenery_art_hd.gd")
 
 const SRC_COORDS := {
 	"grass": Vector2i(0, 0),
@@ -73,7 +73,7 @@ static func water_coords(index: int) -> Vector2i:
 static func build() -> TileSet:
 	var tex: Texture2D = SCENERY.make_atlas()
 	if tex == null:
-		push_error("Polished scenery atlas could not be created")
+		push_error("Approved HD scenery atlas could not be loaded")
 		return TileSet.new()
 	var ts := TileSet.new()
 	ts.tile_size = Vector2i(TILE, TILE)
