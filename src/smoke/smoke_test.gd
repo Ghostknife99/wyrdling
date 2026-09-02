@@ -67,6 +67,12 @@ func _initialize() -> void:
 	failed += _expect(wc >= 4 and wc <= 8, "4-8 wilds (got %d)" % wc)
 	failed += _expect(gs.wild_at(gs.player_pos) < 0, "no wild on player")
 	failed += _expect(_no_legend_myth(gs, db), "floor 1 wilds exclude legendary/mythical")
+	failed += _expect(gs.MAP_W > 40 and gs.MAP_H > 21, "map larger than 40x21 (got %dx%d)" % [gs.MAP_W, gs.MAP_H])
+	failed += _expect(_has_tile(gs, 5), "TALLGRASS on floor 1")
+	failed += _expect(_has_tile(gs, 3), "PATH on floor 1")
+	failed += _expect(_has_tile(gs, 4), "water on floor 1")
+	failed += _expect(gs.player_pos != gs.stairs_pos, "start != stairs")
+	failed += _expect(_path_exists(gs), "walkable path from start to stairs")
 
 	gs.descend()
 	var wc2: int = gs.wilds.size()
@@ -120,6 +126,39 @@ func _initialize() -> void:
 	else:
 		print("=== SMOKE FAILED (%d) ===" % failed)
 		quit(1)
+
+
+func _has_tile(gs: Node, tile_id: int) -> bool:
+	for y in gs.MAP_H:
+		for x in gs.MAP_W:
+			if int(gs.grid[y][x]) == tile_id:
+				return true
+	return false
+
+
+func _path_exists(gs: Node) -> bool:
+	var start: Vector2i = gs.player_pos
+	var goal: Vector2i = gs.stairs_pos
+	if not gs.walkable(start) or not gs.walkable(goal):
+		return false
+	var q: Array[Vector2i] = [start]
+	var seen: Dictionary = {start: true}
+	var dirs: Array[Vector2i] = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
+	var guard := 0
+	while q.size() > 0 and guard < 20000:
+		guard += 1
+		var p: Vector2i = q.pop_front()
+		if p == goal:
+			return true
+		for d in dirs:
+			var n: Vector2i = p + d
+			if seen.has(n):
+				continue
+			if not gs.walkable(n):
+				continue
+			seen[n] = true
+			q.append(n)
+	return false
 
 
 func _no_legend_myth(gs: Node, db: Node) -> bool:

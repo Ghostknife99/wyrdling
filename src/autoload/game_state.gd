@@ -1,7 +1,7 @@
 extends Node
 
-const MAP_W := 40
-const MAP_H := 21
+const MAP_W := 64
+const MAP_H := 48
 
 var rng := RandomNumberGenerator.new()
 var in_run := false
@@ -12,6 +12,8 @@ var grid: Array = []
 var player_pos := Vector2i.ZERO
 var stairs_pos := Vector2i.ZERO
 var wilds: Array = []
+var trees: Array = []
+var fence: Array = []
 var dungeon_log: PackedStringArray = PackedStringArray()
 
 
@@ -29,7 +31,7 @@ func start_run(starter_id: String) -> void:
 	dungeon_log = PackedStringArray()
 	generate_floor()
 	if party.size() > 0 and party[0] != null:
-		push_log("Bound to %s. The first rift opens." % party[0].display_name)
+		push_log("Bound to %s. The rift-wilds open." % party[0].display_name)
 
 
 func generate_floor() -> void:
@@ -37,6 +39,8 @@ func generate_floor() -> void:
 	grid = result["grid"]
 	player_pos = result["start"]
 	stairs_pos = result["stairs"]
+	trees = result.get("trees", [])
+	fence = result.get("fence", [])
 	wilds = []
 	var ids: Array[String] = DataDB.wild_ids()
 	var mult: float = 1.0 + float(floor_num - 1) * 0.15
@@ -46,7 +50,7 @@ func generate_floor() -> void:
 		for p in result["wilds"]:
 			var sid: String = ids[rng.randi_range(0, ids.size() - 1)]
 			wilds.append({"pos": p, "creature": make_creature(sid, mult)})
-	push_log("Floor %d. Wild Wyrdlings wander the rift." % floor_num)
+	push_log("The rift-wilds open — floor %d. Tall grass hides encounters." % floor_num)
 
 
 func make_creature(species_id: String, stat_mult: float = 1.0) -> WyrdlingCreature:
@@ -128,6 +132,8 @@ func end_run() -> void:
 	in_run = false
 	party.clear()
 	wilds.clear()
+	trees.clear()
+	fence.clear()
 	grid.clear()
 	dungeon_log = PackedStringArray()
 
@@ -148,8 +154,10 @@ func wild_at(p: Vector2i) -> int:
 func walkable(p: Vector2i) -> bool:
 	if p.x < 0 or p.y < 0 or p.x >= MAP_W or p.y >= MAP_H:
 		return false
+	if grid.is_empty():
+		return false
 	var t: int = int(grid[p.y][p.x])
-	return t == 1 or t == 2
+	return t == 1 or t == 2 or t == 3 or t == 5
 
 
 func occupied_by_wild(p: Vector2i, skip: int = -1) -> bool:

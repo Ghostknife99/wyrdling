@@ -1,8 +1,8 @@
 # Wyrdling
 
-**Bind the stray. Descend the undercroft.**
+**Bind the stray. Walk the rift-wilds.**
 
-An original 2D creature-collecting dungeon crawler (v0). Pick a starter, walk a generated floor, bump wild wyrds into turn-based combat, and Strike, Bind, Swap, or Flee. Permadeath if the whole party falls. Stairs descend to the next floor.
+An original 2D creature-collecting overworld crawler (v0). Pick a starter, walk a seamless outdoor map (camera follows), bump wild wyrds hiding in tall grass into turn-based combat, and Strike, Bind, Swap, or Flee. Permadeath if the whole party falls. The gold rift-gate descends to the next wilds.
 
 Original IP. Not affiliated with Nintendo, Game Freak, or Pokémon. Do not drop in Nintendo assets or Pokémon names.
 
@@ -32,10 +32,10 @@ Headless smoke test (no window):
 
 **Starter** — `1` Glimmerling (Light) · `2` Cobbleback (Metal) · `3` Briarseed (Nature), or click a card
 
-**Dungeon**
-- `WASD` or arrow keys — one tile per press (turn-based)
-- Walk into a wild wyrd to clash
-- Walk onto the gold stairs to descend (party mends 30% of max HP)
+**Wilds**
+- `WASD` or arrow keys — one tile per press (turn-based). Camera follows; the map is larger than the 1280×720 window.
+- Wilds spawn in **tall grass**. Walk into a wild wyrd to clash
+- Walk onto the gold rift-gate to descend (party mends 30% of max HP)
 
 **Combat** (one screen, overlaid on the floor)
 - `1` Strike · `2` Bind · `3` Swap · `4` Flee
@@ -48,8 +48,9 @@ Headless smoke test (no window):
 - Autoload run state (`GameState`) plus data tables (`DataDB`). Creatures and moves live in JSON, not scene nodes.
 - Party of **3**. Bind during the run. There is no box and no dex.
 - If the party is full, a successful Bind **replaces** a chosen member. The released wyrd is gone for this run.
-- Rooms + corridors grid, **4–8** wanderers, stairs always visible.
-- You step, then wilds wander (or chase if close). Bump starts combat.
+- One continuous outdoor floor (64×48 tiles): fenced clearing, winding path, grass, tall-grass patches, a water feature, tree groves. Camera follows the delver. Painted overworld tiles live at `art/tiles/overworld/` (32×32, trees 64×64).
+- **4–8** wanderers spawn on tall grass, gold rift-gate at the north end of the path.
+- You step, then wilds wander (or chase if close). Bump starts combat. Trees Y-sort over the delver.
 - If every party member is KO, the run ends and you return to the title (permadeath).
 
 ## Type chart
@@ -117,7 +118,13 @@ Drop finished sprites over these placeholders. Keep the folders and lowercase_un
 art/player/delver_idle_down.png   (also _up _left _right)     64×64
 art/creatures/{id}.png                                        64×64
                (all 170 ids; do not overwrite the original 8 painted sprites)
-art/tiles/floor.png floor_alt.png wall.png stairs.png         32×32
+art/tiles/overworld/  grass, grass_alt, path, water,           32×32
+                      tallgrass, cliff, cliff_top,
+                      path_{n,e,s,w,ne,nw,se,sw}, water_*,
+                      fence_h, fence_v, fence_post,
+                      tree.png                                64×64
+art/tiles/stairs.png  gold rift-gate (no Arthur stairs tile)
+art/tiles/floor.png wall.png   unused indoor leftovers
 art/ui/wordmark.png hp_frame.png hp_fill.png btn_panel.png
       icon_wisp.png icon_iron.png icon_bloom.png
       icon_light.png icon_void.png icon_flame.png icon_tide.png
@@ -138,7 +145,7 @@ scenes/dungeon.tscn           generated floor
 scenes/combat.tscn            Strike / Bind / Swap / Flee
 src/autoload/data_db.gd       JSON tables + type chart
 src/autoload/game_state.gd    run / party / floor (autoload)
-src/dungeon/                  rooms+corridors generator + explore
+src/dungeon/                  outdoor rift-wilds generator + follow-camera explore
 src/combat/                   one-screen clash
 data/                         creatures.json, moves.json, types.json
 art/                          placeholders listed above
@@ -154,4 +161,4 @@ python3 tools/gen_roster_placeholders.py        # 162 new creature silhouettes; 
 
 ## Leftover (not in v0)
 
-No XP or levels, no evolution, no dex, no overworld hub, no sound, no items. Floors continue indefinitely; there is no final boss. Art is geometric placeholders. `first-slice/` is unused scratch from an earlier pass.
+No XP or levels, no evolution, no dex, no town hub, no sound, no items. Floors are outdoor rift-wilds and continue indefinitely; there is no final boss. Overworld tiles are Arthur's painted kit; some creature sprites are still geometric placeholders. `first-slice/` is unused scratch from an earlier pass.
