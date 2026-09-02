@@ -20,7 +20,7 @@ const PATH_ROW0 := 2
 const WATER_ROW0 := 5
 const WATER_PER_ROW := 5
 const WATER_FRAMES := 3
-const SCENERY = preload("res://src/dungeon/scenery_art.gd")
+const SCENERY = preload("res://src/dungeon/scenery_art_v2.gd")
 
 const SRC_COORDS := {
 	"grass": Vector2i(0, 0),
