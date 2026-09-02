@@ -20,3 +20,5 @@ jobs:
         run: godot --headless --editor --path . --quit
       - name: Boot project smoke test
         run: timeout 60s godot --headless --path . -s res://src/smoke/smoke_test.gd
+      - name: Validate route world content
+        run: timeout 60s godot --headless --path . -s res://src/smoke/world_smoke.gd
