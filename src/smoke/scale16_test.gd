@@ -13,14 +13,18 @@ func _check(ok: bool, label: String) -> void:
 
 func _initialize() -> void:
 	print("=== Wyrdling 16px world test ===")
-	var atlas_path := "res://art/tiles/overworld/wilds_atlas_16.png"
-	_check(ResourceLoader.exists(atlas_path), "16px atlas exists")
-	var atlas: Texture2D = load(atlas_path)
-	_check(atlas != null, "16px atlas loads")
-	if atlas != null:
-		_check(atlas.get_width() == 256 and atlas.get_height() == 240, "atlas is 256x240")
+	var source_path := "res://art/tiles/overworld/hd_atlas.png"
+	_check(ResourceLoader.exists(source_path), "validated source atlas exists")
+	var source: Texture2D = load(source_path)
+	_check(source != null, "source atlas loads")
 
-	var tileset: TileSet = preload("res://src/dungeon/wilds_tileset_16.gd").build()
+	var builder = preload("res://src/dungeon/wilds_tileset_16.gd")
+	var runtime_tex: Texture2D = builder._make_16px_texture()
+	_check(runtime_tex != null, "runtime 16px atlas builds")
+	if runtime_tex != null:
+		_check(runtime_tex.get_width() == 256 and runtime_tex.get_height() == 240, "runtime atlas is 256x240")
+
+	var tileset: TileSet = builder.build()
 	_check(tileset != null, "16px tileset builds")
 	if tileset != null:
 		_check(tileset.tile_size == Vector2i(16, 16), "logical tile size is 16x16")
