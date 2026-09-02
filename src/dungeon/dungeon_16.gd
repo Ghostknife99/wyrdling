@@ -1,19 +1,27 @@
 extends "res://src/dungeon/dungeon.gd"
 ## 16x16 overworld presentation layer.
-## Keeps the 640x360 UI canvas intact while rendering the world at a 2x camera zoom.
+##
+## The underlying terrain source stays on the proven 32px TileSet so all blob
+## terrain and water animation metadata remains intact. Terrain layers render at
+## an exact 0.5 scale, making every map cell occupy 16 logical world pixels.
+## The camera renders the world at 2x, so the final screen remains crisp and the
+## route framing stays close to the previous 32px presentation.
 
 const TILE_16 := 16
+const TERRAIN_SCALE := 0.5
+const CAMERA_SCALE := 2.0
 const ACTOR_MAX_W := 24.0
 const ACTOR_MAX_H := 24.0
 const PROP_SOURCE_SCALE := 0.5
 
 
 func _ensure_world() -> void:
+	# Build the already-tested 32px terrain set, then render each terrain layer at
+	# exactly half scale. Tile cell coordinates remain unchanged, so route logic,
+	# collision, autotiling and animated water do not need a second implementation.
 	super._ensure_world()
-	var builder = load("res://src/dungeon/wilds_tileset_16.gd")
-	tileset = builder.build()
 	for layer in [ground, deco, overlay]:
-		layer.tile_set = tileset
+		layer.scale = Vector2(TERRAIN_SCALE, TERRAIN_SCALE)
 		layer.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
@@ -35,7 +43,7 @@ func _actor_pos(p: Vector2i) -> Vector2:
 
 func _build_camera() -> void:
 	super._build_camera()
-	cam.zoom = Vector2(2.0, 2.0)
+	cam.zoom = Vector2(CAMERA_SCALE, CAMERA_SCALE)
 	cam.position_smoothing_speed = 14.0
 
 
