@@ -16,5 +16,7 @@ jobs:
           version: 4.4.1
           use-dotnet: false
           include-templates: false
+      - name: Import project and register script classes
+        run: godot --headless --editor --path . --quit
       - name: Boot project smoke test
         run: godot --headless --path . -s res://src/smoke/smoke_test.gd
