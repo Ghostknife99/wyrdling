@@ -36,7 +36,7 @@ func _run() -> void:
 
 	var parked: Array = gs.wilds
 	gs.wilds = []
-	_pan_along_dirt(dungeon, 15)
+	_pan_along_dirt(dungeon, 20)
 	await _wait_frames(10)
 	await _capture_pair()
 	print("player_pos=", gs.player_pos, " stairs=", gs.stairs_pos)

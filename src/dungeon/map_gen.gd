@@ -398,18 +398,10 @@ static func _ensure_water(grid: Array, width: int, height: int, start: Vector2i,
 
 static func _paint_route_landmarks(grid: Array, fence: Array, width: int, height: int, start: Vector2i, stairs: Vector2i, trees: Array) -> void:
 	var target_y: int = clampi(start.y - 20, 12, height - 14)
+	# Anchor to the delver's column so a 20-step north walk still frames pond + fence.
 	var origin := Vector2i(start.x, target_y)
-	var best := 9999
-	for y in height:
-		for x in width:
-			if int(grid[y][x]) != DIRT:
-				continue
-			var d: int = absi(y - target_y)
-			if d < best:
-				best = d
-				origin = Vector2i(x, y)
 	# Pond east of the path so a 20-step north walk still frames water.
-	var px: int = clampi(origin.x + 5, 6, width - 10)
+	var px: int = clampi(origin.x + 7, 6, width - 10)
 	var py: int = clampi(origin.y - 1, 8, height - 12)
 	for y in range(py, py + 4):
 		for x in range(px, px + 5):
@@ -422,21 +414,25 @@ static func _paint_route_landmarks(grid: Array, fence: Array, width: int, height
 			if p == start or p == stairs or _blocked_prop(p, trees):
 				continue
 			grid[y][x] = WATER
-	# Short roadside fence west of the path (horizontal rail + posts).
-	var fx: int = clampi(origin.x - 4, 4, width - 8)
+	# Short roadside fence west of the path (horizontal rail + posts). Never stamp dirt.
+	var fx: int = clampi(origin.x - 8, 4, width - 8)
 	var fy: int = origin.y
-	if _inner(fx, fy, width, height):
-		_stamp_fence(grid, fence, Vector2i(fx, fy), width, height, "post")
-	for i in range(1, 4):
+	var rail: Array[Vector2i] = []
+	for i in range(0, 5):
 		var p := Vector2i(fx + i, fy)
-		if _inner(p.x, p.y, width, height):
-			var tt: int = int(grid[p.y][p.x])
-			if tt == GRASS or tt == TALLGRASS:
-				_stamp_fence(grid, fence, p, width, height, "h")
-	if _inner(fx + 4, fy, width, height):
-		var tt2: int = int(grid[fy][fx + 4])
-		if tt2 == GRASS or tt2 == TALLGRASS or tt2 == FENCE:
-			_stamp_fence(grid, fence, Vector2i(fx + 4, fy), width, height, "post")
+		if not _inner(p.x, p.y, width, height):
+			continue
+		var tt: int = int(grid[p.y][p.x])
+		if tt != GRASS and tt != TALLGRASS:
+			continue
+		if p == start or p == stairs or _blocked_prop(p, trees):
+			continue
+		rail.append(p)
+	if rail.size() >= 3:
+		_stamp_fence(grid, fence, rail[0], width, height, "post")
+		for i in range(1, rail.size() - 1):
+			_stamp_fence(grid, fence, rail[i], width, height, "h")
+		_stamp_fence(grid, fence, rail[rail.size() - 1], width, height, "post")
 
 static func _ensure_tallgrass(grid: Array, width: int, height: int, start: Vector2i, stairs: Vector2i, trees: Array) -> void:
 	for y in height:
