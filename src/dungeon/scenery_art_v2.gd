@@ -108,17 +108,16 @@ static func _paint_grass(atlas: Image, coord: Vector2i, alternate: bool) -> void
 			elif noise % 47 == 0:
 				color = GRASS_HI
 			atlas.set_pixel(ox + x, oy + y, color)
-	# Fine blade clusters instead of a border around every cell.
 	var blade_count: int = 8 if alternate else 5
 	for n: int in blade_count:
 		var bx: int = 2 + ((n * 11 + (7 if alternate else 3)) % 27)
 		var by: int = 5 + ((n * 7 + (4 if alternate else 1)) % 24)
-		_set(atlas, ox + bx, oy + by, GRASS_DARK)
-		_set(atlas, ox + bx + 1, oy + by - 1, GRASS_HI)
-		_set(atlas, ox + bx + 1, oy + by - 2, GRASS_HI)
+		_put_pixel(atlas, ox + bx, oy + by, GRASS_DARK)
+		_put_pixel(atlas, ox + bx + 1, oy + by - 1, GRASS_HI)
+		_put_pixel(atlas, ox + bx + 1, oy + by - 2, GRASS_HI)
 	if alternate:
-		_set(atlas, ox + 8, oy + 8, Color8(229, 226, 165, 255))
-		_set(atlas, ox + 9, oy + 8, Color8(229, 226, 165, 255))
+		_put_pixel(atlas, ox + 8, oy + 8, Color8(229, 226, 165, 255))
+		_put_pixel(atlas, ox + 9, oy + 8, Color8(229, 226, 165, 255))
 
 static func _paint_path(atlas: Image, coord: Vector2i, mask: int, index: int) -> void:
 	var ox: int = coord.x * TILE
@@ -137,13 +136,11 @@ static func _paint_path(atlas: Image, coord: Vector2i, mask: int, index: int) ->
 			elif noise % 23 == 0:
 				color = PATH_PEBBLE
 			atlas.set_pixel(ox + x, oy + y, color)
-	# A few tiny stones make the broad trail read as natural dirt without creating
-	# a visible repeating tile frame.
 	for n: int in 8:
 		var px: int = (n * 13 + index * 7 + 4) % TILE
 		var py: int = (n * 19 + index * 3 + 9) % TILE
 		if _inside_blob(mask, px, py) and not _blob_edge(mask, px, py):
-			_set(atlas, ox + px, oy + py, PATH_PEBBLE)
+			_put_pixel(atlas, ox + px, oy + py, PATH_PEBBLE)
 
 static func _paint_water(atlas: Image, coord: Vector2i, mask: int, index: int, frame: int) -> void:
 	var ox: int = coord.x * TILE
@@ -158,20 +155,17 @@ static func _paint_water(atlas: Image, coord: Vector2i, mask: int, index: int, f
 			if _blob_edge(mask, x, y):
 				color = WATER_2
 			atlas.set_pixel(ox + x, oy + y, color)
-	# Animated horizontal ripples. They only occur within the connected water body,
-	# so no bright seams appear between adjacent animated tiles.
 	for row: int in [6, 14, 22, 28]:
 		var start: int = (row + frame * 3 + index * 2) % 10
 		for x: int in range(start, TILE, 11):
 			for dx: int in 4:
 				var px: int = x + dx
 				if px < TILE and _inside_blob(mask, px, row) and not _blob_edge(mask, px, row):
-					_set(atlas, ox + px, oy + row, WATER_HI)
-	# Foam only where the water truly meets land, never along a connected cell edge.
+					_put_pixel(atlas, ox + px, oy + row, WATER_HI)
 	for y: int in TILE:
 		for x: int in TILE:
 			if _inside_blob(mask, x, y) and _blob_edge(mask, x, y) and (x + y + frame) % 5 == 0:
-				_set(atlas, ox + x, oy + y, WATER_FOAM)
+				_put_pixel(atlas, ox + x, oy + y, WATER_FOAM)
 
 static func _inside_blob(mask: int, x: int, y: int) -> bool:
 	if x >= 8 and x <= 23 and y >= 8 and y <= 23:
@@ -240,6 +234,6 @@ static func _blob_masks() -> PackedInt32Array:
 			masks.append(value)
 	return masks
 
-static func _set(image: Image, x: int, y: int, color: Color) -> void:
+static func _put_pixel(image: Image, x: int, y: int, color: Color) -> void:
 	if x >= 0 and y >= 0 and x < image.get_width() and y < image.get_height():
 		image.set_pixel(x, y, color)
