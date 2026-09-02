@@ -124,6 +124,14 @@ func _build() -> void:
 	add_child(log_label)
 
 
+
+func _creature_tex(species_id: String) -> Texture2D:
+	var path := "res://art/creatures/%s.png" % species_id
+	if ResourceLoader.exists(path):
+		return load(path) as Texture2D
+	return null
+
+
 func _mk_label(pos: Vector2, sz: Vector2, font_size: int, col: Color, align: HorizontalAlignment) -> Label:
 	var l := Label.new()
 	l.position = pos
@@ -161,15 +169,15 @@ func _log(msg: String) -> void:
 
 func _refresh() -> void:
 	var you: WyrdlingCreature = GameState.active()
-	you_sprite.texture = load("res://art/creatures/%s.png" % you.species_id)
+	you_sprite.texture = _creature_tex(you.species_id)
 	you_name.text = you.display_name
-	you_type.text = you.type_id
+	you_type.text = you.type_label()
 	you_type.add_theme_color_override("font_color", DataDB.type_color(you.type_id))
 	you_hp.text = "HP %d / %d" % [you.hp, you.max_hp]
 	_set_bar(you_bar, you_bar_bg, you.hp_ratio())
-	foe_sprite.texture = load("res://art/creatures/%s.png" % wild.species_id)
+	foe_sprite.texture = _creature_tex(wild.species_id)
 	foe_name.text = "Wild " + wild.display_name
-	foe_type.text = wild.type_id
+	foe_type.text = wild.type_label()
 	foe_type.add_theme_color_override("font_color", DataDB.type_color(wild.type_id))
 	foe_hp.text = "HP %d / %d" % [wild.hp, wild.max_hp]
 	_set_bar(foe_bar, foe_bar_bg, wild.hp_ratio())
@@ -206,7 +214,7 @@ func _menu_items() -> PackedStringArray:
 			for i in GameState.party.size():
 				var c: WyrdlingCreature = GameState.party[i]
 				var tag := "KO" if c.is_ko() else "%d/%d" % [c.hp, c.max_hp]
-				items2.append("%s [%s] %s" % [c.display_name, c.type_id, tag])
+				items2.append("%s [%s] %s" % [c.display_name, c.type_label(), tag])
 			return items2
 		State.END:
 			return PackedStringArray(["Continue"])

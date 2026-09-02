@@ -4,6 +4,7 @@ extends RefCounted
 var species_id: String = ""
 var display_name: String = ""
 var type_id: String = ""
+var type_ids: PackedStringArray = PackedStringArray()
 var max_hp: int = 1
 var hp: int = 1
 var atk: int = 1
@@ -29,3 +30,7 @@ func take_damage(amount: int) -> int:
 
 func heal(amount: int) -> void:
 	hp = mini(max_hp, hp + maxi(0, amount))
+
+
+func type_label() -> String:
+	return " / ".join(type_ids) if type_ids.size() else type_id

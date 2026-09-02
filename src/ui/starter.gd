@@ -56,7 +56,8 @@ func _build() -> void:
 func _make_card(index: int, id: String, d: Dictionary) -> Panel:
 	var panel := Panel.new()
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	var tcol: Color = DataDB.type_color(str(d["type"]))
+	var primary: String = str(d.get("type", ""))
+	var tcol: Color = DataDB.type_color(primary)
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.12, 0.10, 0.16, 1)
 	sb.border_color = tcol
@@ -99,7 +100,11 @@ func _make_card(index: int, id: String, d: Dictionary) -> Panel:
 	v.add_child(name_l)
 
 	var type_l := Label.new()
-	type_l.text = str(d["type"])
+	var type_bits: PackedStringArray = PackedStringArray()
+	if d.has("types") and typeof(d["types"]) == TYPE_ARRAY:
+		for t in d["types"]:
+			type_bits.append(str(t))
+	type_l.text = " / ".join(type_bits) if type_bits.size() > 0 else str(d.get("type", ""))
 	type_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	type_l.add_theme_font_size_override("font_size", 20)
 	type_l.add_theme_color_override("font_color", tcol)

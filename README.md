@@ -30,7 +30,7 @@ Headless smoke test (no window):
 
 **Title** — Enter / Space / click **Begin a Run**
 
-**Starter** — `1` Glimmerling (Wisp) · `2` Cobbleback (Iron) · `3` Briarseed (Bloom), or click a card
+**Starter** — `1` Glimmerling (Light) · `2` Cobbleback (Metal) · `3` Briarseed (Nature), or click a card
 
 **Dungeon**
 - `WASD` or arrow keys — one tile per press (turn-based)
@@ -81,7 +81,11 @@ Beats (from `data/types.json`):
 
 ## Roster
 
-| Wyrd        | Type  | Role |
+**170 Wyrdlings** across **16 types**. **8 legendary**, **3 mythical**, the rest common / uncommon / rare. Dual-type is supported (`types` array; `type` is the primary). Full painting list: [`data/ROSTER.md`](data/ROSTER.md).
+
+Starters: **Glimmerling** (Light), **Cobbleback** (Metal), **Briarseed** (Nature).
+
+| Wyrd        | Types | Role |
 |-------------|-------|------|
 | Glimmerling | Light | Starter. A moth-sprite whose wings cup a cold, living flame. |
 | Wickmoth    | Light | Soot-winged and oil-slick, it coughs cinders when startled. |
@@ -91,8 +95,19 @@ Beats (from `data/types.json`):
 | Marrowl     | Spirit | Bone-pale owl that hunts in the hush between heartbeats. |
 | Veilcrawler | Void | A shroud-long crawler that peels darkness off the walls. |
 | Brinekit    | Tide  | A slick kit with gill-frills and a pouch of black-water brine. |
+| Solcairn    | Light / Primal | Legendary. Celestial lion, mane of lanterns. |
+| Eidolith    | Void / Mind | Legendary. Eldritch nightmare, too many angles. |
+| Kethraan    | Storm / Primal | Legendary. Thunder dragon. |
+| Gelvra      | Void / Frost | Legendary. Abyssal ice wolf. |
+| Ithriel     | Light / Spirit | Legendary. Guardian angel of the rift. |
+| Sigildra    | Metal / Arcane | Legendary. Rune-powered construct, walking seal-script. |
+| Veskara     | Tide / Blood | Legendary. Monstrous deep-sea predator. |
+| Mycarion    | Blight / Nature | Legendary. Fungal plague-beast. |
+| Vinculith   | Arcane / Spirit | Mythical. Bind-origin, the first knot that holds a Wyrdling. |
+| Pyrehollow  | Flame / Void | Mythical. Rift-heart, a burning hole in the world. |
+| Threnodyr   | Blood / Primal | Mythical. Sacrifice-beast, a hymn with teeth. |
 
-Each has 2–3 moves and HP / Atk / Def / Spd in `data/creatures.json` and `data/moves.json`.
+Stats and 2–3 moves live in `data/creatures.json` and `data/moves.json`. Wild floors never spawn legendary or mythical species.
 
 ## Art folders (Arthur)
 
@@ -100,9 +115,8 @@ Drop finished sprites over these placeholders. Keep the folders and lowercase_un
 
 ```
 art/player/delver_idle_down.png   (also _up _left _right)     64×64
-art/creatures/glimmerling.png cobbleback.png briarseed.png
-               marrowl.png brinekit.png wickmoth.png
-               nailbit.png veilcrawler.png                    64×64
+art/creatures/{id}.png                                        64×64
+               (all 170 ids; do not overwrite the original 8 painted sprites)
 art/tiles/floor.png floor_alt.png wall.png stairs.png         32×32
 art/ui/wordmark.png hp_frame.png hp_fill.png btn_panel.png
       icon_wisp.png icon_iron.png icon_bloom.png
@@ -133,7 +147,9 @@ art/                          placeholders listed above
 Regenerate placeholders:
 
 ```bash
-python3 tools/generate_placeholders.py
+python3 tools/generate_placeholders.py          # tiles, UI, original 8 (overwrites those 8)
+python3 tools/gen_roster.py                     # data/creatures.json, moves.json, ROSTER.md
+python3 tools/gen_roster_placeholders.py        # 162 new creature silhouettes; skips the original 8
 ```
 
 ## Leftover (not in v0)

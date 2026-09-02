@@ -82,6 +82,47 @@ func _ingest_table(text: String, is_creatures: bool) -> void:
 			moves[id] = item
 
 
+
+func types_of(d: Dictionary) -> PackedStringArray:
+	var out: PackedStringArray = PackedStringArray()
+	if d.has("types") and typeof(d["types"]) == TYPE_ARRAY:
+		for t in d["types"]:
+			var s: String = str(t)
+			if not s.is_empty():
+				out.append(s)
+		if out.size() > 0:
+			return out
+	var t: String = str(d.get("type", ""))
+	if not t.is_empty():
+		out.append(t)
+	return out
+
+
+func type_mod_vs(atk_type: String, def_types: PackedStringArray) -> float:
+	if def_types.is_empty():
+		return 1.0
+	var m: float = 1.0
+	for dt in def_types:
+		m *= type_mod(atk_type, dt)
+	return m
+
+
+func wild_ids() -> Array[String]:
+	var out: Array[String] = []
+	for id in creature_order:
+		if not creatures.has(id):
+			continue
+		var d: Dictionary = creatures[id]
+		var rarity: String = str(d.get("rarity", "common"))
+		var role: String = str(d.get("role", "wild"))
+		if rarity == "legendary" or rarity == "mythical":
+			continue
+		if role == "legendary" or role == "mythical":
+			continue
+		out.append(id)
+	return out
+
+
 func type_mod(atk_type: String, def_type: String) -> float:
 	if atk_type == def_type:
 		return 1.0

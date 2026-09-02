@@ -145,5 +145,334 @@
     "type": "Tide",
     "power": 14,
     "desc": "A pull toward a depth that is not in the room."
+  },
+  "cinder_peck": {
+    "id": "cinder_peck",
+    "name": "Cinder Peck",
+    "type": "Flame",
+    "power": 12,
+    "desc": "A peck of live coal, still hungry."
+  },
+  "kiln_breath": {
+    "id": "kiln_breath",
+    "name": "Kiln Breath",
+    "type": "Flame",
+    "power": 14,
+    "desc": "Oven-heat coughed in a short plume."
+  },
+  "spark_spit": {
+    "id": "spark_spit",
+    "name": "Spark Spit",
+    "type": "Flame",
+    "power": 11,
+    "desc": "A spat spark that nests in the wound."
+  },
+  "stone_nudge": {
+    "id": "stone_nudge",
+    "name": "Stone Nudge",
+    "type": "Terra",
+    "power": 11,
+    "desc": "A shove of packed earth and grit."
+  },
+  "fault_line": {
+    "id": "fault_line",
+    "name": "Fault Line",
+    "type": "Terra",
+    "power": 14,
+    "desc": "The floor splits a finger-width and bites."
+  },
+  "pebble_toss": {
+    "id": "pebble_toss",
+    "name": "Pebble Toss",
+    "type": "Terra",
+    "power": 10,
+    "desc": "A hard pebble loosed like a tooth."
+  },
+  "gust_cut": {
+    "id": "gust_cut",
+    "name": "Gust Cut",
+    "type": "Gale",
+    "power": 12,
+    "desc": "A blade of wind, thin as a draft under a door."
+  },
+  "shear": {
+    "id": "shear",
+    "name": "Shear",
+    "type": "Gale",
+    "power": 14,
+    "desc": "Air shears in two and takes a strip with it."
+  },
+  "wind_nick": {
+    "id": "wind_nick",
+    "name": "Wind Nick",
+    "type": "Gale",
+    "power": 11,
+    "desc": "A nick from a passing gust."
+  },
+  "spark_arc": {
+    "id": "spark_arc",
+    "name": "Spark Arc",
+    "type": "Storm",
+    "power": 13,
+    "desc": "A short arc of storm-light."
+  },
+  "thunder_tap": {
+    "id": "thunder_tap",
+    "name": "Thunder Tap",
+    "type": "Storm",
+    "power": 15,
+    "desc": "Thunder scaled down to a knuckle-rap."
+  },
+  "volt_nibble": {
+    "id": "volt_nibble",
+    "name": "Volt Nibble",
+    "type": "Storm",
+    "power": 10,
+    "desc": "A nibble that leaves the tongue tasting tin."
+  },
+  "rime_bite": {
+    "id": "rime_bite",
+    "name": "Rime Bite",
+    "type": "Frost",
+    "power": 12,
+    "desc": "A bite that leaves the flesh white."
+  },
+  "hail_peck": {
+    "id": "hail_peck",
+    "name": "Hail Peck",
+    "type": "Frost",
+    "power": 14,
+    "desc": "A peck of packed hail."
+  },
+  "chill_nip": {
+    "id": "chill_nip",
+    "name": "Chill Nip",
+    "type": "Frost",
+    "power": 10,
+    "desc": "A nip of leftover winter."
+  },
+  "ichor_sip": {
+    "id": "ichor_sip",
+    "name": "Ichor Sip",
+    "type": "Blood",
+    "power": 12,
+    "desc": "Sips a bright drop and spatters it back."
+  },
+  "vein_snap": {
+    "id": "vein_snap",
+    "name": "Vein Snap",
+    "type": "Blood",
+    "power": 14,
+    "desc": "Snaps a vein-cord like wet string."
+  },
+  "clot_flick": {
+    "id": "clot_flick",
+    "name": "Clot Flick",
+    "type": "Blood",
+    "power": 11,
+    "desc": "A flicked clot, heavy as a pebble."
+  },
+  "mind_sting": {
+    "id": "mind_sting",
+    "name": "Mind Sting",
+    "type": "Mind",
+    "power": 12,
+    "desc": "A sting planted behind the eyes."
+  },
+  "trance_pinch": {
+    "id": "trance_pinch",
+    "name": "Trance Pinch",
+    "type": "Mind",
+    "power": 13,
+    "desc": "A pinch that makes the will go thin."
+  },
+  "notion_prick": {
+    "id": "notion_prick",
+    "name": "Notion Prick",
+    "type": "Mind",
+    "power": 10,
+    "desc": "A prick of someone else's thought."
+  },
+  "fang_rush": {
+    "id": "fang_rush",
+    "name": "Fang Rush",
+    "type": "Primal",
+    "power": 14,
+    "desc": "A rush of old fangs, older than manners."
+  },
+  "wild_slam": {
+    "id": "wild_slam",
+    "name": "Wild Slam",
+    "type": "Primal",
+    "power": 15,
+    "desc": "A slam that remembers being a larger beast."
+  },
+  "horn_jab": {
+    "id": "horn_jab",
+    "name": "Horn Jab",
+    "type": "Primal",
+    "power": 12,
+    "desc": "A jab of unearned horn."
+  },
+  "spore_cough": {
+    "id": "spore_cough",
+    "name": "Spore Cough",
+    "type": "Blight",
+    "power": 11,
+    "desc": "A cough of pale spore."
+  },
+  "rot_touch": {
+    "id": "rot_touch",
+    "name": "Rot Touch",
+    "type": "Blight",
+    "power": 13,
+    "desc": "A touch that unmakes the surface."
+  },
+  "mold_bite": {
+    "id": "mold_bite",
+    "name": "Mold Bite",
+    "type": "Blight",
+    "power": 10,
+    "desc": "A velvet bite that prints its pattern."
+  },
+  "glyph_peck": {
+    "id": "glyph_peck",
+    "name": "Glyph Peck",
+    "type": "Arcane",
+    "power": 12,
+    "desc": "A peck that leaves a wet glyph."
+  },
+  "rune_lash": {
+    "id": "rune_lash",
+    "name": "Rune Lash",
+    "type": "Arcane",
+    "power": 14,
+    "desc": "A lash of living rune-script."
+  },
+  "hex_nick": {
+    "id": "hex_nick",
+    "name": "Hex Nick",
+    "type": "Arcane",
+    "power": 11,
+    "desc": "A nick from an unfinished hex."
+  },
+  "halo_cut": {
+    "id": "halo_cut",
+    "name": "Halo Cut",
+    "type": "Light",
+    "power": 13,
+    "desc": "A cut from a thin ring of lantern-light."
+  },
+  "null_pinch": {
+    "id": "null_pinch",
+    "name": "Null Pinch",
+    "type": "Void",
+    "power": 13,
+    "desc": "A pinch of anti-light, unwriting a speck."
+  },
+  "pollen_sting": {
+    "id": "pollen_sting",
+    "name": "Pollen Sting",
+    "type": "Nature",
+    "power": 10,
+    "desc": "A sting of angry pollen."
+  },
+  "cog_smash": {
+    "id": "cog_smash",
+    "name": "Cog Smash",
+    "type": "Metal",
+    "power": 13,
+    "desc": "A smash of turning cog-teeth."
+  },
+  "hush_cut": {
+    "id": "hush_cut",
+    "name": "Hush Cut",
+    "type": "Spirit",
+    "power": 12,
+    "desc": "A cut placed in the hush, not the flesh."
+  },
+  "brine_lash": {
+    "id": "brine_lash",
+    "name": "Brine Lash",
+    "type": "Tide",
+    "power": 13,
+    "desc": "A lash of black-water brine."
+  },
+  "sol_mane": {
+    "id": "sol_mane",
+    "name": "Sol Mane",
+    "type": "Light",
+    "power": 16,
+    "desc": "The lantern-mane flares and rakes."
+  },
+  "void_howl": {
+    "id": "void_howl",
+    "name": "Void Howl",
+    "type": "Void",
+    "power": 16,
+    "desc": "A howl from too many angles at once."
+  },
+  "storm_crown": {
+    "id": "storm_crown",
+    "name": "Storm Crown",
+    "type": "Storm",
+    "power": 16,
+    "desc": "The storm worn as a crown comes down."
+  },
+  "frost_maw": {
+    "id": "frost_maw",
+    "name": "Frost Maw",
+    "type": "Frost",
+    "power": 16,
+    "desc": "An ice-maw that frost-welds the wound shut."
+  },
+  "rift_aegis": {
+    "id": "rift_aegis",
+    "name": "Rift Aegis",
+    "type": "Light",
+    "power": 12,
+    "desc": "A pane of first light, then a shove."
+  },
+  "seal_script": {
+    "id": "seal_script",
+    "name": "Seal Script",
+    "type": "Arcane",
+    "power": 15,
+    "desc": "Seal-script tightens until something yields."
+  },
+  "abyssal_bite": {
+    "id": "abyssal_bite",
+    "name": "Abyssal Bite",
+    "type": "Tide",
+    "power": 16,
+    "desc": "A bite from a depth that is not in the room."
+  },
+  "spore_plague": {
+    "id": "spore_plague",
+    "name": "Spore Plague",
+    "type": "Blight",
+    "power": 15,
+    "desc": "Fruiting bodies open like many mouths."
+  },
+  "bind_knot": {
+    "id": "bind_knot",
+    "name": "Bind Knot",
+    "type": "Arcane",
+    "power": 15,
+    "desc": "The first knot pulls taut around the foe."
+  },
+  "rift_heart": {
+    "id": "rift_heart",
+    "name": "Rift Heart",
+    "type": "Flame",
+    "power": 17,
+    "desc": "The burning hole in the world leans closer."
+  },
+  "threnody": {
+    "id": "threnody",
+    "name": "Threnody",
+    "type": "Blood",
+    "power": 16,
+    "desc": "A hymn with teeth. Something is given up."
   }
 }

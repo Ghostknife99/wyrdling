@@ -3,6 +3,11 @@
     "id": "glimmerling",
     "name": "Glimmerling",
     "type": "Light",
+    "types": [
+      "Light"
+    ],
+    "rarity": "common",
+    "role": "starter",
     "starter": true,
     "hp": 38,
     "atk": 12,
@@ -19,6 +24,11 @@
     "id": "wickmoth",
     "name": "Wickmoth",
     "type": "Light",
+    "types": [
+      "Light"
+    ],
+    "rarity": "common",
+    "role": "wild",
     "starter": false,
     "hp": 30,
     "atk": 14,
@@ -34,6 +44,11 @@
     "id": "cobbleback",
     "name": "Cobbleback",
     "type": "Metal",
+    "types": [
+      "Metal"
+    ],
+    "rarity": "common",
+    "role": "starter",
     "starter": true,
     "hp": 48,
     "atk": 10,
@@ -50,6 +65,11 @@
     "id": "nailbit",
     "name": "Nailbit",
     "type": "Metal",
+    "types": [
+      "Metal"
+    ],
+    "rarity": "common",
+    "role": "wild",
     "starter": false,
     "hp": 34,
     "atk": 16,
@@ -65,6 +85,11 @@
     "id": "briarseed",
     "name": "Briarseed",
     "type": "Nature",
+    "types": [
+      "Nature"
+    ],
+    "rarity": "common",
+    "role": "starter",
     "starter": true,
     "hp": 42,
     "atk": 13,
@@ -81,6 +106,11 @@
     "id": "marrowl",
     "name": "Marrowl",
     "type": "Spirit",
+    "types": [
+      "Spirit"
+    ],
+    "rarity": "common",
+    "role": "wild",
     "starter": false,
     "hp": 36,
     "atk": 15,
@@ -97,6 +127,11 @@
     "id": "veilcrawler",
     "name": "Veilcrawler",
     "type": "Void",
+    "types": [
+      "Void"
+    ],
+    "rarity": "common",
+    "role": "wild",
     "starter": false,
     "hp": 44,
     "atk": 12,
@@ -112,6 +147,11 @@
     "id": "brinekit",
     "name": "Brinekit",
     "type": "Tide",
+    "types": [
+      "Tide"
+    ],
+    "rarity": "common",
+    "role": "wild",
     "starter": false,
     "hp": 36,
     "atk": 13,
@@ -123,5 +163,3399 @@
       "undertow"
     ],
     "description": "A slick kit with gill-frills and a pouch of black-water brine."
+  },
+  "solcairn": {
+    "id": "solcairn",
+    "name": "Solcairn",
+    "type": "Light",
+    "types": [
+      "Light",
+      "Primal"
+    ],
+    "rarity": "legendary",
+    "role": "legendary",
+    "starter": false,
+    "hp": 84,
+    "atk": 22,
+    "def": 18,
+    "spd": 16,
+    "moves": [
+      "sol_mane",
+      "halo_cut",
+      "fang_rush"
+    ],
+    "description": "A celestial lion whose mane is a ring of living lanterns."
+  },
+  "eidolith": {
+    "id": "eidolith",
+    "name": "Eidolith",
+    "type": "Void",
+    "types": [
+      "Void",
+      "Mind"
+    ],
+    "rarity": "legendary",
+    "role": "legendary",
+    "starter": false,
+    "hp": 76,
+    "atk": 24,
+    "def": 16,
+    "spd": 18,
+    "moves": [
+      "void_howl",
+      "mind_sting",
+      "null_pinch"
+    ],
+    "description": "An eldritch nightmare folded from too many angles to count."
+  },
+  "kethraan": {
+    "id": "kethraan",
+    "name": "Kethraan",
+    "type": "Storm",
+    "types": [
+      "Storm",
+      "Primal"
+    ],
+    "rarity": "legendary",
+    "role": "legendary",
+    "starter": false,
+    "hp": 88,
+    "atk": 23,
+    "def": 20,
+    "spd": 15,
+    "moves": [
+      "storm_crown",
+      "thunder_tap",
+      "wild_slam"
+    ],
+    "description": "A thunder-dragon that wears the storm as a second hide."
+  },
+  "gelvra": {
+    "id": "gelvra",
+    "name": "Gelvra",
+    "type": "Void",
+    "types": [
+      "Void",
+      "Frost"
+    ],
+    "rarity": "legendary",
+    "role": "legendary",
+    "starter": false,
+    "hp": 78,
+    "atk": 22,
+    "def": 17,
+    "spd": 20,
+    "moves": [
+      "frost_maw",
+      "void_howl",
+      "rime_bite"
+    ],
+    "description": "An abyssal ice-wolf whose breath frost-welds the dark shut."
+  },
+  "ithriel": {
+    "id": "ithriel",
+    "name": "Ithriel",
+    "type": "Light",
+    "types": [
+      "Light",
+      "Spirit"
+    ],
+    "rarity": "legendary",
+    "role": "legendary",
+    "starter": false,
+    "hp": 80,
+    "atk": 18,
+    "def": 22,
+    "spd": 16,
+    "moves": [
+      "rift_aegis",
+      "halo_cut",
+      "hush_cut"
+    ],
+    "description": "A rift-guardian angel whose wings are panes of first light."
+  },
+  "sigildra": {
+    "id": "sigildra",
+    "name": "Sigildra",
+    "type": "Metal",
+    "types": [
+      "Metal",
+      "Arcane"
+    ],
+    "rarity": "legendary",
+    "role": "legendary",
+    "starter": false,
+    "hp": 82,
+    "atk": 19,
+    "def": 22,
+    "spd": 14,
+    "moves": [
+      "seal_script",
+      "cog_smash",
+      "rune_lash"
+    ],
+    "description": "A walking construct of seal-script, every joint a living rune."
+  },
+  "veskara": {
+    "id": "veskara",
+    "name": "Veskara",
+    "type": "Tide",
+    "types": [
+      "Tide",
+      "Blood"
+    ],
+    "rarity": "legendary",
+    "role": "legendary",
+    "starter": false,
+    "hp": 86,
+    "atk": 24,
+    "def": 18,
+    "spd": 15,
+    "moves": [
+      "abyssal_bite",
+      "vein_snap",
+      "undertow"
+    ],
+    "description": "A monstrous deep-sea predator that hunts by the taste of blood in water."
+  },
+  "mycarion": {
+    "id": "mycarion",
+    "name": "Mycarion",
+    "type": "Blight",
+    "types": [
+      "Blight",
+      "Nature"
+    ],
+    "rarity": "legendary",
+    "role": "legendary",
+    "starter": false,
+    "hp": 84,
+    "atk": 20,
+    "def": 19,
+    "spd": 14,
+    "moves": [
+      "spore_plague",
+      "rot_touch",
+      "pollen_sting"
+    ],
+    "description": "A fungal plague-beast whose fruiting bodies open like many mouths."
+  },
+  "vinculith": {
+    "id": "vinculith",
+    "name": "Vinculith",
+    "type": "Arcane",
+    "types": [
+      "Arcane",
+      "Spirit"
+    ],
+    "rarity": "mythical",
+    "role": "mythical",
+    "starter": false,
+    "hp": 74,
+    "atk": 16,
+    "def": 24,
+    "spd": 12,
+    "moves": [
+      "bind_knot",
+      "rune_lash",
+      "hush_cut"
+    ],
+    "description": "The first knot that holds a Wyrdling \u2014 bind-origin, older than names."
+  },
+  "pyrehollow": {
+    "id": "pyrehollow",
+    "name": "Pyrehollow",
+    "type": "Flame",
+    "types": [
+      "Flame",
+      "Void"
+    ],
+    "rarity": "mythical",
+    "role": "mythical",
+    "starter": false,
+    "hp": 68,
+    "atk": 26,
+    "def": 12,
+    "spd": 18,
+    "moves": [
+      "rift_heart",
+      "kiln_breath",
+      "null_pinch"
+    ],
+    "description": "A burning hole in the world, the rift's own heart given hunger."
+  },
+  "threnodyr": {
+    "id": "threnodyr",
+    "name": "Threnodyr",
+    "type": "Blood",
+    "types": [
+      "Blood",
+      "Primal"
+    ],
+    "rarity": "mythical",
+    "role": "mythical",
+    "starter": false,
+    "hp": 80,
+    "atk": 22,
+    "def": 16,
+    "spd": 14,
+    "moves": [
+      "threnody",
+      "vein_snap",
+      "fang_rush"
+    ],
+    "description": "A sacrifice-beast, a hymn with teeth, fed on what is given up."
+  },
+  "vesperghast": {
+    "id": "vesperghast",
+    "name": "Vesperghast",
+    "type": "Blood",
+    "types": [
+      "Blood",
+      "Gale"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 54,
+    "atk": 18,
+    "def": 14,
+    "spd": 17,
+    "moves": [
+      "vein_snap",
+      "shear",
+      "clot_flick"
+    ],
+    "description": "A vampire-bat wyrd that drinks warmth from sleeping lanterns."
+  },
+  "boughwight": {
+    "id": "boughwight",
+    "name": "Boughwight",
+    "type": "Nature",
+    "types": [
+      "Nature",
+      "Spirit"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 51,
+    "atk": 17,
+    "def": 13,
+    "spd": 18,
+    "moves": [
+      "thorn_shot",
+      "bone_hoot",
+      "pollen_sting"
+    ],
+    "description": "A haunted treant whose branches remember every name they shaded."
+  },
+  "lampkin": {
+    "id": "lampkin",
+    "name": "Lampkin",
+    "type": "Light",
+    "types": [
+      "Light"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 41,
+    "atk": 12,
+    "def": 9,
+    "spd": 6,
+    "moves": [
+      "halo_cut",
+      "spark_pinch"
+    ],
+    "description": "A pocket lantern on jointed legs, hopping wherever the dark thickens."
+  },
+  "aurelune": {
+    "id": "aurelune",
+    "name": "Aurelune",
+    "type": "Light",
+    "types": [
+      "Light",
+      "Frost"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 56,
+    "atk": 13,
+    "def": 15,
+    "spd": 11,
+    "moves": [
+      "halo_cut",
+      "chill_nip",
+      "gleam"
+    ],
+    "description": "A moth whose glow ices the air, leaving frost on whatever it blesses."
+  },
+  "haloshard": {
+    "id": "haloshard",
+    "name": "Haloshard",
+    "type": "Light",
+    "types": [
+      "Light"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 56,
+    "atk": 18,
+    "def": 12,
+    "spd": 9,
+    "moves": [
+      "spark_pinch",
+      "ember_sip",
+      "gleam"
+    ],
+    "description": "An orbiting splinter of stained glass that cuts with sanctified edges."
+  },
+  "sunmote": {
+    "id": "sunmote",
+    "name": "Sunmote",
+    "type": "Light",
+    "types": [
+      "Light"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 42,
+    "atk": 14,
+    "def": 7,
+    "spd": 14,
+    "moves": [
+      "halo_cut",
+      "gleam"
+    ],
+    "description": "A drifting mote that scalds when it lands, then forgets it was ever hot."
+  },
+  "dawncowl": {
+    "id": "dawncowl",
+    "name": "Dawncowl",
+    "type": "Light",
+    "types": [
+      "Light",
+      "Spirit"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 43,
+    "atk": 18,
+    "def": 15,
+    "spd": 11,
+    "moves": [
+      "halo_cut",
+      "shadow_stoop",
+      "ember_sip"
+    ],
+    "description": "A hooded pilgrim of first light, walking the hour before the lanterns wake."
+  },
+  "lucentail": {
+    "id": "lucentail",
+    "name": "Lucentail",
+    "type": "Light",
+    "types": [
+      "Light",
+      "Gale"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 41,
+    "atk": 16,
+    "def": 12,
+    "spd": 6,
+    "moves": [
+      "spark_pinch",
+      "wind_nick"
+    ],
+    "description": "Fox-shaped, its tail a lantern wick that writes gold on the dark."
+  },
+  "prismite": {
+    "id": "prismite",
+    "name": "Prismite",
+    "type": "Light",
+    "types": [
+      "Light"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 51,
+    "atk": 18,
+    "def": 13,
+    "spd": 15,
+    "moves": [
+      "halo_cut",
+      "ember_sip",
+      "gleam"
+    ],
+    "description": "A crystal that splits one lantern into seven and will not put them back."
+  },
+  "umbrite": {
+    "id": "umbrite",
+    "name": "Umbrite",
+    "type": "Void",
+    "types": [
+      "Void"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 35,
+    "atk": 15,
+    "def": 6,
+    "spd": 12,
+    "moves": [
+      "null_pinch",
+      "peel_light"
+    ],
+    "description": "A pebble of condensed dark, heavier than the room that holds it."
+  },
+  "netherick": {
+    "id": "netherick",
+    "name": "Netherick",
+    "type": "Void",
+    "types": [
+      "Void"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 45,
+    "atk": 15,
+    "def": 8,
+    "spd": 15,
+    "moves": [
+      "null_pinch",
+      "peel_light",
+      "shroud_creep"
+    ],
+    "description": "A stick-thin crawler from the gaps under the floorboards."
+  },
+  "gapehusk": {
+    "id": "gapehusk",
+    "name": "Gapehusk",
+    "type": "Void",
+    "types": [
+      "Void"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 43,
+    "atk": 18,
+    "def": 10,
+    "spd": 10,
+    "moves": [
+      "shroud_creep",
+      "peel_light",
+      "null_pinch"
+    ],
+    "description": "An empty-skin that walks, holding the shape of something that left."
+  },
+  "riftleech": {
+    "id": "riftleech",
+    "name": "Riftleech",
+    "type": "Void",
+    "types": [
+      "Void",
+      "Blood"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 48,
+    "atk": 18,
+    "def": 13,
+    "spd": 10,
+    "moves": [
+      "peel_light",
+      "ichor_sip",
+      "shroud_creep"
+    ],
+    "description": "A sucker that drinks from tears in the world and grows fat on the leak."
+  },
+  "nullspire": {
+    "id": "nullspire",
+    "name": "Nullspire",
+    "type": "Void",
+    "types": [
+      "Void",
+      "Arcane"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 50,
+    "atk": 19,
+    "def": 18,
+    "spd": 15,
+    "moves": [
+      "peel_light",
+      "glyph_peck",
+      "shroud_creep"
+    ],
+    "description": "A needle of anti-light that unwrites whatever it is pointed at."
+  },
+  "duskthread": {
+    "id": "duskthread",
+    "name": "Duskthread",
+    "type": "Void",
+    "types": [
+      "Void"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 47,
+    "atk": 13,
+    "def": 13,
+    "spd": 14,
+    "moves": [
+      "peel_light",
+      "null_pinch"
+    ],
+    "description": "A filament that stitches shadows together so they cannot wander off."
+  },
+  "eclipseel": {
+    "id": "eclipseel",
+    "name": "Eclipseel",
+    "type": "Void",
+    "types": [
+      "Void",
+      "Tide"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 46,
+    "atk": 13,
+    "def": 16,
+    "spd": 16,
+    "moves": [
+      "shroud_creep",
+      "salt_spray",
+      "peel_light"
+    ],
+    "description": "An eel that swallows lanterns and keeps their glow in its belly-dark."
+  },
+  "gnomon": {
+    "id": "gnomon",
+    "name": "Gnomon",
+    "type": "Void",
+    "types": [
+      "Void",
+      "Terra"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 46,
+    "atk": 17,
+    "def": 8,
+    "spd": 12,
+    "moves": [
+      "null_pinch",
+      "fault_line",
+      "peel_light"
+    ],
+    "description": "A sundial-creature that casts a wrong shadow, hours out of true."
+  },
+  "cinderling": {
+    "id": "cinderling",
+    "name": "Cinderling",
+    "type": "Flame",
+    "types": [
+      "Flame"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 33,
+    "atk": 11,
+    "def": 13,
+    "spd": 15,
+    "moves": [
+      "spark_spit",
+      "cinder_peck"
+    ],
+    "description": "A walking coal that never quite goes out, no matter who stamps."
+  },
+  "kilnbeetle": {
+    "id": "kilnbeetle",
+    "name": "Kilnbeetle",
+    "type": "Flame",
+    "types": [
+      "Flame",
+      "Metal"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 48,
+    "atk": 11,
+    "def": 12,
+    "spd": 7,
+    "moves": [
+      "kiln_breath",
+      "wire_snap"
+    ],
+    "description": "An oven-backed beetle that bakes whatever it crawls across."
+  },
+  "ashgnarl": {
+    "id": "ashgnarl",
+    "name": "Ashgnarl",
+    "type": "Flame",
+    "types": [
+      "Flame"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 30,
+    "atk": 12,
+    "def": 8,
+    "spd": 11,
+    "moves": [
+      "kiln_breath",
+      "spark_spit"
+    ],
+    "description": "A charred knot that still smolders, stubborn as a last word."
+  },
+  "pyrewyrm": {
+    "id": "pyrewyrm",
+    "name": "Pyrewyrm",
+    "type": "Flame",
+    "types": [
+      "Flame"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 53,
+    "atk": 18,
+    "def": 11,
+    "spd": 10,
+    "moves": [
+      "kiln_breath",
+      "cinder_peck",
+      "spark_spit"
+    ],
+    "description": "A small fire-serpent that sheds sparks the way a snake sheds skin."
+  },
+  "coalheart": {
+    "id": "coalheart",
+    "name": "Coalheart",
+    "type": "Flame",
+    "types": [
+      "Flame",
+      "Terra"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 48,
+    "atk": 17,
+    "def": 15,
+    "spd": 12,
+    "moves": [
+      "spark_spit",
+      "fault_line",
+      "cinder_peck"
+    ],
+    "description": "A stone with a furnace inside, warm to hold and dangerous to drop."
+  },
+  "sparkmite": {
+    "id": "sparkmite",
+    "name": "Sparkmite",
+    "type": "Flame",
+    "types": [
+      "Flame"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 45,
+    "atk": 10,
+    "def": 11,
+    "spd": 9,
+    "moves": [
+      "cinder_peck",
+      "kiln_breath"
+    ],
+    "description": "A biting spark that nests in dry tinder and in tempers."
+  },
+  "hearthkin": {
+    "id": "hearthkin",
+    "name": "Hearthkin",
+    "type": "Flame",
+    "types": [
+      "Flame"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 40,
+    "atk": 16,
+    "def": 15,
+    "spd": 6,
+    "moves": [
+      "cinder_peck",
+      "cinder_peck"
+    ],
+    "description": "A squat home-fire wyrd that remembers every kitchen it was fed in."
+  },
+  "sootdrake": {
+    "id": "sootdrake",
+    "name": "Sootdrake",
+    "type": "Flame",
+    "types": [
+      "Flame"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 61,
+    "atk": 19,
+    "def": 15,
+    "spd": 17,
+    "moves": [
+      "cinder_peck",
+      "kiln_breath",
+      "spark_spit"
+    ],
+    "description": "A sooty miniature dragon, all ash-scale and ember-eye."
+  },
+  "flarefin": {
+    "id": "flarefin",
+    "name": "Flarefin",
+    "type": "Flame",
+    "types": [
+      "Flame",
+      "Tide"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 42,
+    "atk": 17,
+    "def": 15,
+    "spd": 10,
+    "moves": [
+      "cinder_peck",
+      "undertow",
+      "spark_spit"
+    ],
+    "description": "A fish that burns underwater, leaving a trail of boiled dark."
+  },
+  "embergale": {
+    "id": "embergale",
+    "name": "Embergale",
+    "type": "Flame",
+    "types": [
+      "Flame",
+      "Gale"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 52,
+    "atk": 18,
+    "def": 8,
+    "spd": 11,
+    "moves": [
+      "cinder_peck",
+      "shear"
+    ],
+    "description": "A gust of live cinders that goes where the draft tells it."
+  },
+  "kelpling": {
+    "id": "kelpling",
+    "name": "Kelpling",
+    "type": "Tide",
+    "types": [
+      "Tide"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 46,
+    "atk": 16,
+    "def": 9,
+    "spd": 17,
+    "moves": [
+      "brine_lash",
+      "pouch_slap"
+    ],
+    "description": "A walking kelp-bundle that smells of docks and drowned bells."
+  },
+  "saltback": {
+    "id": "saltback",
+    "name": "Saltback",
+    "type": "Tide",
+    "types": [
+      "Tide"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 43,
+    "atk": 11,
+    "def": 15,
+    "spd": 7,
+    "moves": [
+      "undertow",
+      "pouch_slap"
+    ],
+    "description": "A crusted salt-toad that weeps brine when startled."
+  },
+  "tidewhelp": {
+    "id": "tidewhelp",
+    "name": "Tidewhelp",
+    "type": "Tide",
+    "types": [
+      "Tide"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 34,
+    "atk": 12,
+    "def": 9,
+    "spd": 12,
+    "moves": [
+      "brine_lash",
+      "pouch_slap"
+    ],
+    "description": "A puddle-pup that laps at ankles and leaves them cold."
+  },
+  "barnaclaw": {
+    "id": "barnaclaw",
+    "name": "Barnaclaw",
+    "type": "Tide",
+    "types": [
+      "Tide",
+      "Metal"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 44,
+    "atk": 18,
+    "def": 13,
+    "spd": 12,
+    "moves": [
+      "salt_spray",
+      "wire_snap",
+      "undertow"
+    ],
+    "description": "A claw of living barnacles and iron, shut on whatever it wants kept."
+  },
+  "mistgill": {
+    "id": "mistgill",
+    "name": "Mistgill",
+    "type": "Tide",
+    "types": [
+      "Tide",
+      "Gale"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 47,
+    "atk": 16,
+    "def": 12,
+    "spd": 8,
+    "moves": [
+      "salt_spray",
+      "gust_cut",
+      "undertow"
+    ],
+    "description": "A gill-moth of sea fog, breathing where there is no water."
+  },
+  "blackbrine": {
+    "id": "blackbrine",
+    "name": "Blackbrine",
+    "type": "Tide",
+    "types": [
+      "Tide"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 44,
+    "atk": 17,
+    "def": 10,
+    "spd": 16,
+    "moves": [
+      "salt_spray",
+      "brine_lash",
+      "undertow"
+    ],
+    "description": "An ink-dark water blob that stains the floor with old ocean."
+  },
+  "foamling": {
+    "id": "foamling",
+    "name": "Foamling",
+    "type": "Tide",
+    "types": [
+      "Tide"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 38,
+    "atk": 10,
+    "def": 12,
+    "spd": 17,
+    "moves": [
+      "undertow",
+      "brine_lash"
+    ],
+    "description": "A sea-foam sprite, here for a breath, gone when the air stills."
+  },
+  "riptail": {
+    "id": "riptail",
+    "name": "Riptail",
+    "type": "Tide",
+    "types": [
+      "Tide",
+      "Primal"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 56,
+    "atk": 17,
+    "def": 17,
+    "spd": 12,
+    "moves": [
+      "brine_lash",
+      "horn_jab",
+      "pouch_slap"
+    ],
+    "description": "A current given a spine, pulling toward a depth that is not in the room."
+  },
+  "coralith": {
+    "id": "coralith",
+    "name": "Coralith",
+    "type": "Tide",
+    "types": [
+      "Tide",
+      "Terra"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 52,
+    "atk": 18,
+    "def": 10,
+    "spd": 8,
+    "moves": [
+      "undertow",
+      "stone_nudge",
+      "brine_lash"
+    ],
+    "description": "A walking coral-stone, slow as reef and sharp as broken china."
+  },
+  "mossgrub": {
+    "id": "mossgrub",
+    "name": "Mossgrub",
+    "type": "Nature",
+    "types": [
+      "Nature"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 33,
+    "atk": 11,
+    "def": 11,
+    "spd": 8,
+    "moves": [
+      "pollen_sting",
+      "leaf_gnash"
+    ],
+    "description": "A grub in a coat of living moss, chewing the damp from stones."
+  },
+  "thornkit": {
+    "id": "thornkit",
+    "name": "Thornkit",
+    "type": "Nature",
+    "types": [
+      "Nature"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 34,
+    "atk": 14,
+    "def": 9,
+    "spd": 12,
+    "moves": [
+      "leaf_gnash",
+      "thorn_shot"
+    ],
+    "description": "A kit of briar and leaf, all prickle and quick temper."
+  },
+  "fernwisp": {
+    "id": "fernwisp",
+    "name": "Fernwisp",
+    "type": "Nature",
+    "types": [
+      "Nature",
+      "Spirit"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 52,
+    "atk": 14,
+    "def": 16,
+    "spd": 10,
+    "moves": [
+      "pollen_sting",
+      "bone_hoot",
+      "root_tether"
+    ],
+    "description": "A fern that remembers a person and leans toward whoever looks like them."
+  },
+  "oakmite": {
+    "id": "oakmite",
+    "name": "Oakmite",
+    "type": "Nature",
+    "types": [
+      "Nature"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 40,
+    "atk": 14,
+    "def": 15,
+    "spd": 7,
+    "moves": [
+      "root_tether",
+      "leaf_gnash"
+    ],
+    "description": "A mite that lives in old grain, tasting of acorn and attic."
+  },
+  "vinecoil": {
+    "id": "vinecoil",
+    "name": "Vinecoil",
+    "type": "Nature",
+    "types": [
+      "Nature"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 48,
+    "atk": 15,
+    "def": 8,
+    "spd": 11,
+    "moves": [
+      "root_tether",
+      "pollen_sting",
+      "thorn_shot"
+    ],
+    "description": "A coil of vine that tightens when named and loosens when forgotten."
+  },
+  "pollenid": {
+    "id": "pollenid",
+    "name": "Pollenid",
+    "type": "Nature",
+    "types": [
+      "Nature",
+      "Gale"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 35,
+    "atk": 13,
+    "def": 11,
+    "spd": 11,
+    "moves": [
+      "pollen_sting",
+      "gust_cut"
+    ],
+    "description": "A puff of angry pollen that sneezes gold and sting."
+  },
+  "rootwight": {
+    "id": "rootwight",
+    "name": "Rootwight",
+    "type": "Nature",
+    "types": [
+      "Nature"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 40,
+    "atk": 16,
+    "def": 15,
+    "spd": 14,
+    "moves": [
+      "pollen_sting",
+      "root_tether",
+      "thorn_shot"
+    ],
+    "description": "Roots that stand up and walk, trailing the soil they will not leave."
+  },
+  "brambleox": {
+    "id": "brambleox",
+    "name": "Brambleox",
+    "type": "Nature",
+    "types": [
+      "Nature",
+      "Terra"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 59,
+    "atk": 19,
+    "def": 12,
+    "spd": 13,
+    "moves": [
+      "leaf_gnash",
+      "stone_nudge",
+      "thorn_shot"
+    ],
+    "description": "An ox of thorn and soil, patient until the hedge is crossed."
+  },
+  "dewspore": {
+    "id": "dewspore",
+    "name": "Dewspore",
+    "type": "Nature",
+    "types": [
+      "Nature",
+      "Tide"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 40,
+    "atk": 18,
+    "def": 15,
+    "spd": 9,
+    "moves": [
+      "thorn_shot",
+      "undertow",
+      "pollen_sting"
+    ],
+    "description": "A spore that travels in dew, opening only on cold mornings."
+  },
+  "pebblet": {
+    "id": "pebblet",
+    "name": "Pebblet",
+    "type": "Terra",
+    "types": [
+      "Terra"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 33,
+    "atk": 16,
+    "def": 11,
+    "spd": 15,
+    "moves": [
+      "pebble_toss",
+      "fault_line"
+    ],
+    "description": "A pebble that decided it had somewhere to be."
+  },
+  "clayurn": {
+    "id": "clayurn",
+    "name": "Clayurn",
+    "type": "Terra",
+    "types": [
+      "Terra"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 37,
+    "atk": 11,
+    "def": 13,
+    "spd": 7,
+    "moves": [
+      "fault_line",
+      "stone_nudge"
+    ],
+    "description": "A walking burial urn of clay, lid rattling with someone else's dust."
+  },
+  "shaleback": {
+    "id": "shaleback",
+    "name": "Shaleback",
+    "type": "Terra",
+    "types": [
+      "Terra"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 34,
+    "atk": 13,
+    "def": 16,
+    "spd": 6,
+    "moves": [
+      "fault_line",
+      "stone_nudge"
+    ],
+    "description": "A stacked-shale beast, shedding plates when it turns too fast."
+  },
+  "gritling": {
+    "id": "gritling",
+    "name": "Gritling",
+    "type": "Terra",
+    "types": [
+      "Terra"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 31,
+    "atk": 16,
+    "def": 8,
+    "spd": 17,
+    "moves": [
+      "pebble_toss",
+      "pebble_toss"
+    ],
+    "description": "A handful of grit given spite and a pair of hard little feet."
+  },
+  "cairnworm": {
+    "id": "cairnworm",
+    "name": "Cairnworm",
+    "type": "Terra",
+    "types": [
+      "Terra"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 54,
+    "atk": 16,
+    "def": 13,
+    "spd": 16,
+    "moves": [
+      "fault_line",
+      "stone_nudge",
+      "pebble_toss"
+    ],
+    "description": "A worm that builds itself a cairn and wears it as armor."
+  },
+  "loamhound": {
+    "id": "loamhound",
+    "name": "Loamhound",
+    "type": "Terra",
+    "types": [
+      "Terra"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 53,
+    "atk": 12,
+    "def": 15,
+    "spd": 8,
+    "moves": [
+      "pebble_toss",
+      "stone_nudge",
+      "fault_line"
+    ],
+    "description": "A hound of packed loam, leaving pawprints that smell of graves."
+  },
+  "quartzite": {
+    "id": "quartzite",
+    "name": "Quartzite",
+    "type": "Terra",
+    "types": [
+      "Terra",
+      "Metal"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 45,
+    "atk": 13,
+    "def": 10,
+    "spd": 12,
+    "moves": [
+      "fault_line",
+      "rivet",
+      "pebble_toss"
+    ],
+    "description": "A quartz-and-iron lump that rings when struck, like a wrong bell."
+  },
+  "dunehopper": {
+    "id": "dunehopper",
+    "name": "Dunehopper",
+    "type": "Terra",
+    "types": [
+      "Terra",
+      "Gale"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 35,
+    "atk": 16,
+    "def": 7,
+    "spd": 17,
+    "moves": [
+      "stone_nudge",
+      "gust_cut",
+      "pebble_toss"
+    ],
+    "description": "A hopper of sand-grain and wind, never still on any floor."
+  },
+  "faultwyrm": {
+    "id": "faultwyrm",
+    "name": "Faultwyrm",
+    "type": "Terra",
+    "types": [
+      "Terra"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 58,
+    "atk": 16,
+    "def": 17,
+    "spd": 14,
+    "moves": [
+      "stone_nudge",
+      "fault_line",
+      "pebble_toss"
+    ],
+    "description": "A crack in the floor that hunts, opening under careless heels."
+  },
+  "mudlark": {
+    "id": "mudlark",
+    "name": "Mudlark",
+    "type": "Terra",
+    "types": [
+      "Terra",
+      "Tide"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 56,
+    "atk": 15,
+    "def": 12,
+    "spd": 17,
+    "moves": [
+      "fault_line",
+      "pouch_slap",
+      "stone_nudge"
+    ],
+    "description": "A lark of wet mud, singing with a mouth full of riverbed."
+  },
+  "stalagling": {
+    "id": "stalagling",
+    "name": "Stalagling",
+    "type": "Terra",
+    "types": [
+      "Terra"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 31,
+    "atk": 10,
+    "def": 14,
+    "spd": 17,
+    "moves": [
+      "fault_line",
+      "pebble_toss"
+    ],
+    "description": "A dripping mineral kit, growing a little every time it stands still."
+  },
+  "gustling": {
+    "id": "gustling",
+    "name": "Gustling",
+    "type": "Gale",
+    "types": [
+      "Gale"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 46,
+    "atk": 10,
+    "def": 10,
+    "spd": 12,
+    "moves": [
+      "wind_nick",
+      "shear"
+    ],
+    "description": "A gust given a body, always arriving just after the door slams."
+  },
+  "zephyrkit": {
+    "id": "zephyrkit",
+    "name": "Zephyrkit",
+    "type": "Gale",
+    "types": [
+      "Gale"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 44,
+    "atk": 14,
+    "def": 9,
+    "spd": 14,
+    "moves": [
+      "shear",
+      "wind_nick"
+    ],
+    "description": "A kit of soft wind, batting at dust-motes as if they were prey."
+  },
+  "kestrelite": {
+    "id": "kestrelite",
+    "name": "Kestrelite",
+    "type": "Gale",
+    "types": [
+      "Gale"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 40,
+    "atk": 18,
+    "def": 11,
+    "spd": 8,
+    "moves": [
+      "shear",
+      "wind_nick",
+      "gust_cut"
+    ],
+    "description": "A wind-kestrel shard, hovering on nothing, diving on anything."
+  },
+  "windthorn": {
+    "id": "windthorn",
+    "name": "Windthorn",
+    "type": "Gale",
+    "types": [
+      "Gale",
+      "Nature"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 48,
+    "atk": 14,
+    "def": 15,
+    "spd": 14,
+    "moves": [
+      "gust_cut",
+      "thorn_shot",
+      "shear"
+    ],
+    "description": "A thorn that rides the air and lodges where the draft says stop."
+  },
+  "draftmoth": {
+    "id": "draftmoth",
+    "name": "Draftmoth",
+    "type": "Gale",
+    "types": [
+      "Gale"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 43,
+    "atk": 15,
+    "def": 8,
+    "spd": 14,
+    "moves": [
+      "wind_nick",
+      "shear"
+    ],
+    "description": "A moth that lives in door-drafts, powdering sills with sky-dust."
+  },
+  "skyneedle": {
+    "id": "skyneedle",
+    "name": "Skyneedle",
+    "type": "Gale",
+    "types": [
+      "Gale"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 48,
+    "atk": 15,
+    "def": 8,
+    "spd": 15,
+    "moves": [
+      "shear",
+      "gust_cut",
+      "wind_nick"
+    ],
+    "description": "A needle of high air, thin enough to stitch clouds to roofs."
+  },
+  "cirruswisp": {
+    "id": "cirruswisp",
+    "name": "Cirruswisp",
+    "type": "Gale",
+    "types": [
+      "Gale",
+      "Spirit"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 43,
+    "atk": 12,
+    "def": 8,
+    "spd": 15,
+    "moves": [
+      "gust_cut",
+      "shadow_stoop",
+      "shear"
+    ],
+    "description": "A wisp of cirrus that remembers being weather and will not settle."
+  },
+  "squallpup": {
+    "id": "squallpup",
+    "name": "Squallpup",
+    "type": "Gale",
+    "types": [
+      "Gale",
+      "Storm"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 49,
+    "atk": 16,
+    "def": 9,
+    "spd": 8,
+    "moves": [
+      "gust_cut",
+      "thunder_tap",
+      "wind_nick"
+    ],
+    "description": "A pup that brings its own squall, ears back, rain in its wake."
+  },
+  "aetherfin": {
+    "id": "aetherfin",
+    "name": "Aetherfin",
+    "type": "Gale",
+    "types": [
+      "Gale"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 62,
+    "atk": 15,
+    "def": 18,
+    "spd": 10,
+    "moves": [
+      "wind_nick",
+      "shear",
+      "gust_cut"
+    ],
+    "description": "A fish of high air, swimming where birds refuse to go."
+  },
+  "leafskiff": {
+    "id": "leafskiff",
+    "name": "Leafskiff",
+    "type": "Gale",
+    "types": [
+      "Gale",
+      "Nature"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 47,
+    "atk": 15,
+    "def": 7,
+    "spd": 15,
+    "moves": [
+      "gust_cut",
+      "leaf_gnash"
+    ],
+    "description": "A skiff of dry leaf, sailing the floor on whatever breeze will have it."
+  },
+  "shearwing": {
+    "id": "shearwing",
+    "name": "Shearwing",
+    "type": "Gale",
+    "types": [
+      "Gale"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 48,
+    "atk": 14,
+    "def": 10,
+    "spd": 16,
+    "moves": [
+      "shear",
+      "wind_nick",
+      "gust_cut"
+    ],
+    "description": "A wing of shearing wind, cutting the air into strips."
+  },
+  "sparkcloud": {
+    "id": "sparkcloud",
+    "name": "Sparkcloud",
+    "type": "Storm",
+    "types": [
+      "Storm"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 31,
+    "atk": 12,
+    "def": 13,
+    "spd": 12,
+    "moves": [
+      "thunder_tap",
+      "volt_nibble",
+      "spark_arc"
+    ],
+    "description": "A cloud of living sparks, rumbling in a register too small for thunder."
+  },
+  "voltmite": {
+    "id": "voltmite",
+    "name": "Voltmite",
+    "type": "Storm",
+    "types": [
+      "Storm"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 38,
+    "atk": 15,
+    "def": 12,
+    "spd": 13,
+    "moves": [
+      "spark_arc",
+      "thunder_tap"
+    ],
+    "description": "A mite that bites with voltage and leaves a taste of tin."
+  },
+  "thunderling": {
+    "id": "thunderling",
+    "name": "Thunderling",
+    "type": "Storm",
+    "types": [
+      "Storm"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 35,
+    "atk": 15,
+    "def": 15,
+    "spd": 7,
+    "moves": [
+      "volt_nibble",
+      "thunder_tap"
+    ],
+    "description": "A pocket-thunder, all boom and no rain, proud of the noise."
+  },
+  "hailvolt": {
+    "id": "hailvolt",
+    "name": "Hailvolt",
+    "type": "Storm",
+    "types": [
+      "Storm",
+      "Frost"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 40,
+    "atk": 16,
+    "def": 8,
+    "spd": 8,
+    "moves": [
+      "spark_arc",
+      "rime_bite"
+    ],
+    "description": "Hail given a charge, rattling as it falls and snapping when it lands."
+  },
+  "stormbeetle": {
+    "id": "stormbeetle",
+    "name": "Stormbeetle",
+    "type": "Storm",
+    "types": [
+      "Storm",
+      "Metal"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 45,
+    "atk": 12,
+    "def": 10,
+    "spd": 14,
+    "moves": [
+      "thunder_tap",
+      "file_bite",
+      "volt_nibble"
+    ],
+    "description": "A beetle that stores a storm under its shell and leaks it at the joints."
+  },
+  "staticurl": {
+    "id": "staticurl",
+    "name": "Staticurl",
+    "type": "Storm",
+    "types": [
+      "Storm"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 42,
+    "atk": 14,
+    "def": 11,
+    "spd": 13,
+    "moves": [
+      "spark_arc",
+      "volt_nibble",
+      "thunder_tap"
+    ],
+    "description": "A curl of living static, clinging to hair and to bad moods."
+  },
+  "nimbusnake": {
+    "id": "nimbusnake",
+    "name": "Nimbusnake",
+    "type": "Storm",
+    "types": [
+      "Storm"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 51,
+    "atk": 18,
+    "def": 15,
+    "spd": 10,
+    "moves": [
+      "thunder_tap",
+      "volt_nibble",
+      "spark_arc"
+    ],
+    "description": "A snake of nimbus-cloud, striking with a mouth full of weather."
+  },
+  "rainwyrm": {
+    "id": "rainwyrm",
+    "name": "Rainwyrm",
+    "type": "Storm",
+    "types": [
+      "Storm",
+      "Tide"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 45,
+    "atk": 17,
+    "def": 15,
+    "spd": 16,
+    "moves": [
+      "thunder_tap",
+      "salt_spray",
+      "spark_arc"
+    ],
+    "description": "A wyrm of falling rain, long as a downpour and thin as a wick."
+  },
+  "lodestoneel": {
+    "id": "lodestoneel",
+    "name": "Lodestoneel",
+    "type": "Storm",
+    "types": [
+      "Storm",
+      "Metal"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 51,
+    "atk": 18,
+    "def": 10,
+    "spd": 16,
+    "moves": [
+      "spark_arc",
+      "rivet",
+      "thunder_tap"
+    ],
+    "description": "An eel of lodestone and lightning, pulling iron toward its teeth."
+  },
+  "rimekit": {
+    "id": "rimekit",
+    "name": "Rimekit",
+    "type": "Frost",
+    "types": [
+      "Frost"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 43,
+    "atk": 11,
+    "def": 9,
+    "spd": 16,
+    "moves": [
+      "rime_bite",
+      "rime_bite"
+    ],
+    "description": "A kit furred in rime, leaving white prints that do not melt."
+  },
+  "hoarling": {
+    "id": "hoarling",
+    "name": "Hoarling",
+    "type": "Frost",
+    "types": [
+      "Frost"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 36,
+    "atk": 14,
+    "def": 14,
+    "spd": 11,
+    "moves": [
+      "chill_nip",
+      "hail_peck"
+    ],
+    "description": "A hoar-frost wyrd, blooming on windows it has never seen."
+  },
+  "icemite": {
+    "id": "icemite",
+    "name": "Icemite",
+    "type": "Frost",
+    "types": [
+      "Frost"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 32,
+    "atk": 15,
+    "def": 14,
+    "spd": 10,
+    "moves": [
+      "hail_peck",
+      "rime_bite"
+    ],
+    "description": "A mite of clear ice, almost invisible until it bites."
+  },
+  "glaceling": {
+    "id": "glaceling",
+    "name": "Glaceling",
+    "type": "Frost",
+    "types": [
+      "Frost"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 40,
+    "atk": 12,
+    "def": 10,
+    "spd": 16,
+    "moves": [
+      "chill_nip",
+      "chill_nip",
+      "rime_bite"
+    ],
+    "description": "A shard of glacier that still thinks it is a mountain."
+  },
+  "frostback": {
+    "id": "frostback",
+    "name": "Frostback",
+    "type": "Frost",
+    "types": [
+      "Frost"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 42,
+    "atk": 10,
+    "def": 13,
+    "spd": 6,
+    "moves": [
+      "chill_nip",
+      "hail_peck"
+    ],
+    "description": "A hunched frost-beast, back plated in ice that never thaws."
+  },
+  "hailhound": {
+    "id": "hailhound",
+    "name": "Hailhound",
+    "type": "Frost",
+    "types": [
+      "Frost"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 46,
+    "atk": 15,
+    "def": 9,
+    "spd": 8,
+    "moves": [
+      "rime_bite",
+      "chill_nip",
+      "hail_peck"
+    ],
+    "description": "A hound of packed hail, barking in a chatter of ice."
+  },
+  "snowmoth": {
+    "id": "snowmoth",
+    "name": "Snowmoth",
+    "type": "Frost",
+    "types": [
+      "Frost",
+      "Gale"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 43,
+    "atk": 17,
+    "def": 13,
+    "spd": 9,
+    "moves": [
+      "hail_peck",
+      "gust_cut",
+      "chill_nip"
+    ],
+    "description": "A moth of snowflake wings that do not melt on the tongue."
+  },
+  "rimeplate": {
+    "id": "rimeplate",
+    "name": "Rimeplate",
+    "type": "Frost",
+    "types": [
+      "Frost",
+      "Terra"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 53,
+    "atk": 14,
+    "def": 13,
+    "spd": 13,
+    "moves": [
+      "hail_peck",
+      "stone_nudge",
+      "rime_bite"
+    ],
+    "description": "Armored in ice-earth, it walks like a reliquary that froze shut."
+  },
+  "crystalynx": {
+    "id": "crystalynx",
+    "name": "Crystalynx",
+    "type": "Frost",
+    "types": [
+      "Frost"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 51,
+    "atk": 17,
+    "def": 18,
+    "spd": 14,
+    "moves": [
+      "hail_peck",
+      "chill_nip",
+      "rime_bite"
+    ],
+    "description": "A lynx of living crystal, silent until the light hits it wrong."
+  },
+  "freezehusk": {
+    "id": "freezehusk",
+    "name": "Freezehusk",
+    "type": "Frost",
+    "types": [
+      "Frost",
+      "Void"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 48,
+    "atk": 14,
+    "def": 10,
+    "spd": 17,
+    "moves": [
+      "hail_peck",
+      "null_pinch",
+      "chill_nip"
+    ],
+    "description": "A frozen empty-skin, the cold that stayed after the person left."
+  },
+  "sleetling": {
+    "id": "sleetling",
+    "name": "Sleetling",
+    "type": "Frost",
+    "types": [
+      "Frost"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 30,
+    "atk": 11,
+    "def": 7,
+    "spd": 8,
+    "moves": [
+      "hail_peck",
+      "rime_bite"
+    ],
+    "description": "A sleet-sprite, half rain and half spite, stinging as it passes."
+  },
+  "ichorling": {
+    "id": "ichorling",
+    "name": "Ichorling",
+    "type": "Blood",
+    "types": [
+      "Blood"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 41,
+    "atk": 10,
+    "def": 10,
+    "spd": 7,
+    "moves": [
+      "vein_snap",
+      "ichor_sip"
+    ],
+    "description": "A bead of ichor that learned to crawl, bright as a fresh cut."
+  },
+  "leechmite": {
+    "id": "leechmite",
+    "name": "Leechmite",
+    "type": "Blood",
+    "types": [
+      "Blood"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 32,
+    "atk": 15,
+    "def": 9,
+    "spd": 17,
+    "moves": [
+      "ichor_sip",
+      "clot_flick"
+    ],
+    "description": "A mite that drinks a drop and calls it a feast."
+  },
+  "clotpup": {
+    "id": "clotpup",
+    "name": "Clotpup",
+    "type": "Blood",
+    "types": [
+      "Blood"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 36,
+    "atk": 16,
+    "def": 12,
+    "spd": 11,
+    "moves": [
+      "clot_flick",
+      "vein_snap",
+      "ichor_sip"
+    ],
+    "description": "A pup of living clot, loyal to whoever last bled near it."
+  },
+  "veinwyrm": {
+    "id": "veinwyrm",
+    "name": "Veinwyrm",
+    "type": "Blood",
+    "types": [
+      "Blood"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 53,
+    "atk": 14,
+    "def": 16,
+    "spd": 13,
+    "moves": [
+      "clot_flick",
+      "clot_flick",
+      "ichor_sip"
+    ],
+    "description": "A wyrm that follows veins, whether in stone or in the wrist."
+  },
+  "crimsonoth": {
+    "id": "crimsonoth",
+    "name": "Crimsonoth",
+    "type": "Blood",
+    "types": [
+      "Blood"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 51,
+    "atk": 18,
+    "def": 11,
+    "spd": 11,
+    "moves": [
+      "ichor_sip",
+      "ichor_sip",
+      "vein_snap"
+    ],
+    "description": "A moth the color of a wound, powdering the air with rust-red."
+  },
+  "heartgnat": {
+    "id": "heartgnat",
+    "name": "Heartgnat",
+    "type": "Blood",
+    "types": [
+      "Blood"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 42,
+    "atk": 15,
+    "def": 16,
+    "spd": 9,
+    "moves": [
+      "ichor_sip",
+      "clot_flick",
+      "vein_snap"
+    ],
+    "description": "A gnat that knows where the heart is and will not be waved away."
+  },
+  "gorecap": {
+    "id": "gorecap",
+    "name": "Gorecap",
+    "type": "Blood",
+    "types": [
+      "Blood",
+      "Blight"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 51,
+    "atk": 15,
+    "def": 16,
+    "spd": 14,
+    "moves": [
+      "ichor_sip",
+      "rot_touch",
+      "clot_flick"
+    ],
+    "description": "A mushroom that bleeds when picked and weeps when left."
+  },
+  "sanguineel": {
+    "id": "sanguineel",
+    "name": "Sanguineel",
+    "type": "Blood",
+    "types": [
+      "Blood",
+      "Tide"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 44,
+    "atk": 18,
+    "def": 11,
+    "spd": 9,
+    "moves": [
+      "vein_snap",
+      "brine_lash",
+      "ichor_sip"
+    ],
+    "description": "An eel of dark blood, swimming through air as if it were a vein."
+  },
+  "wispkin": {
+    "id": "wispkin",
+    "name": "Wispkin",
+    "type": "Spirit",
+    "types": [
+      "Spirit"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 32,
+    "atk": 15,
+    "def": 13,
+    "spd": 16,
+    "moves": [
+      "quiet_talon",
+      "shadow_stoop"
+    ],
+    "description": "A kin of will-o-wisp, bobbing where last words were said."
+  },
+  "hauntling": {
+    "id": "hauntling",
+    "name": "Hauntling",
+    "type": "Spirit",
+    "types": [
+      "Spirit"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 31,
+    "atk": 16,
+    "def": 15,
+    "spd": 11,
+    "moves": [
+      "hush_cut",
+      "bone_hoot"
+    ],
+    "description": "A haunt the size of a child, knocking on doors that are not there."
+  },
+  "gravekit": {
+    "id": "gravekit",
+    "name": "Gravekit",
+    "type": "Spirit",
+    "types": [
+      "Spirit"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 31,
+    "atk": 15,
+    "def": 6,
+    "spd": 17,
+    "moves": [
+      "bone_hoot",
+      "hush_cut"
+    ],
+    "description": "A kit that smells of turned earth and will not come when called twice."
+  },
+  "echoform": {
+    "id": "echoform",
+    "name": "Echoform",
+    "type": "Spirit",
+    "types": [
+      "Spirit"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 42,
+    "atk": 13,
+    "def": 15,
+    "spd": 16,
+    "moves": [
+      "hush_cut",
+      "shadow_stoop",
+      "quiet_talon"
+    ],
+    "description": "An afterimage that hunts, always half a step behind the living."
+  },
+  "lanternsoul": {
+    "id": "lanternsoul",
+    "name": "Lanternsoul",
+    "type": "Spirit",
+    "types": [
+      "Spirit",
+      "Light"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 55,
+    "atk": 14,
+    "def": 13,
+    "spd": 17,
+    "moves": [
+      "hush_cut",
+      "gleam",
+      "bone_hoot"
+    ],
+    "description": "The soul of a lantern, still trying to throw light after the wick is gone."
+  },
+  "bonewisp": {
+    "id": "bonewisp",
+    "name": "Bonewisp",
+    "type": "Spirit",
+    "types": [
+      "Spirit"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 40,
+    "atk": 13,
+    "def": 14,
+    "spd": 6,
+    "moves": [
+      "bone_hoot",
+      "shadow_stoop"
+    ],
+    "description": "A wisp that nests in bone, humming in the hollows."
+  },
+  "hushling": {
+    "id": "hushling",
+    "name": "Hushling",
+    "type": "Spirit",
+    "types": [
+      "Spirit"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 43,
+    "atk": 15,
+    "def": 6,
+    "spd": 13,
+    "moves": [
+      "quiet_talon",
+      "shadow_stoop",
+      "hush_cut"
+    ],
+    "description": "A hush given feet, arriving before silence and leaving it behind."
+  },
+  "specterfin": {
+    "id": "specterfin",
+    "name": "Specterfin",
+    "type": "Spirit",
+    "types": [
+      "Spirit",
+      "Tide"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 53,
+    "atk": 13,
+    "def": 14,
+    "spd": 11,
+    "moves": [
+      "shadow_stoop",
+      "salt_spray",
+      "quiet_talon"
+    ],
+    "description": "A fin of ghost-water, swimming through walls as if they were tide."
+  },
+  "knellhound": {
+    "id": "knellhound",
+    "name": "Knellhound",
+    "type": "Spirit",
+    "types": [
+      "Spirit"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 57,
+    "atk": 18,
+    "def": 14,
+    "spd": 15,
+    "moves": [
+      "hush_cut",
+      "shadow_stoop",
+      "quiet_talon"
+    ],
+    "description": "A hound that arrives with a bell, and the bell is never good news."
+  },
+  "thoughtmite": {
+    "id": "thoughtmite",
+    "name": "Thoughtmite",
+    "type": "Mind",
+    "types": [
+      "Mind"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 30,
+    "atk": 13,
+    "def": 8,
+    "spd": 10,
+    "moves": [
+      "mind_sting",
+      "trance_pinch"
+    ],
+    "description": "A mite that eats stray thoughts and leaves a blank where they were."
+  },
+  "dreamgrub": {
+    "id": "dreamgrub",
+    "name": "Dreamgrub",
+    "type": "Mind",
+    "types": [
+      "Mind"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 48,
+    "atk": 14,
+    "def": 11,
+    "spd": 6,
+    "moves": [
+      "notion_prick",
+      "notion_prick"
+    ],
+    "description": "A grub that feeds on unfinished dreams, fat with other people's sleep."
+  },
+  "mindleech": {
+    "id": "mindleech",
+    "name": "Mindleech",
+    "type": "Mind",
+    "types": [
+      "Mind"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 47,
+    "atk": 13,
+    "def": 12,
+    "spd": 14,
+    "moves": [
+      "mind_sting",
+      "trance_pinch",
+      "notion_prick"
+    ],
+    "description": "A leech that drinks attention until the room forgets why it gathered."
+  },
+  "puzzlebeetle": {
+    "id": "puzzlebeetle",
+    "name": "Puzzlebeetle",
+    "type": "Mind",
+    "types": [
+      "Mind",
+      "Metal"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 42,
+    "atk": 17,
+    "def": 11,
+    "spd": 11,
+    "moves": [
+      "mind_sting",
+      "file_bite",
+      "trance_pinch"
+    ],
+    "description": "A beetle whose shell is a puzzle, solved only by thinking the wrong way."
+  },
+  "hypnomoth": {
+    "id": "hypnomoth",
+    "name": "Hypnomoth",
+    "type": "Mind",
+    "types": [
+      "Mind"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 51,
+    "atk": 18,
+    "def": 15,
+    "spd": 14,
+    "moves": [
+      "notion_prick",
+      "trance_pinch",
+      "mind_sting"
+    ],
+    "description": "A moth whose dust makes the eyelids heavy and the will thin."
+  },
+  "ideaspore": {
+    "id": "ideaspore",
+    "name": "Ideaspore",
+    "type": "Mind",
+    "types": [
+      "Mind",
+      "Blight"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 49,
+    "atk": 15,
+    "def": 15,
+    "spd": 18,
+    "moves": [
+      "trance_pinch",
+      "rot_touch",
+      "mind_sting"
+    ],
+    "description": "A spore of idea-rot, blooming in the head as a pretty, false certainty."
+  },
+  "cortexling": {
+    "id": "cortexling",
+    "name": "Cortexling",
+    "type": "Mind",
+    "types": [
+      "Mind"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 38,
+    "atk": 11,
+    "def": 11,
+    "spd": 16,
+    "moves": [
+      "mind_sting",
+      "trance_pinch"
+    ],
+    "description": "A wrinkle of cortex given legs, always almost remembering its name."
+  },
+  "trancekit": {
+    "id": "trancekit",
+    "name": "Trancekit",
+    "type": "Mind",
+    "types": [
+      "Mind"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 30,
+    "atk": 10,
+    "def": 10,
+    "spd": 13,
+    "moves": [
+      "notion_prick",
+      "trance_pinch"
+    ],
+    "description": "A kit that stares until you stare back, and then you are elsewhere."
+  },
+  "oraclefly": {
+    "id": "oraclefly",
+    "name": "Oraclefly",
+    "type": "Mind",
+    "types": [
+      "Mind"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 57,
+    "atk": 15,
+    "def": 16,
+    "spd": 11,
+    "moves": [
+      "trance_pinch",
+      "mind_sting",
+      "notion_prick"
+    ],
+    "description": "A fly that lands on the true answer and will not be believed."
+  },
+  "synaptick": {
+    "id": "synaptick",
+    "name": "Synaptick",
+    "type": "Mind",
+    "types": [
+      "Mind",
+      "Arcane"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 56,
+    "atk": 16,
+    "def": 11,
+    "spd": 17,
+    "moves": [
+      "trance_pinch",
+      "hex_nick",
+      "mind_sting"
+    ],
+    "description": "A tick that bites thoughts into runes and leaves the skin inscribed."
+  },
+  "memorymoth": {
+    "id": "memorymoth",
+    "name": "Memorymoth",
+    "type": "Mind",
+    "types": [
+      "Mind",
+      "Spirit"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 53,
+    "atk": 13,
+    "def": 13,
+    "spd": 14,
+    "moves": [
+      "notion_prick",
+      "shadow_stoop"
+    ],
+    "description": "A moth that wears old memories on its wings, out of order."
+  },
+  "rustmite": {
+    "id": "rustmite",
+    "name": "Rustmite",
+    "type": "Metal",
+    "types": [
+      "Metal"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 34,
+    "atk": 13,
+    "def": 10,
+    "spd": 13,
+    "moves": [
+      "cog_smash",
+      "rivet"
+    ],
+    "description": "A mite of living rust, blooming orange on whatever iron it loves."
+  },
+  "cogmite": {
+    "id": "cogmite",
+    "name": "Cogmite",
+    "type": "Metal",
+    "types": [
+      "Metal"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 42,
+    "atk": 10,
+    "def": 13,
+    "spd": 13,
+    "moves": [
+      "cog_smash",
+      "rivet"
+    ],
+    "description": "A mite that is also a cog, turning in a machine that is not there."
+  },
+  "scrapkit": {
+    "id": "scrapkit",
+    "name": "Scrapkit",
+    "type": "Metal",
+    "types": [
+      "Metal"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 30,
+    "atk": 11,
+    "def": 11,
+    "spd": 12,
+    "moves": [
+      "cog_smash",
+      "rivet"
+    ],
+    "description": "A kit of scrap and filings, assembling itself from what the floor discards."
+  },
+  "anvilbeetle": {
+    "id": "anvilbeetle",
+    "name": "Anvilbeetle",
+    "type": "Metal",
+    "types": [
+      "Metal"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 51,
+    "atk": 18,
+    "def": 13,
+    "spd": 9,
+    "moves": [
+      "rivet",
+      "file_bite",
+      "cog_smash"
+    ],
+    "description": "A beetle with an anvil for a back, ringing when anything dares land on it."
+  },
+  "wirewyrm": {
+    "id": "wirewyrm",
+    "name": "Wirewyrm",
+    "type": "Metal",
+    "types": [
+      "Metal"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 44,
+    "atk": 16,
+    "def": 10,
+    "spd": 12,
+    "moves": [
+      "rivet",
+      "rivet",
+      "cog_smash"
+    ],
+    "description": "A wyrm of live wire, sparking at every coil."
+  },
+  "tinmoth": {
+    "id": "tinmoth",
+    "name": "Tinmoth",
+    "type": "Metal",
+    "types": [
+      "Metal"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 37,
+    "atk": 12,
+    "def": 15,
+    "spd": 11,
+    "moves": [
+      "file_bite",
+      "cog_smash"
+    ],
+    "description": "A moth of beaten tin, wings ticking like cheap clocks."
+  },
+  "alloyhound": {
+    "id": "alloyhound",
+    "name": "Alloyhound",
+    "type": "Metal",
+    "types": [
+      "Metal"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 55,
+    "atk": 17,
+    "def": 18,
+    "spd": 17,
+    "moves": [
+      "wire_snap",
+      "file_bite",
+      "rivet"
+    ],
+    "description": "A hound poured from mixed metals, each tooth a different ore."
+  },
+  "beastling": {
+    "id": "beastling",
+    "name": "Beastling",
+    "type": "Primal",
+    "types": [
+      "Primal"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 45,
+    "atk": 14,
+    "def": 9,
+    "spd": 13,
+    "moves": [
+      "fang_rush",
+      "wild_slam"
+    ],
+    "description": "A first-beast in miniature, older in the eye than in the hide."
+  },
+  "fangkit": {
+    "id": "fangkit",
+    "name": "Fangkit",
+    "type": "Primal",
+    "types": [
+      "Primal"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 42,
+    "atk": 12,
+    "def": 7,
+    "spd": 15,
+    "moves": [
+      "horn_jab",
+      "wild_slam"
+    ],
+    "description": "A kit of too many fangs, still deciding what it is for."
+  },
+  "hornmite": {
+    "id": "hornmite",
+    "name": "Hornmite",
+    "type": "Primal",
+    "types": [
+      "Primal"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 32,
+    "atk": 12,
+    "def": 16,
+    "spd": 13,
+    "moves": [
+      "fang_rush",
+      "horn_jab"
+    ],
+    "description": "A mite that wears a horn it has not earned, and means to."
+  },
+  "ancientail": {
+    "id": "ancientail",
+    "name": "Ancientail",
+    "type": "Primal",
+    "types": [
+      "Primal"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 50,
+    "atk": 15,
+    "def": 13,
+    "spd": 11,
+    "moves": [
+      "fang_rush",
+      "wild_slam",
+      "horn_jab"
+    ],
+    "description": "A leftover of something older, all tail and no body that remains."
+  },
+  "protohulk": {
+    "id": "protohulk",
+    "name": "Protohulk",
+    "type": "Primal",
+    "types": [
+      "Primal"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 48,
+    "atk": 15,
+    "def": 16,
+    "spd": 9,
+    "moves": [
+      "wild_slam",
+      "horn_jab",
+      "fang_rush"
+    ],
+    "description": "A hulk from before names, squat and sure it does not need them."
+  },
+  "wildheart": {
+    "id": "wildheart",
+    "name": "Wildheart",
+    "type": "Primal",
+    "types": [
+      "Primal"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 41,
+    "atk": 14,
+    "def": 8,
+    "spd": 9,
+    "moves": [
+      "horn_jab",
+      "wild_slam"
+    ],
+    "description": "A heart that would not stay in a chest, beating in the open air."
+  },
+  "stonefang": {
+    "id": "stonefang",
+    "name": "Stonefang",
+    "type": "Primal",
+    "types": [
+      "Primal",
+      "Terra"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 55,
+    "atk": 16,
+    "def": 13,
+    "spd": 13,
+    "moves": [
+      "horn_jab",
+      "stone_nudge",
+      "wild_slam"
+    ],
+    "description": "A fang of living stone, hunting as if the mountain taught it."
+  },
+  "thunderpaw": {
+    "id": "thunderpaw",
+    "name": "Thunderpaw",
+    "type": "Primal",
+    "types": [
+      "Primal",
+      "Storm"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 56,
+    "atk": 16,
+    "def": 9,
+    "spd": 11,
+    "moves": [
+      "horn_jab",
+      "volt_nibble",
+      "fang_rush"
+    ],
+    "description": "A paw that brings thunder when it lands, even on carpet."
+  },
+  "elderwyrm": {
+    "id": "elderwyrm",
+    "name": "Elderwyrm",
+    "type": "Primal",
+    "types": [
+      "Primal"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 57,
+    "atk": 17,
+    "def": 10,
+    "spd": 14,
+    "moves": [
+      "fang_rush",
+      "fang_rush",
+      "horn_jab"
+    ],
+    "description": "An elder wyrm, small only because the rest of it is still arriving."
+  },
+  "hidekin": {
+    "id": "hidekin",
+    "name": "Hidekin",
+    "type": "Primal",
+    "types": [
+      "Primal"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 33,
+    "atk": 14,
+    "def": 8,
+    "spd": 15,
+    "moves": [
+      "wild_slam",
+      "fang_rush"
+    ],
+    "description": "A kin of old hide, empty of the beast and still walking."
+  },
+  "clawback": {
+    "id": "clawback",
+    "name": "Clawback",
+    "type": "Primal",
+    "types": [
+      "Primal"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 38,
+    "atk": 15,
+    "def": 11,
+    "spd": 16,
+    "moves": [
+      "horn_jab",
+      "wild_slam"
+    ],
+    "description": "A back of stacked claws, facing every direction at once."
+  },
+  "rotling": {
+    "id": "rotling",
+    "name": "Rotling",
+    "type": "Blight",
+    "types": [
+      "Blight"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 41,
+    "atk": 12,
+    "def": 15,
+    "spd": 14,
+    "moves": [
+      "spore_cough",
+      "mold_bite"
+    ],
+    "description": "A rot that learned to toddle, sweet-smelling and wrong."
+  },
+  "moldmite": {
+    "id": "moldmite",
+    "name": "Moldmite",
+    "type": "Blight",
+    "types": [
+      "Blight"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 46,
+    "atk": 13,
+    "def": 10,
+    "spd": 8,
+    "moves": [
+      "rot_touch",
+      "spore_cough"
+    ],
+    "description": "A mite of velvet mold, printing its pattern on whatever it rests on."
+  },
+  "sporekit": {
+    "id": "sporekit",
+    "name": "Sporekit",
+    "type": "Blight",
+    "types": [
+      "Blight"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 37,
+    "atk": 16,
+    "def": 14,
+    "spd": 11,
+    "moves": [
+      "rot_touch",
+      "spore_cough",
+      "mold_bite"
+    ],
+    "description": "A kit that sneezes spores when pleased, which is often."
+  },
+  "blightgrub": {
+    "id": "blightgrub",
+    "name": "Blightgrub",
+    "type": "Blight",
+    "types": [
+      "Blight"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 43,
+    "atk": 12,
+    "def": 16,
+    "spd": 12,
+    "moves": [
+      "spore_cough",
+      "mold_bite"
+    ],
+    "description": "A grub that unmakes what it eats and leaves the shape behind."
+  },
+  "cankerwyrm": {
+    "id": "cankerwyrm",
+    "name": "Cankerwyrm",
+    "type": "Blight",
+    "types": [
+      "Blight"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 46,
+    "atk": 18,
+    "def": 10,
+    "spd": 8,
+    "moves": [
+      "rot_touch",
+      "spore_cough",
+      "mold_bite"
+    ],
+    "description": "A wyrm of canker, boring through sound wood as if it were butter."
+  },
+  "rustcap": {
+    "id": "rustcap",
+    "name": "Rustcap",
+    "type": "Blight",
+    "types": [
+      "Blight",
+      "Metal"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 55,
+    "atk": 18,
+    "def": 16,
+    "spd": 15,
+    "moves": [
+      "spore_cough",
+      "file_bite",
+      "mold_bite"
+    ],
+    "description": "A cap of rust-blight, fruiting on iron as if iron were soil."
+  },
+  "plaguefly": {
+    "id": "plaguefly",
+    "name": "Plaguefly",
+    "type": "Blight",
+    "types": [
+      "Blight"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 47,
+    "atk": 18,
+    "def": 16,
+    "spd": 15,
+    "moves": [
+      "mold_bite",
+      "mold_bite",
+      "rot_touch"
+    ],
+    "description": "A fly that carries a weather of sickness and lands where it is warmest."
+  },
+  "festerling": {
+    "id": "festerling",
+    "name": "Festerling",
+    "type": "Blight",
+    "types": [
+      "Blight"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 42,
+    "atk": 16,
+    "def": 11,
+    "spd": 9,
+    "moves": [
+      "rot_touch",
+      "mold_bite"
+    ],
+    "description": "A fester given a face, patient as an uncleaned wound."
+  },
+  "toxinoth": {
+    "id": "toxinoth",
+    "name": "Toxinoth",
+    "type": "Blight",
+    "types": [
+      "Blight"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 62,
+    "atk": 17,
+    "def": 15,
+    "spd": 18,
+    "moves": [
+      "rot_touch",
+      "mold_bite",
+      "spore_cough"
+    ],
+    "description": "A moth whose dust is a toxin, beautiful and not to be breathed."
+  },
+  "glyphling": {
+    "id": "glyphling",
+    "name": "Glyphling",
+    "type": "Arcane",
+    "types": [
+      "Arcane"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 33,
+    "atk": 15,
+    "def": 6,
+    "spd": 8,
+    "moves": [
+      "rune_lash",
+      "hex_nick"
+    ],
+    "description": "A living glyph, still wet, crawling off the page that wrote it."
+  },
+  "runemite": {
+    "id": "runemite",
+    "name": "Runemite",
+    "type": "Arcane",
+    "types": [
+      "Arcane"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 47,
+    "atk": 10,
+    "def": 11,
+    "spd": 17,
+    "moves": [
+      "glyph_peck",
+      "rune_lash"
+    ],
+    "description": "A mite that is a rune, biting the meaning into whatever it walks."
+  },
+  "hexkit": {
+    "id": "hexkit",
+    "name": "Hexkit",
+    "type": "Arcane",
+    "types": [
+      "Arcane"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 32,
+    "atk": 13,
+    "def": 9,
+    "spd": 9,
+    "moves": [
+      "rune_lash",
+      "hex_nick"
+    ],
+    "description": "A kit born of a hex, lucky only for itself."
+  },
+  "sigilwisp": {
+    "id": "sigilwisp",
+    "name": "Sigilwisp",
+    "type": "Arcane",
+    "types": [
+      "Arcane"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 56,
+    "atk": 18,
+    "def": 15,
+    "spd": 11,
+    "moves": [
+      "rune_lash",
+      "glyph_peck",
+      "hex_nick"
+    ],
+    "description": "A wisp of sigil-light, tracing wards on the air and forgetting them."
+  },
+  "wardbeetle": {
+    "id": "wardbeetle",
+    "name": "Wardbeetle",
+    "type": "Arcane",
+    "types": [
+      "Arcane",
+      "Metal"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 41,
+    "atk": 16,
+    "def": 14,
+    "spd": 9,
+    "moves": [
+      "rune_lash",
+      "cog_smash",
+      "hex_nick"
+    ],
+    "description": "A beetle whose shell is a ward, keeping out what it cannot name."
+  },
+  "spellmoth": {
+    "id": "spellmoth",
+    "name": "Spellmoth",
+    "type": "Arcane",
+    "types": [
+      "Arcane"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 30,
+    "atk": 14,
+    "def": 14,
+    "spd": 9,
+    "moves": [
+      "hex_nick",
+      "rune_lash"
+    ],
+    "description": "A moth that sheds leftover spells, harmless until they land."
+  },
+  "quillith": {
+    "id": "quillith",
+    "name": "Quillith",
+    "type": "Arcane",
+    "types": [
+      "Arcane"
+    ],
+    "rarity": "uncommon",
+    "role": "wild",
+    "starter": false,
+    "hp": 52,
+    "atk": 17,
+    "def": 9,
+    "spd": 15,
+    "moves": [
+      "hex_nick",
+      "rune_lash",
+      "glyph_peck"
+    ],
+    "description": "A living quill that writes on air, in a hand no one taught it."
+  },
+  "cipherling": {
+    "id": "cipherling",
+    "name": "Cipherling",
+    "type": "Arcane",
+    "types": [
+      "Arcane"
+    ],
+    "rarity": "common",
+    "role": "wild",
+    "starter": false,
+    "hp": 36,
+    "atk": 12,
+    "def": 6,
+    "spd": 17,
+    "moves": [
+      "glyph_peck",
+      "hex_nick"
+    ],
+    "description": "A cipher given legs, meaning something only when it stands still."
+  },
+  "leyshard": {
+    "id": "leyshard",
+    "name": "Leyshard",
+    "type": "Arcane",
+    "types": [
+      "Arcane"
+    ],
+    "rarity": "rare",
+    "role": "wild",
+    "starter": false,
+    "hp": 54,
+    "atk": 20,
+    "def": 12,
+    "spd": 11,
+    "moves": [
+      "rune_lash",
+      "glyph_peck",
+      "hex_nick"
+    ],
+    "description": "A shard of ley-line, humming with a current that is not electricity."
   }
 }

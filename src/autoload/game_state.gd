@@ -38,7 +38,7 @@ func generate_floor() -> void:
 	player_pos = result["start"]
 	stairs_pos = result["stairs"]
 	wilds = []
-	var ids: Array[String] = DataDB.creature_order.duplicate()
+	var ids: Array[String] = DataDB.wild_ids()
 	var mult: float = 1.0 + float(floor_num - 1) * 0.15
 	if ids.is_empty():
 		push_warning("Wyrdling: no creature data; floor has no wilds")
@@ -57,7 +57,11 @@ func make_creature(species_id: String, stat_mult: float = 1.0) -> WyrdlingCreatu
 	var c := WyrdlingCreature.new()
 	c.species_id = species_id
 	c.display_name = str(d["name"])
-	c.type_id = str(d["type"])
+	c.type_ids = DataDB.types_of(d)
+	if c.type_ids.size() > 0:
+		c.type_id = str(c.type_ids[0])
+	else:
+		c.type_id = str(d.get("type", ""))
 	c.max_hp = maxi(1, int(round(float(d["hp"]) * stat_mult)))
 	c.hp = c.max_hp
 	c.atk = maxi(1, int(round(float(d["atk"]) * stat_mult)))
@@ -161,7 +165,7 @@ func calc_damage(attacker: WyrdlingCreature, defender: WyrdlingCreature, move_id
 	var md: Dictionary = DataDB.moves.get(move_id, {"power": 30, "type": attacker.type_id, "name": move_id})
 	var power: int = int(md["power"])
 	var mtype: String = str(md["type"])
-	var mod: float = DataDB.type_mod(mtype, defender.type_id)
+	var mod: float = DataDB.type_mod_vs(mtype, defender.type_ids)
 	var raw: float = (float(attacker.atk) * float(power)) / (float(maxi(defender.def, 1)) * 1.75)
 	var variance: float = rng.randf_range(0.9, 1.1) if vary else 1.0
 	var dmg: int = maxi(1, int(round(raw * mod * variance)))

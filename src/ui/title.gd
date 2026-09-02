@@ -91,7 +91,7 @@ func _build() -> void:
 	roster.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	roster.add_theme_font_size_override("font_size", 16)
 	roster.add_theme_color_override("font_color", MUTED)
-	roster.text = "Roster:  Glimmerling (Light) · Wickmoth (Light) · Cobbleback (Metal) · Nailbit (Metal) · Briarseed (Nature) · Marrowl (Spirit) · Veilcrawler (Void) · Brinekit (Tide)"
+	roster.text = "170 Wyrdlings  ·  16 types  ·  8 legendaries  ·  3 mythicals"
 	root.add_child(roster)
 
 	var orig := Label.new()

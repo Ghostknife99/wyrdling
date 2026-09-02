@@ -36,7 +36,9 @@ func _ready() -> void:
 	else:
 		tex_player = load("res://art/player/player.png")
 	for id in DataDB.creatures.keys():
-		creature_tex[id] = load("res://art/creatures/%s.png" % id)
+		var cpath := "res://art/creatures/%s.png" % id
+		if ResourceLoader.exists(cpath):
+			creature_tex[id] = load(cpath)
 	_build_hud()
 	_refresh()
 
