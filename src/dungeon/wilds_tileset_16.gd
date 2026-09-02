@@ -70,7 +70,10 @@ static func build() -> TileSet:
 	var src := TileSetAtlasSource.new()
 	src.texture = tex
 	src.texture_region_size = Vector2i(TILE, TILE)
-	src.use_texture_padding = true
+	# The generated ImageTexture is a tight 16px grid. The imported 32px atlas
+	# uses texture padding internally, but carrying that flag over would make
+	# Godot treat valid edge cells as outside the runtime image.
+	src.use_texture_padding = false
 	ts.add_source(src, 0)
 
 	_ensure_tile(src, SRC_COORDS["grass"])
