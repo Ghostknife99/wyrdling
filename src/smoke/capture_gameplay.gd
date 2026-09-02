@@ -29,14 +29,20 @@ func _run() -> void:
 
 	gs.rng.seed = 7
 	gs.start_run("glimmerling")
+	var start: Vector2i = gs.player_pos
 	await _clear_content()
 	var dungeon: Node2D = load("res://scenes/dungeon.tscn").instantiate()
 	root.add_child(dungeon)
 	await _wait_frames(16)
+	if not dungeon.has_method("_open_combat"):
+		print("FAIL dungeon script did not attach")
+		quit(1)
+		return
 
 	var parked: Array = gs.wilds
 	gs.wilds = []
 	_pan_along_dirt(dungeon, 20)
+	_stand_under_canopy(dungeon, start)
 	await _wait_frames(10)
 	await _capture_pair()
 	print("player_pos=", gs.player_pos, " stairs=", gs.stairs_pos)
@@ -138,3 +144,43 @@ func _pan_along_dirt(dungeon: Node, steps: int) -> void:
 		gs.player_pos = best
 	if dungeon.has_method("_refresh"):
 		dungeon._refresh()
+
+
+func _stand_under_canopy(dungeon: Node, start: Vector2i) -> void:
+	var origin := Vector2i(start.x, clampi(start.y - 20, 12, gs.MAP_H - 14))
+	var best := origin
+	var best_score := -1000000
+	for nw in gs.trees:
+		var tpos: Vector2i = nw
+		for dx in range(2):
+			var p := Vector2i(tpos.x + dx, tpos.y)
+			if not gs.walkable(p):
+				continue
+			if p.distance_to(origin) > 10:
+				continue
+			var score: int = 80 - int(p.distance_to(origin)) * 8
+			for dy2 in range(-5, 6):
+				for dx2 in range(-7, 8):
+					var q := Vector2i(p.x + dx2, p.y + dy2)
+					if q.x < 0 or q.y < 0 or q.x >= gs.MAP_W or q.y >= gs.MAP_H:
+						continue
+					var tt: int = int(gs.grid[q.y][q.x])
+					if tt == 4:
+						score += 8
+					if tt == 3:
+						score += 3
+			for f in gs.fence:
+				if f["pos"].distance_to(p) <= 8:
+					score += 6
+			if score > best_score:
+				best_score = score
+				best = p
+	if best_score < 0:
+		best = origin
+		if not gs.walkable(best):
+			best = start
+	gs.player_pos = best
+	dungeon.last_dir = "down"
+	if dungeon.has_method("_refresh"):
+		dungeon._refresh()
+	print("canopy stand ", best, " origin=", origin, " start=", start, " score=", best_score)

@@ -48,9 +48,9 @@ Headless smoke test (no window):
 - Autoload run state (`GameState`) plus data tables (`DataDB`). Creatures and moves live in JSON, not scene nodes.
 - Party of **3**. Bind during the run. There is no box and no dex.
 - If the party is full, a successful Bind **replaces** a chosen member. The released wyrd is gone for this run.
-- One continuous outdoor floor (64×48 tiles): fenced clearing, winding path, grass, tall-grass patches, a water feature, tree groves. Camera follows the delver. Runtime tiles load from `art/tiles/overworld/` (32×32 folklore-granite kit, 2×2 trees; `tree.png` 64×64 fallback).
+- One continuous outdoor floor (64×48 tiles): fenced clearing, winding path, grass, tall-grass patches, a water feature, tree groves. Camera follows the delver. Ground is a Godot 4 TileMapLayer (`src/dungeon/wilds_tileset.gd` + `art/tiles/overworld/hd_atlas.png`, 47-tile blob autotiles) so grass↔path and grass↔water have inner/outer corners. Trees are 2×2 overlay tiles (Arthur `tree.png`) with trunk collision only; canopies Y-sort with the delver. Fences sit on a Deco layer. Water is 3-frame animated. Camera zoom is 2× nearest-neighbour.
 - **4–8** wanderers spawn on tall grass, gold rift-gate at the north end of the path.
-- You step, then wilds wander (or chase if close). Bump starts combat. Trees Y-sort over the delver.
+- You step, then wilds wander (or chase if close). Bump starts combat. Trees Y-sort over the delver (walk north of a trunk to go behind the canopy). Tall grass is an overlay that hides feet.
 - If every party member is KO, the run ends and you return to the title (permadeath).
 
 ## Type chart
@@ -123,6 +123,7 @@ art/tiles/overworld/  grass, grass_alt, path, water,           32×32
                       path_*, water_*, tallgrass_*, cliff_*,
                       fence_{h,v,post,nw,ne,sw,se},
                       tree_nw/ne/sw/se (2×2); tree.png        64×64
+                      hd_atlas.png                              47-blob autotiles
 art/tiles/stairs.png  gold rift-gate, drawn on a path underlay
 art/tiles/floor.png wall.png   unused indoor leftovers
 art/ui/wordmark.png hp_frame.png hp_fill.png btn_panel.png

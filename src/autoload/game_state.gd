@@ -168,7 +168,7 @@ func prop_blocks(p: Vector2i) -> bool:
 			return true
 	for nw in trees:
 		var tpos: Vector2i = nw
-		if p.x >= tpos.x and p.x <= tpos.x + 1 and p.y >= tpos.y and p.y <= tpos.y + 1:
+		if p.y == tpos.y + 1 and p.x >= tpos.x and p.x <= tpos.x + 1:
 			return true
 	return false
 

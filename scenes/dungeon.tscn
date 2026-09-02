@@ -3,4 +3,28 @@
 [ext_resource type="Script" path="res://src/dungeon/dungeon.gd" id="1_dungeon"]
 
 [node name="Dungeon" type="Node2D"]
+texture_filter = 0
 script = ExtResource("1_dungeon")
+
+[node name="World" type="Node2D" parent="."]
+y_sort_enabled = true
+texture_filter = 0
+
+[node name="Ground" type="TileMapLayer" parent="World"]
+texture_filter = 0
+
+[node name="Deco" type="TileMapLayer" parent="World"]
+y_sort_enabled = true
+texture_filter = 0
+
+[node name="Overlay" type="TileMapLayer" parent="World"]
+y_sort_enabled = true
+texture_filter = 0
+
+[node name="Player" type="Sprite2D" parent="World"]
+centered = false
+offset = Vector2(-24, -48)
+texture_filter = 0
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)

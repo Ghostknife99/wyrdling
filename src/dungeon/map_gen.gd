@@ -403,8 +403,8 @@ static func _paint_route_landmarks(grid: Array, fence: Array, width: int, height
 	# Pond east of the path so a 20-step north walk still frames water.
 	var px: int = clampi(origin.x + 7, 6, width - 10)
 	var py: int = clampi(origin.y - 1, 8, height - 12)
-	for y in range(py, py + 4):
-		for x in range(px, px + 5):
+	for y in range(py, py + 5):
+		for x in range(px, px + 7):
 			if not _inner(x, y, width, height):
 				continue
 			var t: int = int(grid[y][x])
@@ -414,6 +414,11 @@ static func _paint_route_landmarks(grid: Array, fence: Array, width: int, height
 			if p == start or p == stairs or _blocked_prop(p, trees):
 				continue
 			grid[y][x] = WATER
+	# Concave bite so autotile inner corners show on the pond.
+	var bite := Vector2i(px + 1, py + 1)
+	if _inner(bite.x, bite.y, width, height) and int(grid[bite.y][bite.x]) == WATER:
+		if bite != start and bite != stairs and not _blocked_prop(bite, trees):
+			grid[bite.y][bite.x] = GRASS
 	# Short roadside fence west of the path (horizontal rail + posts). Never stamp dirt.
 	var fx: int = clampi(origin.x - 8, 4, width - 8)
 	var fy: int = origin.y
@@ -433,6 +438,10 @@ static func _paint_route_landmarks(grid: Array, fence: Array, width: int, height
 		for i in range(1, rail.size() - 1):
 			_stamp_fence(grid, fence, rail[i], width, height, "h")
 		_stamp_fence(grid, fence, rail[rail.size() - 1], width, height, "post")
+
+	_try_tree(grid, width, height, Vector2i(clampi(origin.x - 2, 4, width - 6), clampi(origin.y - 1, 4, height - 6)), start, stairs, trees)
+	_try_tree(grid, width, height, Vector2i(clampi(origin.x + 2, 4, width - 6), clampi(origin.y - 2, 4, height - 6)), start, stairs, trees)
+
 
 static func _ensure_tallgrass(grid: Array, width: int, height: int, start: Vector2i, stairs: Vector2i, trees: Array) -> void:
 	for y in height:
@@ -528,5 +537,6 @@ static func _try_tree(grid: Array, width: int, height: int, nw: Vector2i, start:
 				return
 	for dy in range(0, 2):
 		for dx in range(0, 2):
-			grid[nw.y + dy][nw.x + dx] = TREE
+			if dy == 1:
+				grid[nw.y + dy][nw.x + dx] = TREE
 	trees.append(nw)
