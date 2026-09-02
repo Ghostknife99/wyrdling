@@ -1,8 +1,10 @@
 extends Control
 
-const GOLD := Color("E8C872")  # lantern accent, locked hex
-const INK := Color(0.94, 0.91, 0.84)
-const MUTED := Color(0.70, 0.66, 0.58)
+const INK := Color("26333A")
+const PAPER := Color("F8F7E8")
+const GREEN := Color("3B8D63")
+const GREEN_DARK := Color("1E5748")
+const MUTED := Color("718078")
 
 var _ids: Array[String] = []
 
@@ -15,42 +17,81 @@ func _ready() -> void:
 	_build()
 
 
+func _style(fill: Color, border: Color, width: int = 3) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = fill
+	sb.border_color = border
+	sb.set_border_width_all(width)
+	sb.corner_radius_top_left = 2
+	sb.corner_radius_top_right = 2
+	sb.corner_radius_bottom_left = 2
+	sb.corner_radius_bottom_right = 2
+	return sb
+
+
 func _build() -> void:
 	var bg := ColorRect.new()
-	bg.color = Color(0.078, 0.067, 0.098)
+	bg.color = Color("7ACB88")
 	bg.set_anchors_preset(PRESET_FULL_RECT)
 	add_child(bg)
 
+	# Simple laboratory / camp floor framing.
+	var floor := ColorRect.new()
+	floor.color = Color("D9C99A")
+	floor.position = Vector2(0, 76)
+	floor.size = Vector2(640, 284)
+	add_child(floor)
+	for y in range(5):
+		var seam := ColorRect.new()
+		seam.color = Color(0.32, 0.27, 0.18, 0.15)
+		seam.position = Vector2(0, 112 + y * 52)
+		seam.size = Vector2(640, 2)
+		add_child(seam)
+
+	var header := Panel.new()
+	header.position = Vector2(18, 14)
+	header.size = Vector2(604, 52)
+	header.add_theme_stylebox_override("panel", _style(PAPER, GREEN_DARK, 3))
+	add_child(header)
+
 	var title := Label.new()
-	title.text = "Choose a starter"
+	title.text = "Choose your first Wyrdling"
+	title.position = Vector2(18, 8)
+	title.size = Vector2(568, 26)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.position = Vector2(0, 28)
-	title.size = Vector2(1280, 48)
-	title.add_theme_font_size_override("font_size", 36)
-	title.add_theme_color_override("font_color", GOLD)
-	add_child(title)
+	title.add_theme_font_size_override("font_size", 20)
+	title.add_theme_color_override("font_color", INK)
+	header.add_child(title)
 
 	var hint := Label.new()
-	hint.text = "Press 1 / 2 / 3  or click a card"
+	hint.text = "1 / 2 / 3 or click"
+	hint.position = Vector2(18, 30)
+	hint.size = Vector2(568, 16)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.position = Vector2(0, 76)
-	hint.size = Vector2(1280, 28)
-	hint.add_theme_font_size_override("font_size", 16)
+	hint.add_theme_font_size_override("font_size", 10)
 	hint.add_theme_color_override("font_color", MUTED)
-	add_child(hint)
+	header.add_child(hint)
 
 	var n: int = _ids.size()
-	var card_w := 340.0
-	var gap := 36.0
+	var card_w := 176.0
+	var gap := 18.0
 	var total: float = n * card_w + (n - 1) * gap
-	var x0: float = (1280.0 - total) / 2.0
+	var x0: float = (640.0 - total) / 2.0
 	for i in n:
 		var id: String = _ids[i]
 		var d: Dictionary = DataDB.creatures[id]
 		var panel := _make_card(i, id, d)
-		panel.position = Vector2(x0 + i * (card_w + gap), 120)
-		panel.size = Vector2(card_w, 540)
+		panel.position = Vector2(x0 + i * (card_w + gap), 92)
+		panel.size = Vector2(card_w, 238)
 		add_child(panel)
+
+	var back := Label.new()
+	back.text = "ESC  BACK"
+	back.position = Vector2(18, 336)
+	back.size = Vector2(120, 18)
+	back.add_theme_font_size_override("font_size", 10)
+	back.add_theme_color_override("font_color", Color("594E35"))
+	add_child(back)
 
 
 func _make_card(index: int, id: String, d: Dictionary) -> Panel:
@@ -58,90 +99,69 @@ func _make_card(index: int, id: String, d: Dictionary) -> Panel:
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	var primary: String = str(d.get("type", ""))
 	var tcol: Color = DataDB.type_color(primary)
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.12, 0.10, 0.16, 1)
-	sb.border_color = tcol
-	sb.set_border_width_all(3)
-	sb.corner_radius_top_left = 8
-	sb.corner_radius_top_right = 8
-	sb.corner_radius_bottom_left = 8
-	sb.corner_radius_bottom_right = 8
-	panel.add_theme_stylebox_override("panel", sb)
-
-	var v := VBoxContainer.new()
-	v.set_anchors_preset(PRESET_FULL_RECT)
-	v.offset_left = 20
-	v.offset_right = -20
-	v.offset_top = 16
-	v.offset_bottom = -16
-	v.add_theme_constant_override("separation", 8)
-	panel.add_child(v)
+	panel.add_theme_stylebox_override("panel", _style(PAPER, tcol.darkened(0.28), 3))
 
 	var key := Label.new()
 	key.text = str(index + 1)
+	key.position = Vector2(8, 6)
+	key.size = Vector2(24, 20)
 	key.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	key.add_theme_font_size_override("font_size", 18)
+	key.add_theme_font_size_override("font_size", 12)
 	key.add_theme_color_override("font_color", MUTED)
-	v.add_child(key)
+	panel.add_child(key)
 
 	var tex: Texture2D = load("res://art/creatures/%s.png" % id)
 	var sprite := TextureRect.new()
 	sprite.texture = tex
+	sprite.position = Vector2(30, 20)
+	sprite.size = Vector2(116, 104)
 	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	sprite.custom_minimum_size = Vector2(160, 160)
 	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	v.add_child(sprite)
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	panel.add_child(sprite)
 
 	var name_l := Label.new()
 	name_l.text = str(d["name"])
+	name_l.position = Vector2(8, 122)
+	name_l.size = Vector2(160, 28)
 	name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_l.add_theme_font_size_override("font_size", 28)
+	name_l.add_theme_font_size_override("font_size", 18)
 	name_l.add_theme_color_override("font_color", INK)
-	v.add_child(name_l)
+	panel.add_child(name_l)
 
 	var type_l := Label.new()
 	var type_bits: PackedStringArray = PackedStringArray()
 	if d.has("types") and typeof(d["types"]) == TYPE_ARRAY:
 		for t in d["types"]:
 			type_bits.append(str(t))
-	type_l.text = " / ".join(type_bits) if type_bits.size() > 0 else str(d.get("type", ""))
+	type_l.text = " / ".join(type_bits) if type_bits.size() > 0 else primary
+	type_l.position = Vector2(8, 150)
+	type_l.size = Vector2(160, 20)
 	type_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	type_l.add_theme_font_size_override("font_size", 20)
-	type_l.add_theme_color_override("font_color", tcol)
-	v.add_child(type_l)
+	type_l.add_theme_font_size_override("font_size", 12)
+	type_l.add_theme_color_override("font_color", tcol.darkened(0.18))
+	panel.add_child(type_l)
 
 	var stats := Label.new()
-	stats.text = "HP %d   Atk %d   Def %d   Spd %d" % [int(d["hp"]), int(d["atk"]), int(d["def"]), int(d["spd"])]
+	stats.text = "HP %d   ATK %d\nDEF %d  SPD %d" % [int(d["hp"]), int(d["atk"]), int(d["def"]), int(d["spd"])]
+	stats.position = Vector2(10, 176)
+	stats.size = Vector2(156, 38)
 	stats.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	stats.add_theme_font_size_override("font_size", 16)
+	stats.add_theme_font_size_override("font_size", 10)
 	stats.add_theme_color_override("font_color", MUTED)
-	v.add_child(stats)
-
-	var desc := Label.new()
-	desc.text = str(d["description"])
-	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	desc.add_theme_font_size_override("font_size", 16)
-	desc.add_theme_color_override("font_color", INK)
-	v.add_child(desc)
-
-	var move_names: PackedStringArray = PackedStringArray()
-	for m in d["moves"]:
-		move_names.append(DataDB.move_name(str(m)))
-	var mv := Label.new()
-	mv.text = "Moves: " + ", ".join(move_names)
-	mv.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	mv.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	mv.add_theme_font_size_override("font_size", 16)
-	mv.add_theme_color_override("font_color", GOLD)
-	v.add_child(mv)
+	panel.add_child(stats)
 
 	var btn := Button.new()
-	btn.text = "Bind this one"
-	btn.custom_minimum_size = Vector2(0, 44)
+	btn.text = "CHOOSE"
+	btn.position = Vector2(18, 208)
+	btn.size = Vector2(140, 24)
 	btn.focus_mode = Control.FOCUS_NONE
+	btn.add_theme_font_size_override("font_size", 11)
+	btn.add_theme_color_override("font_color", INK)
+	btn.add_theme_stylebox_override("normal", _style(Color("E9F3E5"), tcol.darkened(0.25), 2))
+	btn.add_theme_stylebox_override("hover", _style(Color("D7EED1"), tcol.darkened(0.25), 2))
 	btn.pressed.connect(func() -> void: _pick(id))
-	v.add_child(btn)
+	panel.add_child(btn)
 
 	panel.gui_input.connect(func(ev: InputEvent) -> void:
 		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
