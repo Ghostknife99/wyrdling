@@ -1,5 +1,5 @@
 extends RefCounted
-## Builds the 2D-HD overworld TileSet from hd_atlas.png (47-tile blob terrains).
+## Builds the polished Willowmere overworld TileSet (47-tile blob terrains).
 
 const TILE := 32
 const T_GRASS := 0
@@ -20,9 +20,7 @@ const PATH_ROW0 := 2
 const WATER_ROW0 := 5
 const WATER_PER_ROW := 5
 const WATER_FRAMES := 3
-
-const ATLAS := "res://art/tiles/overworld/hd_atlas.png"
-const SAVE_PATH := "res://art/tiles/overworld/wilds_tileset.tres"
+const SCENERY = preload("res://src/dungeon/scenery_art.gd")
 
 const SRC_COORDS := {
 	"grass": Vector2i(0, 0),
@@ -45,7 +43,6 @@ const SRC_COORDS := {
 	"tree_se": Vector2i(1, 1),
 }
 
-
 static func blob_masks() -> PackedInt32Array:
 	var masks := PackedInt32Array()
 	for card in range(16):
@@ -67,30 +64,30 @@ static func blob_masks() -> PackedInt32Array:
 			masks.append(m)
 	return masks
 
-
 static func path_coords(index: int) -> Vector2i:
 	return Vector2i(index % COLS, PATH_ROW0 + int(index / COLS))
-
 
 static func water_coords(index: int) -> Vector2i:
 	return Vector2i((index % WATER_PER_ROW) * WATER_FRAMES, WATER_ROW0 + int(index / WATER_PER_ROW))
 
-
 static func build() -> TileSet:
-	var tex: Texture2D = load(ATLAS)
+	var tex: Texture2D = SCENERY.make_atlas()
+	if tex == null:
+		push_error("Polished scenery atlas could not be created")
+		return TileSet.new()
 	var ts := TileSet.new()
 	ts.tile_size = Vector2i(TILE, TILE)
 	ts.add_terrain_set()
 	ts.set_terrain_set_mode(0, TileSet.TERRAIN_MODE_MATCH_CORNERS_AND_SIDES)
 	ts.add_terrain(0)
 	ts.set_terrain_name(0, T_GRASS, "grass")
-	ts.set_terrain_color(0, T_GRASS, Color(0.16, 0.28, 0.14))
+	ts.set_terrain_color(0, T_GRASS, Color(0.33, 0.66, 0.36))
 	ts.add_terrain(0)
 	ts.set_terrain_name(0, T_PATH, "path")
-	ts.set_terrain_color(0, T_PATH, Color(0.42, 0.32, 0.20))
+	ts.set_terrain_color(0, T_PATH, Color(0.84, 0.70, 0.45))
 	ts.add_terrain(0)
 	ts.set_terrain_name(0, T_WATER, "water")
-	ts.set_terrain_color(0, T_WATER, Color(0.08, 0.32, 0.34))
+	ts.set_terrain_color(0, T_WATER, Color(0.18, 0.48, 0.78))
 
 	var src := TileSetAtlasSource.new()
 	src.texture = tex
@@ -103,8 +100,7 @@ static func build() -> TileSet:
 	_ensure_tile(src, SRC_COORDS["grass_alt"])
 	_grass_peering(src.get_tile_data(SRC_COORDS["grass_alt"], 0))
 
-	for key in ["cliff", "cliff_top", "stairs", "fence_h", "fence_v", "fence_post",
-			"fence_nw", "fence_ne", "fence_sw", "fence_se"]:
+	for key in ["cliff", "cliff_top", "stairs", "fence_h", "fence_v", "fence_post", "fence_nw", "fence_ne", "fence_sw", "fence_se"]:
 		_ensure_tile(src, SRC_COORDS[key])
 
 	_ensure_tile(src, SRC_COORDS["tallgrass"])
@@ -138,7 +134,7 @@ static func build() -> TileSet:
 		_apply_peering(src.get_tile_data(coords, 0), int(masks[i]), T_WATER, T_GRASS)
 		src.set_tile_animation_columns(coords, WATER_FRAMES)
 		src.set_tile_animation_frames_count(coords, WATER_FRAMES)
-		src.set_tile_animation_speed(coords, 3.0)
+		src.set_tile_animation_speed(coords, 4.0)
 		src.set_tile_animation_separation(coords, Vector2i.ZERO)
 		for f in WATER_FRAMES:
 			src.set_tile_animation_frame_duration(coords, f, 1.0)
@@ -160,21 +156,14 @@ static func build() -> TileSet:
 
 	return ts
 
-
-
 static func canonical_mask(mask: int) -> int:
 	var card: int = mask & 15
 	var m: int = card
-	if (card & N_BIT) and (card & E_BIT) and (mask & NE_BIT):
-		m |= NE_BIT
-	if (card & E_BIT) and (card & S_BIT) and (mask & SE_BIT):
-		m |= SE_BIT
-	if (card & S_BIT) and (card & W_BIT) and (mask & SW_BIT):
-		m |= SW_BIT
-	if (card & W_BIT) and (card & N_BIT) and (mask & NW_BIT):
-		m |= NW_BIT
+	if (card & N_BIT) and (card & E_BIT) and (mask & NE_BIT): m |= NE_BIT
+	if (card & E_BIT) and (card & S_BIT) and (mask & SE_BIT): m |= SE_BIT
+	if (card & S_BIT) and (card & W_BIT) and (mask & SW_BIT): m |= SW_BIT
+	if (card & W_BIT) and (card & N_BIT) and (mask & NW_BIT): m |= NW_BIT
 	return m
-
 
 static func atlas_index(mask: int) -> int:
 	var can: int = canonical_mask(mask)
@@ -184,27 +173,15 @@ static func atlas_index(mask: int) -> int:
 			return i
 	return masks.size() - 1
 
-
 static func _ensure_tile(src: TileSetAtlasSource, coords: Vector2i) -> void:
 	if not src.has_tile(coords):
 		src.create_tile(coords)
 
-
 static func _grass_peering(data: TileData) -> void:
 	data.terrain_set = 0
 	data.terrain = T_GRASS
-	for bit in [
-		TileSet.CELL_NEIGHBOR_RIGHT_SIDE,
-		TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
-		TileSet.CELL_NEIGHBOR_BOTTOM_SIDE,
-		TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
-		TileSet.CELL_NEIGHBOR_LEFT_SIDE,
-		TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
-		TileSet.CELL_NEIGHBOR_TOP_SIDE,
-		TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
-	]:
+	for bit in [TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER, TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER, TileSet.CELL_NEIGHBOR_LEFT_SIDE, TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER, TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER]:
 		data.set_terrain_peering_bit(bit, T_GRASS)
-
 
 static func _apply_peering(data: TileData, mask: int, self_t: int, other_t: int) -> void:
 	data.terrain_set = 0
