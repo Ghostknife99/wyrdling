@@ -10,8 +10,8 @@ extends "res://src/dungeon/dungeon.gd"
 const TILE_16 := 16
 const TERRAIN_SCALE := 0.5
 const CAMERA_SCALE := 2.0
-const ACTOR_MAX_W := 24.0
-const ACTOR_MAX_H := 24.0
+const ACTOR_MAX_W := 20.0
+const ACTOR_MAX_H := 28.0
 const PROP_SOURCE_SCALE := 0.5
 
 
