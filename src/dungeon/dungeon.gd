@@ -67,13 +67,23 @@ func _ready() -> void:
 
 
 func _load_tex(tile_name: String, fallback_path: String) -> Texture2D:
+	var aliases := {
+		"path": "dirt",
+		"tallgrass": "tall_grass",
+	}
+	var wilds_name: String = str(aliases.get(tile_name, tile_name))
+	var wilds_path := "res://art/tiles/wilds/%s.png" % wilds_name
+	if ResourceLoader.exists(wilds_path):
+		return load(wilds_path) as Texture2D
 	var p := "res://art/tiles/overworld/%s.png" % tile_name
 	if ResourceLoader.exists(p):
 		return load(p) as Texture2D
 	if fallback_path != "" and ResourceLoader.exists(fallback_path):
 		return load(fallback_path) as Texture2D
-	if tile_name != "stairs":
-		push_warning("Wyrdling: missing overworld tile %s" % p)
+	if tile_name in ["grass", "grass_alt", "path", "dirt"] and ResourceLoader.exists("res://art/tiles/floor.png"):
+		return load("res://art/tiles/floor.png") as Texture2D
+	if tile_name in ["cliff", "wall"] and ResourceLoader.exists("res://art/tiles/wall.png"):
+		return load("res://art/tiles/wall.png") as Texture2D
 	return null
 
 
@@ -200,12 +210,7 @@ func _draw() -> void:
 					if tex_stairs:
 						draw_texture_rect(tex_stairs, dest, false)
 				TREE:
-					if role == "sw":
-						_blit("tree_sw", dest)
-					elif role == "se":
-						_blit("tree_se", dest)
-					else:
-						_blit(_grass_name(x, y), dest)
+					_blit(_grass_name(x, y), dest)
 				FENCE:
 					_blit(_grass_name(x, y), dest)
 				TALLGRASS:
@@ -217,28 +222,20 @@ func _draw() -> void:
 			if t == GRASS or t == PATH or t == TALLGRASS or t == STAIRS:
 				_draw_cliff_top(x, y, dest)
 
-	# 2. Fence deco
-	for y in gh:
-		for x in gw:
-			if int(GameState.grid[y][x]) == FENCE:
-				_draw_fence(x, y)
+	for nw in GameState.trees:
+		var tp: Vector2i = nw
+		_blit("tree_sw", Rect2(tp.x * TILE, (tp.y + 1) * TILE, TILE, TILE))
+		_blit("tree_se", Rect2((tp.x + 1) * TILE, (tp.y + 1) * TILE, TILE, TILE))
+
+	# 2. Fence deco from map_gen kinds (h/v/post + yard corners)
+	for f in GameState.fence:
+		_draw_fence_kind(f["pos"], str(f["kind"]))
 
 	# 3. Y-sort: tree canopy (kind 0), wilds (1), player (2)
 	var marks: Array = []
-	var canopy_done: Dictionary = {}
-	for y in gh:
-		for x in gw:
-			if int(GameState.grid[y][x]) != TREE:
-				continue
-			var role := _tree_role(x, y)
-			if role == "nw":
-				var key := "%d,%d" % [x, y]
-				if canopy_done.has(key):
-					continue
-				canopy_done[key] = true
-				marks.append({"y": y + 1, "kind": 0, "pos": Vector2i(x, y), "role": "block"})
-			elif role == "lone":
-				marks.append({"y": y, "kind": 0, "pos": Vector2i(x, y), "role": "lone"})
+	for nw in GameState.trees:
+		var tp: Vector2i = nw
+		marks.append({"y": tp.y + 1, "kind": 0, "pos": tp})
 	for w in GameState.wilds:
 		var p: Vector2i = w["pos"]
 		marks.append({"y": p.y, "kind": 1, "pos": p, "wild": w})
@@ -248,15 +245,7 @@ func _draw() -> void:
 	for m in marks:
 		var kind: int = int(m["kind"])
 		if kind == 0:
-			var tp: Vector2i = m["pos"]
-			if str(m.get("role", "")) == "lone":
-				var tree_tex: Texture2D = _ow("tree")
-				if tree_tex:
-					# 64x64 fallback: y-offset -32 so canopy covers the tile above.
-					draw_texture_rect(tree_tex, Rect2(tp.x * TILE, tp.y * TILE - TILE, TILE * 2, TILE * 2), false)
-			else:
-				_blit("tree_nw", Rect2(tp.x * TILE, tp.y * TILE, TILE, TILE))
-				_blit("tree_ne", Rect2((tp.x + 1) * TILE, tp.y * TILE, TILE, TILE))
+			_draw_tree_canopy(m["pos"])
 		elif kind == 1:
 			var p: Vector2i = m["pos"]
 			var c: WyrdlingCreature = m["wild"]["creature"]
@@ -294,8 +283,24 @@ func _tree_role(x: int, y: int) -> String:
 
 
 func _draw_stitches(x: int, y: int, dest: Rect2) -> void:
-	_blit_ortho_stitches(x, y, dest, PATH, "path", true)
-	_blit_ortho_stitches(x, y, dest, WATER, "water", false)
+	var dirs: Array = [
+		[Vector2i(0, -1), "n"],
+		[Vector2i(1, 0), "e"],
+		[Vector2i(0, 1), "s"],
+		[Vector2i(-1, 0), "w"],
+		[Vector2i(1, -1), "ne"],
+		[Vector2i(-1, -1), "nw"],
+		[Vector2i(1, 1), "se"],
+		[Vector2i(-1, 1), "sw"],
+	]
+	for pair in dirs:
+		var d: Vector2i = pair[0]
+		var key: String = str(pair[1])
+		var nt: int = _tile_at(x + d.x, y + d.y)
+		if nt == WATER:
+			_blit("water_" + key, dest)
+		if _is_pathish(nt):
+			_blit("path_" + key, dest)
 	if _tile_at(x, y) == GRASS:
 		_blit_ortho_stitches(x, y, dest, TALLGRASS, "tallgrass", false)
 
@@ -335,67 +340,72 @@ func _draw_cliff_edges(x: int, y: int, dest: Rect2) -> void:
 	var e := _is_soft(_tile_at(x + 1, y))
 	var s := _is_soft(_tile_at(x, y + 1))
 	var w := _is_soft(_tile_at(x - 1, y))
+	# Occupancy: cliff_{dir} = cliff on that side, grass toward the open neighbor.
 	if n and e and not s and not w:
-		_blit("cliff_ne", dest)
-	elif n and w and not s and not e:
-		_blit("cliff_nw", dest)
-	elif s and e and not n and not w:
-		_blit("cliff_se", dest)
-	elif s and w and not n and not e:
 		_blit("cliff_sw", dest)
+	elif n and w and not s and not e:
+		_blit("cliff_se", dest)
+	elif s and e and not n and not w:
+		_blit("cliff_nw", dest)
+	elif s and w and not n and not e:
+		_blit("cliff_ne", dest)
 	else:
 		if n:
-			_blit("cliff_n", dest)
-		if e:
-			_blit("cliff_e", dest)
-		if s:
 			_blit("cliff_s", dest)
-		if w:
+		if e:
 			_blit("cliff_w", dest)
+		if s:
+			_blit("cliff_n", dest)
+		if w:
+			_blit("cliff_e", dest)
 
 
 func _draw_cliff_top(x: int, y: int, dest: Rect2) -> void:
 	if _tile_at(x, y + 1) != CLIFF:
 		return
-	var west_lip := _tile_at(x - 1, y + 1) == CLIFF
-	var east_lip := _tile_at(x + 1, y + 1) == CLIFF
-	if west_lip and east_lip:
-		_blit("cliff_top", dest)
-	elif east_lip:
+	var west_n := _tile_at(x - 1, y)
+	var east_n := _tile_at(x + 1, y)
+	var west_face := _tile_at(x - 1, y + 1) == CLIFF
+	var east_face := _tile_at(x + 1, y + 1) == CLIFF
+	var west_end := west_n == CLIFF or not west_face
+	var east_end := east_n == CLIFF or not east_face
+	if west_end and not east_end:
 		_blit("cliff_top_w", dest)
-	elif west_lip:
+	elif east_end and not west_end:
 		_blit("cliff_top_e", dest)
 	else:
 		_blit("cliff_top", dest)
 
 
-func _draw_fence(x: int, y: int) -> void:
-	var dest := Rect2(x * TILE, y * TILE, TILE, TILE)
-	var n := _tile_at(x, y - 1) == FENCE
-	var s := _tile_at(x, y + 1) == FENCE
-	var e := _tile_at(x + 1, y) == FENCE
-	var w := _tile_at(x - 1, y) == FENCE
-	if e and s and not n and not w:
-		_blit("fence_nw", dest)
-	elif w and s and not n and not e:
-		_blit("fence_ne", dest)
-	elif e and n and not s and not w:
-		_blit("fence_sw", dest)
-	elif w and n and not s and not e:
-		_blit("fence_se", dest)
-	elif (e or w) and not (n or s):
-		_blit("fence_h", dest)
-	elif (n or s) and not (e or w):
-		_blit("fence_v", dest)
-	else:
-		if e or w:
+func _draw_fence_kind(fp: Vector2i, kind: String) -> void:
+	var dest := Rect2(fp.x * TILE, fp.y * TILE, TILE, TILE)
+	match kind:
+		"h":
 			_blit("fence_h", dest)
-		if n or s:
+		"v":
 			_blit("fence_v", dest)
-		_blit("fence_post", dest)
-	if (e and s) or (w and s) or (e and n) or (w and n):
-		# Corner tiles already include the post; extra post is allowed.
-		pass
+		"nw":
+			_blit("fence_nw", dest)
+		"ne":
+			_blit("fence_ne", dest)
+		"sw":
+			_blit("fence_sw", dest)
+		"se":
+			_blit("fence_se", dest)
+		_:
+			_blit("fence_post", dest)
+
+
+func _draw_tree_canopy(tp: Vector2i) -> void:
+	var nw_tex: Texture2D = _ow("tree_nw")
+	var ne_tex: Texture2D = _ow("tree_ne")
+	if nw_tex and ne_tex:
+		draw_texture_rect(nw_tex, Rect2(tp.x * TILE, tp.y * TILE, TILE, TILE), false)
+		draw_texture_rect(ne_tex, Rect2((tp.x + 1) * TILE, tp.y * TILE, TILE, TILE), false)
+		return
+	var tree_tex: Texture2D = _ow("tree")
+	if tree_tex:
+		draw_texture_rect(tree_tex, Rect2(tp.x * TILE, tp.y * TILE, TILE * 2, TILE * 2), false)
 
 
 func _sort_marks(a: Dictionary, b: Dictionary) -> bool:
