@@ -36,7 +36,7 @@ func _run() -> void:
 
 	var parked: Array = gs.wilds
 	gs.wilds = []
-	_walk_north_along_path(dungeon, 16)
+	_pan_along_dirt(dungeon, 18)
 	await _wait_frames(10)
 	await _capture_pair()
 	print("player_pos=", gs.player_pos, " stairs=", gs.stairs_pos)
@@ -99,45 +99,34 @@ func _capture_pair() -> void:
 		print("wrote ", path, " ", img.get_width(), "x", img.get_height(), " err=", err)
 
 
-func _walk_north_along_path(dungeon: Node, steps: int) -> void:
-	var last := Vector2i(0, -1)
+func _pan_along_dirt(dungeon: Node, steps: int) -> void:
 	for _i in steps:
-		if dungeon.combat_open:
-			return
 		var from: Vector2i = gs.player_pos
-		var chosen := Vector2i.ZERO
-		var best := -99999
-		var dirs: Array[Vector2i] = [Vector2i(0, -1), Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1)]
-		for d in dirs:
+		if from == gs.stairs_pos:
+			break
+		var best: Vector2i = from
+		var best_score := -100000
+		var found := false
+		for d in [Vector2i(0, -1), Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1)]:
 			var np: Vector2i = from + d
 			if np == gs.stairs_pos:
 				continue
 			if not gs.walkable(np):
 				continue
-			if gs.wild_at(np) >= 0:
-				continue
 			var t: int = int(gs.grid[np.y][np.x])
-			var score: int = -np.y * 4
+			var score: int = -np.y * 10
 			if t == 3:
-				score += 20
-			elif t == 1:
-				score += 2
-			if d == last:
-				score += 3
-			if d.y > 0:
-				score -= 30
-			if score > best:
-				best = score
-				chosen = d
-		if chosen == Vector2i.ZERO:
-			return
-		last = chosen
-		if chosen.x > 0:
-			dungeon.last_dir = "right"
-		elif chosen.x < 0:
-			dungeon.last_dir = "left"
-		elif chosen.y < 0:
-			dungeon.last_dir = "up"
-		else:
-			dungeon.last_dir = "down"
-		dungeon._try_step(chosen)
+				score += 28
+			if np.y < from.y:
+				score += 36
+			if np.y > from.y:
+				score -= 50
+			if score > best_score:
+				best_score = score
+				best = np
+				found = true
+		if not found or best == from:
+			break
+		gs.player_pos = best
+	if dungeon.has_method("_refresh"):
+		dungeon._refresh()

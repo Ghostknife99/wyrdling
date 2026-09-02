@@ -3,7 +3,7 @@ extends Node2D
 const TILE := 32
 const SPRITE := 48
 const HUD_H := 48
-const GOLD := Color("E8C872")
+const GOLD := Color("E8C872")  # lantern accent, locked hex
 const INK := Color(0.94, 0.91, 0.84)
 const MUTED := Color(0.70, 0.66, 0.58)
 
@@ -11,29 +11,27 @@ const CLIFF := 0
 const GRASS := 1
 const STAIRS := 2
 const DIRT := 3
+const PATH := 3
 const WATER := 4
+const TALLGRASS := 5
 const TALL_GRASS := 5
 const TREE := 6
 const FENCE := 7
 
-var tex_cliff: Texture2D
-var tex_grass: Texture2D
-var tex_grass_alt: Texture2D
-var tex_dirt: Texture2D
-var tex_water: Texture2D
+const OW_NAMES: PackedStringArray = [
+	"grass", "grass_alt", "path", "water", "tallgrass", "cliff", "cliff_top",
+	"cliff_top_w", "cliff_top_e",
+	"path_n", "path_e", "path_s", "path_w", "path_ne", "path_nw", "path_se", "path_sw",
+	"water_n", "water_e", "water_s", "water_w", "water_ne", "water_nw", "water_se", "water_sw",
+	"tallgrass_n", "tallgrass_e", "tallgrass_s", "tallgrass_w",
+	"tallgrass_ne", "tallgrass_nw", "tallgrass_se", "tallgrass_sw",
+	"cliff_n", "cliff_e", "cliff_s", "cliff_w", "cliff_ne", "cliff_nw", "cliff_se", "cliff_sw",
+	"fence_h", "fence_v", "fence_post", "fence_nw", "fence_ne", "fence_sw", "fence_se",
+	"tree", "tree_nw", "tree_ne", "tree_sw", "tree_se",
+]
+
+var tex: Dictionary = {}
 var tex_stairs: Texture2D
-var tex_tall_grass: Texture2D
-var tex_tree: Texture2D
-var tex_fence_h: Texture2D
-var tex_fence_v: Texture2D
-var tex_fence_post: Texture2D
-var tex_shore_n: Texture2D
-var tex_shore_e: Texture2D
-var tex_shore_s: Texture2D
-var tex_shore_w: Texture2D
-var tex_wall: Texture2D
-var tex_floor: Texture2D
-var tex_floor_alt: Texture2D
 var tex_player: Texture2D
 var player_facing: Dictionary = {}
 var last_dir: String = "down"
@@ -48,24 +46,9 @@ var cam: Camera2D
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	tex_wall = _load_tex("cliff", "res://art/tiles/wall.png")
-	tex_floor = _load_tex("grass", "res://art/tiles/floor.png")
-	tex_floor_alt = _load_tex("grass_alt", "res://art/tiles/floor_alt.png")
-	tex_cliff = _load_tex("cliff", "res://art/tiles/wall.png")
-	tex_grass = _load_tex("grass", "res://art/tiles/floor.png")
-	tex_grass_alt = _load_tex("grass_alt", "res://art/tiles/floor_alt.png")
-	tex_dirt = _load_tex("dirt", "res://art/tiles/floor.png")
-	tex_water = _load_tex("water", "res://art/tiles/floor.png")
+	for n in OW_NAMES:
+		tex[n] = _load_tex(n, "")
 	tex_stairs = _load_tex("stairs", "res://art/tiles/stairs.png")
-	tex_tall_grass = _load_tex("tall_grass", "")
-	tex_tree = _load_tex("tree", "")
-	tex_fence_h = _load_tex("fence_h", "")
-	tex_fence_v = _load_tex("fence_v", "")
-	tex_fence_post = _load_tex("fence_post", "")
-	tex_shore_n = _load_tex("shore_n", "")
-	tex_shore_e = _load_tex("shore_e", "")
-	tex_shore_s = _load_tex("shore_s", "")
-	tex_shore_w = _load_tex("shore_w", "")
 	for facing in ["down", "up", "left", "right"]:
 		var path := "res://art/player/delver_idle_%s.png" % facing
 		if ResourceLoader.exists(path):
@@ -83,13 +66,25 @@ func _ready() -> void:
 	_refresh()
 
 
-func _load_tex(wilds_name: String, fallback_path: String) -> Texture2D:
-	var p := "res://art/tiles/wilds/%s.png" % wilds_name
+func _load_tex(tile_name: String, fallback_path: String) -> Texture2D:
+	var p := "res://art/tiles/overworld/%s.png" % tile_name
 	if ResourceLoader.exists(p):
 		return load(p) as Texture2D
 	if fallback_path != "" and ResourceLoader.exists(fallback_path):
 		return load(fallback_path) as Texture2D
+	if tile_name != "stairs":
+		push_warning("Wyrdling: missing overworld tile %s" % p)
 	return null
+
+
+func _ow(tile_name: String) -> Texture2D:
+	return tex.get(tile_name, null) as Texture2D
+
+
+func _blit(tile_name: String, dest: Rect2) -> void:
+	var t: Texture2D = _ow(tile_name)
+	if t:
+		draw_texture_rect(t, dest, false)
 
 
 func _build_camera() -> void:
@@ -97,6 +92,7 @@ func _build_camera() -> void:
 	cam.enabled = true
 	cam.anchor_mode = Camera2D.ANCHOR_MODE_DRAG_CENTER
 	cam.position_smoothing_enabled = false
+	cam.offset = Vector2.ZERO
 	add_child(cam)
 	cam.make_current()
 
@@ -171,12 +167,12 @@ func _tile_at(x: int, y: int) -> int:
 	return int(GameState.grid[y][x])
 
 
-func _is_water(x: int, y: int) -> bool:
-	return _tile_at(x, y) == WATER
+func _is_pathish(t: int) -> bool:
+	return t == PATH or t == STAIRS
 
 
-func _is_land(t: int) -> bool:
-	return t != WATER and t != CLIFF
+func _is_soft(t: int) -> bool:
+	return t == GRASS or t == PATH or t == STAIRS or t == TALLGRASS or t == TREE or t == FENCE
 
 
 func _draw() -> void:
@@ -185,64 +181,221 @@ func _draw() -> void:
 	var gw: int = GameState.MAP_W
 	var gh: int = GameState.MAP_H
 
+	# 1. Ground fills + path/water/tallgrass/cliff stitches + tree trunks
 	for y in gh:
 		for x in gw:
 			var t: int = int(GameState.grid[y][x])
 			var dest := Rect2(x * TILE, y * TILE, TILE, TILE)
+			var role := _tree_role(x, y)
 			match t:
 				CLIFF:
-					_blit(tex_cliff, dest, tex_wall)
+					_blit("cliff", dest)
+					_draw_cliff_edges(x, y, dest)
 				WATER:
-					_blit(tex_water, dest, tex_floor)
+					_blit("water", dest)
+				PATH:
+					_blit("path", dest)
 				STAIRS:
-					_blit(tex_stairs, dest, tex_floor)
-				DIRT:
-					_blit(tex_dirt, dest, tex_floor)
+					_blit("path", dest)
+					if tex_stairs:
+						draw_texture_rect(tex_stairs, dest, false)
+				TREE:
+					if role == "sw":
+						_blit("tree_sw", dest)
+					elif role == "se":
+						_blit("tree_se", dest)
+					else:
+						_blit(_grass_name(x, y), dest)
+				FENCE:
+					_blit(_grass_name(x, y), dest)
+				TALLGRASS:
+					_blit(_grass_name(x, y), dest)
 				_:
-					var ft: Texture2D = tex_grass if ((x + y) % 2 == 0) else tex_grass_alt
-					if ft == null:
-						ft = tex_floor if ((x + y) % 2 == 0) else tex_floor_alt
-					if ft:
-						draw_texture_rect(ft, dest, false)
-			if _is_land(t):
-				_draw_shores(x, y, dest)
+					_blit(_grass_name(x, y), dest)
+			if t == GRASS or t == TALLGRASS:
+				_draw_stitches(x, y, dest)
+			if t == GRASS or t == PATH or t == TALLGRASS or t == STAIRS:
+				_draw_cliff_top(x, y, dest)
 
+	# 2. Fence deco
 	for y in gh:
 		for x in gw:
 			if int(GameState.grid[y][x]) == FENCE:
 				_draw_fence(x, y)
 
+	# 3. Y-sort: tree canopy (kind 0), wilds (1), player (2)
 	var marks: Array = []
+	var canopy_done: Dictionary = {}
+	for y in gh:
+		for x in gw:
+			if int(GameState.grid[y][x]) != TREE:
+				continue
+			var role := _tree_role(x, y)
+			if role == "nw":
+				var key := "%d,%d" % [x, y]
+				if canopy_done.has(key):
+					continue
+				canopy_done[key] = true
+				marks.append({"y": y + 1, "kind": 0, "pos": Vector2i(x, y), "role": "block"})
+			elif role == "lone":
+				marks.append({"y": y, "kind": 0, "pos": Vector2i(x, y), "role": "lone"})
 	for w in GameState.wilds:
 		var p: Vector2i = w["pos"]
 		marks.append({"y": p.y, "kind": 1, "pos": p, "wild": w})
 	var pp: Vector2i = GameState.player_pos
 	marks.append({"y": pp.y, "kind": 2, "pos": pp})
-	for y in gh:
-		for x in gw:
-			if int(GameState.grid[y][x]) == TREE:
-				marks.append({"y": y, "kind": 0, "pos": Vector2i(x, y)})
 	marks.sort_custom(_sort_marks)
 	for m in marks:
 		var kind: int = int(m["kind"])
 		if kind == 0:
 			var tp: Vector2i = m["pos"]
-			if tex_tree:
-				draw_texture_rect(tex_tree, Rect2(tp.x * TILE, tp.y * TILE - TILE, TILE, TILE * 2), false)
+			if str(m.get("role", "")) == "lone":
+				var tree_tex: Texture2D = _ow("tree")
+				if tree_tex:
+					# 64x64 fallback: y-offset -32 so canopy covers the tile above.
+					draw_texture_rect(tree_tex, Rect2(tp.x * TILE, tp.y * TILE - TILE, TILE * 2, TILE * 2), false)
+			else:
+				_blit("tree_nw", Rect2(tp.x * TILE, tp.y * TILE, TILE, TILE))
+				_blit("tree_ne", Rect2((tp.x + 1) * TILE, tp.y * TILE, TILE, TILE))
 		elif kind == 1:
 			var p: Vector2i = m["pos"]
 			var c: WyrdlingCreature = m["wild"]["creature"]
-			var tex: Texture2D = creature_tex.get(c.species_id, tex_player)
-			draw_texture_rect(tex, _sprite_dest(p), false)
+			var ctex: Texture2D = creature_tex.get(c.species_id, tex_player)
+			draw_texture_rect(ctex, _sprite_dest(p), false)
 		else:
 			var ptex: Texture2D = player_facing.get(last_dir, tex_player)
 			draw_texture_rect(ptex, _sprite_dest(pp), false)
 
-	if tex_tall_grass:
-		for y in gh:
-			for x in gw:
-				if int(GameState.grid[y][x]) == TALL_GRASS:
-					draw_texture_rect(tex_tall_grass, Rect2(x * TILE, y * TILE, TILE, TILE), false)
+	# Tall grass last so blades hide feet of delver/wilds on that tile.
+	for y in gh:
+		for x in gw:
+			if int(GameState.grid[y][x]) == TALLGRASS:
+				_blit("tallgrass", Rect2(x * TILE, y * TILE, TILE, TILE))
+
+
+func _grass_name(x: int, y: int) -> String:
+	if (x + y) % 2 == 0:
+		return "grass"
+	return "grass_alt"
+
+
+func _tree_role(x: int, y: int) -> String:
+	if _tile_at(x, y) != TREE:
+		return ""
+	if _tile_at(x + 1, y) == TREE and _tile_at(x, y + 1) == TREE and _tile_at(x + 1, y + 1) == TREE:
+		return "nw"
+	if _tile_at(x - 1, y) == TREE and _tile_at(x - 1, y + 1) == TREE and _tile_at(x, y + 1) == TREE:
+		return "ne"
+	if _tile_at(x + 1, y) == TREE and _tile_at(x, y - 1) == TREE and _tile_at(x + 1, y - 1) == TREE:
+		return "sw"
+	if _tile_at(x - 1, y) == TREE and _tile_at(x - 1, y - 1) == TREE and _tile_at(x, y - 1) == TREE:
+		return "se"
+	return "lone"
+
+
+func _draw_stitches(x: int, y: int, dest: Rect2) -> void:
+	_blit_ortho_stitches(x, y, dest, PATH, "path", true)
+	_blit_ortho_stitches(x, y, dest, WATER, "water", false)
+	if _tile_at(x, y) == GRASS:
+		_blit_ortho_stitches(x, y, dest, TALLGRASS, "tallgrass", false)
+
+
+func _match_id(t: int, want: int, pathish: bool) -> bool:
+	if pathish:
+		return _is_pathish(t)
+	return t == want
+
+
+func _blit_ortho_stitches(x: int, y: int, dest: Rect2, want: int, prefix: String, pathish: bool) -> void:
+	var n := _match_id(_tile_at(x, y - 1), want, pathish)
+	var e := _match_id(_tile_at(x + 1, y), want, pathish)
+	var s := _match_id(_tile_at(x, y + 1), want, pathish)
+	var w := _match_id(_tile_at(x - 1, y), want, pathish)
+	if n and e and not s and not w:
+		_blit("%s_ne" % prefix, dest)
+	elif n and w and not s and not e:
+		_blit("%s_nw" % prefix, dest)
+	elif s and e and not n and not w:
+		_blit("%s_se" % prefix, dest)
+	elif s and w and not n and not e:
+		_blit("%s_sw" % prefix, dest)
+	else:
+		if n:
+			_blit("%s_n" % prefix, dest)
+		if e:
+			_blit("%s_e" % prefix, dest)
+		if s:
+			_blit("%s_s" % prefix, dest)
+		if w:
+			_blit("%s_w" % prefix, dest)
+
+
+func _draw_cliff_edges(x: int, y: int, dest: Rect2) -> void:
+	var n := _is_soft(_tile_at(x, y - 1))
+	var e := _is_soft(_tile_at(x + 1, y))
+	var s := _is_soft(_tile_at(x, y + 1))
+	var w := _is_soft(_tile_at(x - 1, y))
+	if n and e and not s and not w:
+		_blit("cliff_ne", dest)
+	elif n and w and not s and not e:
+		_blit("cliff_nw", dest)
+	elif s and e and not n and not w:
+		_blit("cliff_se", dest)
+	elif s and w and not n and not e:
+		_blit("cliff_sw", dest)
+	else:
+		if n:
+			_blit("cliff_n", dest)
+		if e:
+			_blit("cliff_e", dest)
+		if s:
+			_blit("cliff_s", dest)
+		if w:
+			_blit("cliff_w", dest)
+
+
+func _draw_cliff_top(x: int, y: int, dest: Rect2) -> void:
+	if _tile_at(x, y + 1) != CLIFF:
+		return
+	var west_lip := _tile_at(x - 1, y + 1) == CLIFF
+	var east_lip := _tile_at(x + 1, y + 1) == CLIFF
+	if west_lip and east_lip:
+		_blit("cliff_top", dest)
+	elif east_lip:
+		_blit("cliff_top_w", dest)
+	elif west_lip:
+		_blit("cliff_top_e", dest)
+	else:
+		_blit("cliff_top", dest)
+
+
+func _draw_fence(x: int, y: int) -> void:
+	var dest := Rect2(x * TILE, y * TILE, TILE, TILE)
+	var n := _tile_at(x, y - 1) == FENCE
+	var s := _tile_at(x, y + 1) == FENCE
+	var e := _tile_at(x + 1, y) == FENCE
+	var w := _tile_at(x - 1, y) == FENCE
+	if e and s and not n and not w:
+		_blit("fence_nw", dest)
+	elif w and s and not n and not e:
+		_blit("fence_ne", dest)
+	elif e and n and not s and not w:
+		_blit("fence_sw", dest)
+	elif w and n and not s and not e:
+		_blit("fence_se", dest)
+	elif (e or w) and not (n or s):
+		_blit("fence_h", dest)
+	elif (n or s) and not (e or w):
+		_blit("fence_v", dest)
+	else:
+		if e or w:
+			_blit("fence_h", dest)
+		if n or s:
+			_blit("fence_v", dest)
+		_blit("fence_post", dest)
+	if (e and s) or (w and s) or (e and n) or (w and n):
+		# Corner tiles already include the post; extra post is allowed.
+		pass
 
 
 func _sort_marks(a: Dictionary, b: Dictionary) -> bool:
@@ -252,43 +405,13 @@ func _sort_marks(a: Dictionary, b: Dictionary) -> bool:
 
 
 func _sprite_dest(p: Vector2i) -> Rect2:
+	# Bottom-align 48px sprites on the 32px tile so heads overflow north (GBA 3/4).
 	return Rect2(
 		p.x * TILE + (TILE - SPRITE) / 2.0,
 		p.y * TILE + TILE - SPRITE,
 		SPRITE,
 		SPRITE
 	)
-
-
-func _blit(tex: Texture2D, dest: Rect2, fallback: Texture2D) -> void:
-	var t: Texture2D = tex if tex else fallback
-	if t:
-		draw_texture_rect(t, dest, false)
-
-
-func _draw_shores(x: int, y: int, dest: Rect2) -> void:
-	if _is_water(x, y - 1) and tex_shore_n:
-		draw_texture_rect(tex_shore_n, dest, false)
-	if _is_water(x + 1, y) and tex_shore_e:
-		draw_texture_rect(tex_shore_e, dest, false)
-	if _is_water(x, y + 1) and tex_shore_s:
-		draw_texture_rect(tex_shore_s, dest, false)
-	if _is_water(x - 1, y) and tex_shore_w:
-		draw_texture_rect(tex_shore_w, dest, false)
-
-
-func _draw_fence(x: int, y: int) -> void:
-	var dest := Rect2(x * TILE, y * TILE, TILE, TILE)
-	var n := _tile_at(x, y - 1) == FENCE
-	var s := _tile_at(x, y + 1) == FENCE
-	var e := _tile_at(x + 1, y) == FENCE
-	var w := _tile_at(x - 1, y) == FENCE
-	if (e or w) and tex_fence_h:
-		draw_texture_rect(tex_fence_h, dest, false)
-	if (n or s) and tex_fence_v:
-		draw_texture_rect(tex_fence_v, dest, false)
-	if tex_fence_post:
-		draw_texture_rect(tex_fence_post, dest, false)
 
 
 func _unhandled_input(event: InputEvent) -> void:
