@@ -8,7 +8,8 @@ extends "res://src/dungeon/dungeon.gd"
 ## route framing stays close to the previous 32px presentation.
 ##
 ## The Delver uses a dedicated 24x34 polished sprite sheet with four directional
-## walk frames. Movement remains grid based; only the presentation animates.
+## walk frames. The sheet is reconstructed at runtime from a text-safe palette
+## asset so connector uploads cannot corrupt the PNG.
 
 const TILE_16 := 16
 const TERRAIN_SCALE := 0.5
@@ -22,7 +23,7 @@ const PROP_SOURCE_SCALE := 0.5
 const PLAYER_FRAME_W := 24
 const PLAYER_FRAME_H := 34
 const WALK_FRAME_MS := 35
-const PLAYER_SHEET_PATH := "res://art/player/delver_polished_sheet.png"
+const PLAYER_ART = preload("res://src/dungeon/delver_art.gd")
 
 var polished_player_idle: Dictionary = {}
 var polished_player_walk: Dictionary = {}
@@ -42,10 +43,9 @@ func _ready() -> void:
 
 
 func _load_polished_player() -> void:
-	if not ResourceLoader.exists(PLAYER_SHEET_PATH):
+	var sheet: Texture2D = PLAYER_ART.make_sheet()
+	if sheet == null:
 		return
-
-	var sheet: Texture2D = load(PLAYER_SHEET_PATH)
 	var rows := {
 		"down": 0,
 		"left": 1,
