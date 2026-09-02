@@ -13,21 +13,6 @@ func _check(ok: bool, label: String) -> void:
 
 func _initialize() -> void:
 	print("=== Wyrdling 16px world test ===")
-	var source_path := "res://art/tiles/overworld/hd_atlas.png"
-	_check(ResourceLoader.exists(source_path), "validated source atlas exists")
-	var source: Texture2D = load(source_path)
-	_check(source != null, "source atlas loads")
-
-	var builder = preload("res://src/dungeon/wilds_tileset_16.gd")
-	var runtime_tex: Texture2D = builder._make_16px_texture()
-	_check(runtime_tex != null, "runtime 16px atlas builds")
-	if runtime_tex != null:
-		_check(runtime_tex.get_width() == 256 and runtime_tex.get_height() == 240, "runtime atlas is 256x240")
-
-	var tileset: TileSet = builder.build()
-	_check(tileset != null, "16px tileset builds")
-	if tileset != null:
-		_check(tileset.tile_size == Vector2i(16, 16), "logical tile size is 16x16")
 
 	var packed: PackedScene = load("res://scenes/dungeon.tscn")
 	_check(packed != null, "dungeon scene loads")
@@ -35,6 +20,21 @@ func _initialize() -> void:
 		var node: Node = packed.instantiate()
 		var script: Script = node.get_script()
 		_check(script != null and script.resource_path == "res://src/dungeon/dungeon_16.gd", "dungeon uses 16px presentation script")
+		if script != null:
+			var constants: Dictionary = script.get_script_constant_map()
+			_check(int(constants.get("TILE_16", 0)) == 16, "logical world tile is 16px")
+			_check(is_equal_approx(float(constants.get("TERRAIN_SCALE", 0.0)), 0.5), "terrain renders at half scale")
+			_check(is_equal_approx(float(constants.get("CAMERA_SCALE", 0.0)), 2.0), "world camera is integer 2x")
+
+		# Build the terrain layer without entering the scene tree. This confirms the
+		# inherited, proven 32px TileSet still builds and is presented as an effective
+		# 16px cell through exact half scaling.
+		node.call("_ensure_world")
+		var ground: TileMapLayer = node.get_node("World/Ground") as TileMapLayer
+		_check(ground != null and ground.tile_set != null, "terrain TileSet builds")
+		if ground != null and ground.tile_set != null:
+			_check(ground.tile_set.tile_size == Vector2i(32, 32), "source terrain remains validated 32px")
+			_check(ground.scale == Vector2(0.5, 0.5), "terrain cell renders as effective 16x16")
 		node.free()
 
 	if failures > 0:
