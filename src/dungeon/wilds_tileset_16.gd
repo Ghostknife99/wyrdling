@@ -1,5 +1,7 @@
 extends RefCounted
-## 16x16 overworld TileSet. Uses the same 47-tile blob layout as wilds_tileset.gd.
+## 16x16 overworld TileSet. The 16px atlas is generated at runtime from the
+## existing, validated 32px terrain atlas with nearest-neighbour resampling.
+## This keeps one source-of-truth art asset and guarantees crisp 2x presentation.
 
 const BASE = preload("res://src/dungeon/wilds_tileset.gd")
 const TILE := 16
@@ -7,7 +9,7 @@ const T_GRASS := 0
 const T_PATH := 1
 const T_WATER := 2
 const WATER_FRAMES := 3
-const ATLAS := "res://art/tiles/overworld/wilds_atlas_16.png"
+const SOURCE_ATLAS := "res://art/tiles/overworld/hd_atlas.png"
 
 const SRC_COORDS := {
 	"grass": Vector2i(0, 0),
@@ -31,13 +33,29 @@ const SRC_COORDS := {
 }
 
 
+static func _make_16px_texture() -> Texture2D:
+	var source: Texture2D = load(SOURCE_ATLAS)
+	if source == null:
+		push_error("Wyrdling: failed to load source overworld atlas")
+		return null
+	var image: Image = source.get_image()
+	if image == null or image.is_empty():
+		push_error("Wyrdling: source overworld atlas has no image data")
+		return null
+	image.resize(int(image.get_width() / 2), int(image.get_height() / 2), Image.INTERPOLATE_NEAREST)
+	return ImageTexture.create_from_image(image)
+
+
 static func build() -> TileSet:
-	var tex: Texture2D = load(ATLAS)
+	var tex: Texture2D = _make_16px_texture()
+	if tex == null:
+		return null
+
 	var ts := TileSet.new()
 	ts.tile_size = Vector2i(TILE, TILE)
 	ts.add_terrain_set()
 	ts.set_terrain_set_mode(0, TileSet.TERRAIN_MODE_MATCH_CORNERS_AND_SIDES)
-	for name in ["grass", "path", "water"]:
+	for _name in ["grass", "path", "water"]:
 		ts.add_terrain(0)
 	var grass_id := 0
 	var path_id := 1
