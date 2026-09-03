@@ -200,7 +200,7 @@ static func _place_riftstone_landmark(grid: Array, props: Array, trees: Array, c
 		# one oversized junction.
 		if not _looks_like_main_trail(grid, anchor):
 			continue
-		if anchor.distance_to(cave_door) < 9.0:
+		if anchor.distance_to(cave_door) < 6.0:
 			continue
 		for side: int in [-1, 1]:
 			var center := anchor + Vector2i(side * 8, 0)
@@ -208,8 +208,7 @@ static func _place_riftstone_landmark(grid: Array, props: Array, trees: Array, c
 			if not _landmark_area_ok(grid, critical, top_left, width, height):
 				continue
 			var score := absi(anchor.y - int(height * 0.48)) * 2 + absi(center.x - int(width / 2))
-			if best_score < 999999:
-				score += maxi(0, 13 - int(anchor.distance_to(cave_door))) * 2
+			score += maxi(0, 10 - int(anchor.distance_to(cave_door)))
 			if score < best_score:
 				best_score = score
 				chosen_anchor = anchor
