@@ -1,0 +1,32 @@
+name: Route geometry capture
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Godot
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.4.1
+          use-dotnet: false
+          include-templates: false
+      - name: Install virtual display
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+      - name: Import project
+        run: godot --headless --editor --path . --quit
+      - name: Prepare screenshot output
+        run: sudo mkdir -p /workspace/wyrdling/shots && sudo chown -R $USER:$USER /workspace/wyrdling
+      - name: Capture route geometry
+        run: xvfb-run -a godot --path . -s res://src/smoke/capture_route_geometry.gd
+      - name: Upload route screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: route-geometry-capture
+          path: /workspace/wyrdling/shots/*.png
+          if-no-files-found: error
