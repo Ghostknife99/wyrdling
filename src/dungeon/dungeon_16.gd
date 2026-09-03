@@ -20,6 +20,7 @@ const PLAYER_FRAME_H := 34
 const WALK_FRAME_MS := 35
 const PLAYER_ART = preload("res://src/dungeon/delver_art.gd")
 const NPC_CATALOG = preload("res://src/dungeon/npc_catalog.gd")
+const NPC_ART = preload("res://src/dungeon/npc_art.gd")
 const SCENERY_ART = preload("res://src/dungeon/scenery_art_hd.gd")
 const COMPOSITION_ART = preload("res://src/dungeon/composition_art.gd")
 
@@ -63,12 +64,9 @@ func _load_polished_player() -> void:
 
 
 func _load_polished_npcs() -> void:
-	var path := "res://art/npcs/npc_atlas.png"
-	if not ResourceLoader.exists(path):
-		push_warning("Wyrdling: polished NPC atlas is missing")
-		return
-	npc_atlas = load(path) as Texture2D
+	npc_atlas = NPC_ART.make_atlas()
 	if npc_atlas == null:
+		push_warning("Wyrdling: polished NPC atlas failed to decode")
 		return
 
 	for variant: int in NPC_CATALOG.TYPE_COUNT:
