@@ -63,19 +63,21 @@ static func generate(width: int, height: int, floor_num: int, rng: RandomNumberG
 	var stairs_x: int = clampi(int(width / 2) + rng.randi_range(-9, 9), 8, width - 9)
 	var stairs: Vector2i = Vector2i(stairs_x, 5)
 
-	# Main route: broad, readable bends rather than maze-like noise.
+	# Main route: long natural sweeps. The centreline is four-connected so it
+	# remains dependable for movement, while the dirt shoulder wanders from side
+	# to side instead of stamping a constant three-tile-wide corridor.
 	var waypoints: Array[Vector2i] = [opening]
-	var bend_count: int = rng.randi_range(3, 4)
+	var bend_count: int = rng.randi_range(4, 5)
+	var curve_sign: int = -1 if rng.randf() < 0.5 else 1
 	for i: int in bend_count:
 		var t: float = float(i + 1) / float(bend_count + 1)
 		var wy: int = int(lerpf(float(opening.y), float(stairs.y), t))
 		var wx: int = int(lerpf(float(opening.x), float(stairs.x), t))
-		var swing: int = rng.randi_range(6, 11)
-		if i % 2 == 0:
-			wx += swing
-		else:
-			wx -= swing
+		var swing: int = rng.randi_range(5, 10)
+		wx += swing * curve_sign
 		waypoints.append(Vector2i(clampi(wx, 7, width - 8), clampi(wy, 8, height - 12)))
+		if rng.randf() < 0.82:
+			curve_sign *= -1
 	waypoints.append(stairs)
 
 	for i: int in range(1, waypoints.size()):
@@ -198,35 +200,87 @@ static func _label_fences(fence: Array) -> void:
 
 static func _carve_path(grid: Array, width: int, height: int, a: Vector2i, b: Vector2i, rng: RandomNumberGenerator) -> void:
 	var p: Vector2i = a
-	var horiz_first: bool = rng.randf() < 0.5
-	var guard: int = 0
+	var total_dx: int = maxi(absi(b.x - a.x), 1)
+	var total_dy: int = maxi(absi(b.y - a.y), 1)
+	var shoulder_side: int = -1 if rng.randf() < 0.5 else 1
+	var last_dir := Vector2i(0, -1)
+	var step_index := 0
+	var guard := 0
+
 	while p != b and guard < 600:
 		guard += 1
-		_stamp_path(grid, width, height, p.x, p.y, 1)
-		if horiz_first:
-			if p.x != b.x:
-				p.x += signi(b.x - p.x)
-			elif p.y != b.y:
-				p.y += signi(b.y - p.y)
+		var remain_x: int = absi(b.x - p.x)
+		var remain_y: int = absi(b.y - p.y)
+		var move_x := false
+		if remain_y == 0:
+			move_x = true
+		elif remain_x == 0:
+			move_x = false
 		else:
-			if p.y != b.y:
-				p.y += signi(b.y - p.y)
-			elif p.x != b.x:
-				p.x += signi(b.x - p.x)
-		if rng.randf() < 0.12:
-			horiz_first = not horiz_first
-	_stamp_path(grid, width, height, b.x, b.y, 1)
+			# Whichever axis has made less proportional progress gets the next step.
+			# A tiny random bias stops repeated slopes looking mechanically identical.
+			var x_pressure: float = float(remain_x) / float(total_dx)
+			var y_pressure: float = float(remain_y) / float(total_dy)
+			move_x = x_pressure + rng.randf_range(-0.06, 0.06) >= y_pressure
+
+		var next := p
+		if move_x:
+			next.x += signi(b.x - p.x)
+		else:
+			next.y += signi(b.y - p.y)
+		var direction: Vector2i = next - p
+
+		_stamp_trail_cell(grid, width, height, p, direction, shoulder_side, step_index, rng)
+		if direction != last_dir and step_index > 1:
+			_round_trail_turn(grid, width, height, p, last_dir, direction, rng)
+
+		p = next
+		last_dir = direction
+		step_index += 1
+		if step_index % rng.randi_range(5, 8) == 0:
+			shoulder_side *= -1
+
+	_stamp_trail_cell(grid, width, height, b, last_dir, shoulder_side, step_index, rng)
+
+
+static func _stamp_trail_cell(grid: Array, width: int, height: int, p: Vector2i, direction: Vector2i, shoulder_side: int, step_index: int, rng: RandomNumberGenerator) -> void:
+	_set_dirt(grid, width, height, p)
+	if direction == Vector2i.ZERO:
+		return
+
+	var perpendicular := Vector2i(-direction.y, direction.x)
+	# Most of the trail is two tiles across, but the shoulder skips and swaps
+	# often enough to produce a broken, walked-in edge rather than a ribbon.
+	if step_index % 4 != 1 or rng.randf() < 0.28:
+		_set_dirt(grid, width, height, p + perpendicular * shoulder_side)
+	# Sparse opposite-side wear creates little passing pockets without restoring
+	# the old constant three-tile width.
+	if step_index % 13 == 0 and rng.randf() < 0.52:
+		_set_dirt(grid, width, height, p - perpendicular * shoulder_side)
+
+
+static func _round_trail_turn(grid: Array, width: int, height: int, p: Vector2i, old_dir: Vector2i, new_dir: Vector2i, rng: RandomNumberGenerator) -> void:
+	if old_dir == Vector2i.ZERO or new_dir == Vector2i.ZERO or old_dir == new_dir:
+		return
+	if rng.randf() > 0.68:
+		return
+	var inside_corner := p + old_dir + new_dir
+	_set_dirt(grid, width, height, inside_corner)
+
+
+static func _set_dirt(grid: Array, width: int, height: int, p: Vector2i) -> void:
+	if not _inner(p.x, p.y, width, height):
+		return
+	if int(grid[p.y][p.x]) != CLIFF:
+		grid[p.y][p.x] = DIRT
 
 
 static func _stamp_path(grid: Array, width: int, height: int, x: int, y: int, radius: int) -> void:
 	for dy: int in range(-radius, radius + 1):
 		for dx: int in range(-radius, radius + 1):
-			var px: int = x + dx
-			var py: int = y + dy
-			if not _inner(px, py, width, height):
+			if dx * dx + dy * dy > radius * radius:
 				continue
-			if int(grid[py][px]) != CLIFF:
-				grid[py][px] = DIRT
+			_set_dirt(grid, width, height, Vector2i(x + dx, y + dy))
 
 
 static func _place_water(grid: Array, width: int, height: int, start: Vector2i, stairs: Vector2i, rng: RandomNumberGenerator) -> void:
