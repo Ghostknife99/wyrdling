@@ -2,6 +2,7 @@ extends Node
 
 const MAP_W := 64
 const MAP_H := 48
+const WORLD_COMPOSITION = preload("res://src/dungeon/world_composition.gd")
 
 var rng := RandomNumberGenerator.new()
 var in_run := false
@@ -38,6 +39,7 @@ func start_run(starter_id: String) -> void:
 
 func generate_floor() -> void:
 	var result: Dictionary = preload("res://src/dungeon/route_gen.gd").generate(MAP_W, MAP_H, floor_num, rng)
+	result = WORLD_COMPOSITION.apply(result, MAP_W, MAP_H, floor_num, rng)
 	grid = result["grid"]
 	player_pos = result["start"]
 	stairs_pos = result["stairs"]
@@ -170,10 +172,23 @@ func walkable(p: Vector2i) -> bool:
 		return false
 	if grid.is_empty():
 		return false
+	if _walkable_prop_at(p):
+		return true
 	var t: int = int(grid[p.y][p.x])
 	if not (t == 1 or t == 2 or t == 3 or t == 5):
 		return false
 	return not prop_blocks(p)
+
+
+func _walkable_prop_at(p: Vector2i) -> bool:
+	for prop in world_props:
+		if not bool(prop.get("walkable", false)):
+			continue
+		var blocks: Array = prop.get("blocks", [])
+		for cell in blocks:
+			if cell == p:
+				return true
+	return false
 
 
 func prop_blocks(p: Vector2i) -> bool:
@@ -185,6 +200,8 @@ func prop_blocks(p: Vector2i) -> bool:
 		if p.y == tpos.y + 1 and p.x >= tpos.x and p.x <= tpos.x + 1:
 			return true
 	for prop in world_props:
+		if bool(prop.get("walkable", false)):
+			continue
 		var blocks: Array = prop.get("blocks", [])
 		for cell in blocks:
 			if cell == p:
