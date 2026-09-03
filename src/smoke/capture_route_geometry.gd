@@ -27,6 +27,7 @@ func _run() -> void:
 	gs.rng.seed = 7
 	gs.start_run("glimmerling")
 	gs.wilds = []
+	_print_geometry_diagnostics()
 	dungeon = load("res://scenes/dungeon.tscn").instantiate()
 	root.add_child(dungeon)
 	await _wait_frames(16)
@@ -45,6 +46,27 @@ func _run() -> void:
 
 	print("CAPTURED route geometry")
 	quit(0)
+
+
+func _print_geometry_diagnostics() -> void:
+	print("GEOMETRY player=", gs.player_pos, " stairs=", gs.stairs_pos)
+	for raw in gs.world_props:
+		var prop: Dictionary = raw
+		var kind: String = str(prop.get("kind", ""))
+		if kind in ["bridge", "riftstone", "cave", "lodge"]:
+			print("PROP ", kind, " pos=", prop.get("pos"), " interact=", prop.get("interact_pos"), " blocks=", prop.get("blocks", []).size())
+	for y: int in range(gs.MAP_H):
+		var runs: Array[String] = []
+		var run_start := -1
+		for x: int in range(gs.MAP_W + 1):
+			var dirt := x < gs.MAP_W and int(gs.grid[y][x]) == 3
+			if dirt and run_start < 0:
+				run_start = x
+			elif not dirt and run_start >= 0:
+				runs.append("%d-%d" % [run_start, x - 1])
+				run_start = -1
+		if not runs.is_empty():
+			print("DIRT y=", y, " runs=", ",".join(runs))
 
 
 func _best_mid_trail_cell() -> Vector2i:
