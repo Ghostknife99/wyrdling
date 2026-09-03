@@ -44,6 +44,19 @@ func _run() -> void:
 		await _wait_frames(10)
 		await _capture("route_bridge.png")
 
+	var cave: Dictionary = _find_prop("cave")
+	var riftstone: Dictionary = _find_prop("riftstone")
+	if not cave.is_empty() and not riftstone.is_empty():
+		var cave_pos: Vector2i = cave.get("interact_pos", cave.get("pos", mid))
+		var rift_pos: Vector2i = riftstone.get("interact_pos", riftstone.get("pos", mid))
+		var landmark_mid := Vector2i(
+			int(round((cave_pos.x + rift_pos.x) * 0.5)),
+			int(round((cave_pos.y + rift_pos.y) * 0.5))
+		)
+		_focus(landmark_mid)
+		await _wait_frames(10)
+		await _capture("route_landmarks.png")
+
 	print("CAPTURED route geometry")
 	quit(0)
 
