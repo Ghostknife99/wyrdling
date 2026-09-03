@@ -182,7 +182,6 @@ static func _place_riftstone_landmark(grid: Array, props: Array, trees: Array, c
 	var chosen_anchor := Vector2i(-1, -1)
 	var chosen_top_left := Vector2i(-1, -1)
 	var chosen_side := 1
-	var best_score := 999999
 	var crossing: Vector2i = bridge_info.get("crossing", Vector2i(-99, -99))
 	var cave_door := Vector2i(-99, -99)
 	for raw_prop in props:
@@ -191,34 +190,50 @@ static func _place_riftstone_landmark(grid: Array, props: Array, trees: Array, c
 			cave_door = prop["interact_pos"]
 			break
 
-	for anchor: Vector2i in path_cells:
-		if anchor.y < 10 or anchor.y > height - 13:
-			continue
-		if anchor.distance_to(start) < 11.0 or anchor.distance_to(stairs) < 7.0 or anchor.distance_to(crossing) < 8.0:
-			continue
-		# Side branches such as Echo Cave are mostly horizontal. Riftstone should
-		# attach to the northbound route itself, not extend an existing spur into
-		# one oversized junction.
-		if not _looks_like_main_trail(grid, anchor):
-			continue
-		# Keep the two optional discoveries visually distinct. Riftstone joins the
-		# main route clearly north of Echo Cave instead of forming a crossroads.
-		if cave_door.x > -90 and anchor.y > cave_door.y - 5:
-			continue
-		if anchor.distance_to(cave_door) < 6.0:
-			continue
-		for side: int in [-1, 1]:
-			var center := anchor + Vector2i(side * 7, 0)
-			var top_left := center + Vector2i(-1, -2)
-			if not _landmark_area_ok(grid, critical, top_left, width, height):
+	# Pass one keeps the preferred authored composition: the Riftstone peels off
+	# well north of Echo Cave. If a seed puts the cave too close to the exit for
+	# that to be possible, pass two keeps the landmark on the opposite side of
+	# the main trail instead. That guarantees the feature without rebuilding the
+	# giant cave/riftstone crossroads this geometry pass was meant to remove.
+	for strict_separation: bool in [true, false]:
+		var best_score := 999999
+		for anchor: Vector2i in path_cells:
+			if anchor.y < 10 or anchor.y > height - 13:
 				continue
-			var score := absi(anchor.y - int(height * 0.48)) * 2 + absi(center.x - int(width / 2))
-			score += maxi(0, 10 - int(anchor.distance_to(cave_door)))
-			if score < best_score:
-				best_score = score
-				chosen_anchor = anchor
-				chosen_top_left = top_left
-				chosen_side = side
+			if anchor.distance_to(start) < 11.0 or anchor.distance_to(stairs) < 7.0 or anchor.distance_to(crossing) < 8.0:
+				continue
+			if not _looks_like_main_trail(grid, anchor):
+				continue
+			if strict_separation:
+				if cave_door.x > -90 and anchor.y > cave_door.y - 5:
+					continue
+				if anchor.distance_to(cave_door) < 6.0:
+					continue
+			else:
+				if anchor.distance_to(cave_door) < 7.0:
+					continue
+
+			var sides: Array[int] = [-1, 1]
+			if not strict_separation and cave_door.x > -90:
+				var away_side: int = 1 if cave_door.x < anchor.x else -1
+				sides = [away_side]
+
+			for side: int in sides:
+				var center := anchor + Vector2i(side * 7, 0)
+				var top_left := center + Vector2i(-1, -2)
+				if not _landmark_area_ok(grid, critical, top_left, width, height):
+					continue
+				var score := absi(anchor.y - int(height * 0.48)) * 2 + absi(center.x - int(width / 2))
+				score += maxi(0, 10 - int(anchor.distance_to(cave_door)))
+				if not strict_separation:
+					score += maxi(0, 4 - absi(anchor.y - cave_door.y)) * 4
+				if score < best_score:
+					best_score = score
+					chosen_anchor = anchor
+					chosen_top_left = top_left
+					chosen_side = side
+		if chosen_anchor.x >= 0:
+			break
 
 	if chosen_anchor.x < 0:
 		return {}
