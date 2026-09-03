@@ -29,6 +29,7 @@ static func apply(result: Dictionary, width: int, height: int, floor_num: int, r
 	var fence: Array = result.get("fence", [])
 	var requested_wilds: int = int(result.get("wilds", []).size())
 
+	_slim_cave_spur(grid, props, fence, start, stairs, width, height)
 	var critical: Dictionary = _critical_cells(props, fence, start, stairs)
 	var bridge_info: Dictionary = _place_river_crossing(grid, props, trees, critical, width, height, start, stairs, floor_num, rng)
 	critical = _critical_cells(props, fence, start, stairs)
@@ -485,6 +486,70 @@ static func _remove_trees_in_cells(grid: Array, trees: Array, cells: Dictionary)
 			if int(grid[p.y][p.x]) == TREE:
 				grid[p.y][p.x] = GRASS
 		trees.remove_at(i)
+
+
+static func _slim_cave_spur(grid: Array, props: Array, fence: Array, start: Vector2i, stairs: Vector2i, width: int, height: int) -> void:
+	var cave_door := Vector2i(-1, -1)
+	for raw_prop in props:
+		var prop: Dictionary = raw_prop
+		if str(prop.get("kind", "")) == "cave" and prop.has("interact_pos"):
+			cave_door = prop["interact_pos"]
+			break
+	if cave_door.x < 0:
+		return
+
+	var trail_start := cave_door + Vector2i(0, 1)
+	var path_cells: Array[Vector2i] = _cells_of(grid, DIRT)
+	var main_lookup: Dictionary = {}
+	var main_anchor := Vector2i(-1, -1)
+	var best_distance := 99999.0
+	for p: Vector2i in path_cells:
+		if not _looks_like_main_trail(grid, p):
+			continue
+		main_lookup[p] = true
+		var distance: float = p.distance_to(trail_start)
+		if distance < best_distance:
+			best_distance = distance
+			main_anchor = p
+	if main_anchor.x < 0 or best_distance > 16.0:
+		return
+
+	var corridor: Dictionary = {}
+	var cursor := trail_start
+	var guard := 0
+	while cursor.x != main_anchor.x and guard < 40:
+		corridor[cursor] = true
+		cursor.x += signi(main_anchor.x - cursor.x)
+		guard += 1
+	while cursor.y != main_anchor.y and guard < 80:
+		corridor[cursor] = true
+		cursor.y += signi(main_anchor.y - cursor.y)
+		guard += 1
+	corridor[main_anchor] = true
+
+	var protected: Dictionary = _critical_cells(props, fence, start, stairs)
+	var min_x: int = mini(trail_start.x, main_anchor.x) - 2
+	var max_x: int = maxi(trail_start.x, main_anchor.x) + 2
+	var min_y: int = mini(trail_start.y, main_anchor.y) - 2
+	var max_y: int = maxi(trail_start.y, main_anchor.y) + 2
+	for y: int in range(min_y, max_y + 1):
+		for x: int in range(min_x, max_x + 1):
+			if not _inner(x, y, width, height):
+				continue
+			var p := Vector2i(x, y)
+			if int(grid[y][x]) != DIRT:
+				continue
+			if corridor.has(p) or main_lookup.has(p) or protected.has(p):
+				continue
+			grid[y][x] = GRASS
+
+	for raw_cell in corridor.keys():
+		var p: Vector2i = raw_cell
+		if not _inner(p.x, p.y, width, height):
+			continue
+		var tile := int(grid[p.y][p.x])
+		if tile != CLIFF and tile != STAIRS and tile != WATER:
+			grid[p.y][p.x] = DIRT
 
 
 static func _carve_spur(grid: Array, trees: Array, critical: Dictionary, a: Vector2i, b: Vector2i, width: int, height: int) -> void:
