@@ -34,7 +34,7 @@ static func make_bridge() -> Texture2D:
 		_fill_rect(image, Rect2i(26, y, 44, 2), WOOD_DARK)
 		_fill_rect(image, Rect2i(27, y + 2, 42, 2), WOOD_HI)
 		# Offset plank joins so it looks hand-built rather than tiled.
-		var join_x: int = 39 if ((y / 14) as int) % 2 == 0 else 54
+		var join_x: int = 39 if int(y / 14) % 2 == 0 else 54
 		_fill_rect(image, Rect2i(join_x, y + 2, 2, 10), WOOD_DARK)
 
 	# Worn center strip and little nail heads.
@@ -53,7 +53,7 @@ static func make_bridge() -> Texture2D:
 		_fill_rect(image, Rect2i(13, y, 9, 2), WOOD_HI)
 		_fill_rect(image, Rect2i(76, y, 9, 2), WOOD_HI)
 	for y: int in range(13, 147):
-		var wobble: int = 1 if (y / 9 as int) % 2 == 0 else -1
+		var wobble: int = 1 if int(y / 9) % 2 == 0 else -1
 		_pixel(image, 20 + wobble, y, ROPE)
 		_pixel(image, 76 - wobble, y, ROPE)
 
