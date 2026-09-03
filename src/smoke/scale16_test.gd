@@ -19,11 +19,11 @@ func _initialize() -> void:
 	if packed != null:
 		var node: Node = packed.instantiate()
 		var script: Script = node.get_script()
-		_check(script != null and script.resource_path == "res://src/dungeon/dungeon_dense.gd", "dungeon uses dense 16px presentation script")
+		_check(script != null and script.resource_path == "res://src/dungeon/dungeon_lush.gd", "dungeon uses lush dense 16px presentation script")
 
-		# Density is a thin wrapper around the validated presentation layer. Read
-		# scale constants from the base script so this smoke test remains explicit
-		# about the 16px contract rather than depending on inherited constant maps.
+		# Density/forest growth are thin wrappers around the validated presentation
+		# layer. Read scale constants from the base script so the 16px contract stays
+		# explicit rather than depending on inherited constant maps.
 		var base_script: Script = load("res://src/dungeon/dungeon_16.gd")
 		_check(base_script != null, "base 16px presentation script loads")
 		if base_script != null:
@@ -32,9 +32,6 @@ func _initialize() -> void:
 			_check(is_equal_approx(float(constants.get("TERRAIN_SCALE", 0.0)), 0.5), "terrain renders at half scale")
 			_check(is_equal_approx(float(constants.get("CAMERA_SCALE", 0.0)), 2.0), "world camera is integer 2x")
 
-		# Build the terrain layer without entering the scene tree. This confirms the
-		# inherited, proven 32px TileSet still builds and is presented as an effective
-		# 16px cell through exact half scaling.
 		node.call("_ensure_world")
 		var ground: TileMapLayer = node.get_node("World/Ground") as TileMapLayer
 		_check(ground != null and ground.tile_set != null, "terrain TileSet builds")
