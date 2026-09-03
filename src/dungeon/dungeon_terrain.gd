@@ -2,6 +2,11 @@ extends "res://src/dungeon/dungeon_lush.gd"
 ## Adds authored-looking interior ledges and guaranteed mid-sized vegetation
 ## pockets after foliage density. These break up the last large flat meadows
 ## without touching the main trail, water crossings, landmarks or tree masses.
+##
+## This top presentation layer also owns the per-floor density hook. The base
+## dungeon repaints immediately after GameState.descend(), so intercepting
+## _paint_map() here guarantees every newly generated route receives the same
+## scenery uplift before it is rendered.
 
 const TERRAIN_CLIFF := 0
 const TERRAIN_GRASS := 1
@@ -11,11 +16,25 @@ const TERRAIN_TALLGRASS := 5
 const RIDGE_TARGET := 5
 const SHRUB_POCKET_TARGET := 18
 
+var density_floor_applied := -1
+
 
 func _apply_density_pass() -> void:
+	if GameState.grid.is_empty():
+		return
 	super._apply_density_pass()
 	_add_terrain_ridges()
 	_add_meadow_pockets()
+	density_floor_applied = GameState.floor_num
+
+
+func _paint_map() -> void:
+	# _ready() already applies the pass on the first route through dungeon_dense.
+	# After a descent the floor number changes, so the next repaint applies the
+	# complete inherited density/forest/terrain chain exactly once for that floor.
+	if not GameState.grid.is_empty() and density_floor_applied != GameState.floor_num:
+		_apply_density_pass()
+	super._paint_map()
 
 
 func _add_terrain_ridges() -> void:
