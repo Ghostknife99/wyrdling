@@ -19,16 +19,16 @@ func _initialize() -> void:
 	if packed != null:
 		var node: Node = packed.instantiate()
 		var script: Script = node.get_script()
-		_check(script != null and script.resource_path == "res://src/dungeon/dungeon_16.gd", "dungeon uses 16px presentation script")
-		if script != null:
-			var constants: Dictionary = script.get_script_constant_map()
+		_check(script != null and script.resource_path == "res://src/dungeon/dungeon_terrain.gd", "dungeon uses lush terrain 16px presentation script")
+
+		var base_script: Script = load("res://src/dungeon/dungeon_16.gd")
+		_check(base_script != null, "base 16px presentation script loads")
+		if base_script != null:
+			var constants: Dictionary = base_script.get_script_constant_map()
 			_check(int(constants.get("TILE_16", 0)) == 16, "logical world tile is 16px")
 			_check(is_equal_approx(float(constants.get("TERRAIN_SCALE", 0.0)), 0.5), "terrain renders at half scale")
 			_check(is_equal_approx(float(constants.get("CAMERA_SCALE", 0.0)), 2.0), "world camera is integer 2x")
 
-		# Build the terrain layer without entering the scene tree. This confirms the
-		# inherited, proven 32px TileSet still builds and is presented as an effective
-		# 16px cell through exact half scaling.
 		node.call("_ensure_world")
 		var ground: TileMapLayer = node.get_node("World/Ground") as TileMapLayer
 		_check(ground != null and ground.tile_set != null, "terrain TileSet builds")
