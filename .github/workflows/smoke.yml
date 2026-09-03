@@ -26,6 +26,8 @@ jobs:
         run: timeout 60s godot --headless --path . -s res://src/smoke/scale16_test.gd
       - name: Validate polished Delver animation assets
         run: timeout 60s godot --headless --path . -s res://src/smoke/delver_animation_test.gd
+      - name: Validate polished NPC atlas and population
+        run: timeout 60s godot --headless --path . -s res://src/smoke/npc_quality_test.gd
       - name: Validate polished Willowmere scenery assets
         run: timeout 60s godot --headless --path . -s res://src/smoke/scenery_uplift_test.gd
       - name: Validate Willowmere scenery density

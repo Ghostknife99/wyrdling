@@ -3,6 +3,7 @@ extends Node
 const MAP_W := 64
 const MAP_H := 48
 const WORLD_COMPOSITION = preload("res://src/dungeon/world_composition.gd")
+const NPC_PASS = preload("res://src/dungeon/npc_pass.gd")
 
 var rng := RandomNumberGenerator.new()
 var in_run := false
@@ -40,6 +41,7 @@ func start_run(starter_id: String) -> void:
 func generate_floor() -> void:
 	var result: Dictionary = preload("res://src/dungeon/route_gen.gd").generate(MAP_W, MAP_H, floor_num, rng)
 	result = WORLD_COMPOSITION.apply(result, MAP_W, MAP_H, floor_num, rng)
+	result = NPC_PASS.apply(result, MAP_W, MAP_H, floor_num, rng)
 	grid = result["grid"]
 	player_pos = result["start"]
 	stairs_pos = result["stairs"]

@@ -1,8 +1,8 @@
 extends "res://src/dungeon/dungeon.gd"
 ## 16x16 overworld presentation layer.
 ## Terrain stays on a proven 32px TileSet rendered at 0.5x; the world camera is
-## 2x so final pixels stay crisp. This layer also owns the polished Delver and
-## the Willowmere scenery presentation.
+## 2x so final pixels stay crisp. This layer also owns the polished Delver,
+## polished NPC population and the Willowmere scenery presentation.
 
 const TILE_16 := 16
 const TERRAIN_SCALE := 0.5
@@ -11,17 +11,22 @@ const ACTOR_MAX_W := 20.0
 const ACTOR_MAX_H := 28.0
 const PLAYER_MAX_W := 20.0
 const PLAYER_MAX_H := 28.0
+const NPC_MAX_W := 20.0
+const NPC_MAX_H := 28.0
 const PROP_SOURCE_SCALE := 0.5
 
 const PLAYER_FRAME_W := 24
 const PLAYER_FRAME_H := 34
 const WALK_FRAME_MS := 35
 const PLAYER_ART = preload("res://src/dungeon/delver_art.gd")
+const NPC_CATALOG = preload("res://src/dungeon/npc_catalog.gd")
+const NPC_ART = preload("res://src/dungeon/npc_art.gd")
 const SCENERY_ART = preload("res://src/dungeon/scenery_art_hd.gd")
 const COMPOSITION_ART = preload("res://src/dungeon/composition_art.gd")
 
 var polished_player_idle: Dictionary = {}
 var polished_player_walk: Dictionary = {}
+var npc_atlas: Texture2D
 var scenery_sheet: Texture2D
 var scenery_sprites: Array[Sprite2D] = []
 
@@ -37,6 +42,7 @@ func _ready() -> void:
 		_sync_actors()
 
 	_load_polished_scenery()
+	_load_polished_npcs()
 	_render_world_props()
 
 
@@ -55,6 +61,28 @@ func _load_polished_player() -> void:
 			frames.append(frame)
 		polished_player_walk[facing] = frames
 		polished_player_idle[facing] = frames[0]
+
+
+func _load_polished_npcs() -> void:
+	npc_atlas = NPC_ART.make_atlas()
+	if npc_atlas == null:
+		push_warning("Wyrdling: polished NPC atlas failed to decode")
+		return
+
+	for variant: int in NPC_CATALOG.TYPE_COUNT:
+		for facing: String in NPC_CATALOG.DIRECTIONS:
+			var frame := AtlasTexture.new()
+			frame.atlas = npc_atlas
+			frame.region = Rect2(
+				NPC_CATALOG.direction_column(facing) * NPC_CATALOG.FRAME_W,
+				variant * NPC_CATALOG.FRAME_H,
+				NPC_CATALOG.FRAME_W,
+				NPC_CATALOG.FRAME_H
+			)
+			prop_textures["npc_%d_%s" % [variant, facing]] = frame
+		# Down-facing frame remains a compatibility fallback for any hand-authored
+		# NPC prop that predates directional metadata.
+		prop_textures["npc_%d" % variant] = prop_textures["npc_%d_down" % variant]
 
 
 func _load_polished_scenery() -> void:
@@ -167,7 +195,10 @@ func _render_world_props() -> void:
 		var kind: String = str(prop.get("kind", ""))
 		var tex_key: String = kind
 		if kind == "npc":
-			tex_key = "npc_%d" % int(prop.get("variant", 0))
+			var facing := str(prop.get("facing", "down"))
+			tex_key = "npc_%d_%s" % [int(prop.get("variant", 0)), facing]
+			if not prop_textures.has(tex_key):
+				tex_key = "npc_%d" % int(prop.get("variant", 0))
 		if not prop_textures.has(tex_key):
 			continue
 
@@ -200,7 +231,7 @@ func _render_world_props() -> void:
 		var th := float(maxi(tex.get_height(), 1))
 		var scale_factor := PROP_SOURCE_SCALE
 		if kind == "npc":
-			scale_factor = minf(16.0 / tw, 24.0 / th)
+			scale_factor = minf(NPC_MAX_W / tw, NPC_MAX_H / th)
 		else:
 			var target_w := float(logical_w * TILE_16)
 			var target_h := float(logical_h * TILE_16)
