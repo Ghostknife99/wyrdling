@@ -46,8 +46,16 @@ func _run() -> void:
 	await _wait_frames(10)
 	await _capture_pair()
 	print("player_pos=", gs.player_pos, " stairs=", gs.stairs_pos)
-	gs.wilds = parked
 
+	if _focus_first_npc(dungeon):
+		await _wait_frames(10)
+		await _capture("gameplay_npc.png")
+	else:
+		print("FAIL no polished NPC available for live capture")
+		quit(1)
+		return
+
+	gs.wilds = parked
 	if not dungeon.combat_open:
 		if gs.wilds.is_empty():
 			print("FAIL no wilds")
@@ -57,7 +65,7 @@ func _run() -> void:
 	await _wait_frames(16)
 	await _capture("gameplay_combat.png")
 
-	print("CAPTURED title/starter/wilds/combat into ", OUT)
+	print("CAPTURED title/starter/wilds/npc/combat into ", OUT)
 	quit(0)
 
 
@@ -103,6 +111,51 @@ func _capture_pair() -> void:
 		var path := "%s/%s" % [OUT, filename]
 		var err := img.save_png(path)
 		print("wrote ", path, " ", img.get_width(), "x", img.get_height(), " err=", err)
+
+
+func _focus_first_npc(dungeon: Node) -> bool:
+	var npc: Dictionary = {}
+	for raw in gs.world_props:
+		var prop: Dictionary = raw
+		if str(prop.get("kind", "")) == "npc":
+			npc = prop
+			break
+	if npc.is_empty():
+		return false
+
+	var target: Vector2i = npc.get("pos", Vector2i.ZERO)
+	var approaches: Array[Vector2i] = [
+		target + Vector2i(0, 2),
+		target + Vector2i(2, 0),
+		target + Vector2i(-2, 0),
+		target + Vector2i(0, -2),
+		target + Vector2i(0, 1),
+		target + Vector2i(1, 0),
+		target + Vector2i(-1, 0),
+		target + Vector2i(0, -1),
+	]
+	var chosen := gs.player_pos
+	var found := false
+	for p: Vector2i in approaches:
+		if gs.walkable(p):
+			chosen = p
+			found = true
+			break
+	if not found:
+		return false
+
+	gs.player_pos = chosen
+	var delta := target - chosen
+	if absi(delta.x) >= absi(delta.y):
+		dungeon.last_dir = "right" if delta.x > 0 else "left"
+	else:
+		dungeon.last_dir = "down" if delta.y > 0 else "up"
+	if dungeon.has_method("_refresh"):
+		dungeon._refresh()
+	if dungeon.has_method("_update_camera"):
+		dungeon._update_camera()
+	print("NPC QA focus variant=", npc.get("variant", -1), " name=", npc.get("name", "NPC"), " npc=", target, " player=", chosen)
+	return true
 
 
 func _pan_along_dirt(dungeon: Node, steps: int) -> void:
