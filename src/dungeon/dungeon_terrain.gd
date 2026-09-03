@@ -1,18 +1,21 @@
 extends "res://src/dungeon/dungeon_lush.gd"
-## Adds a small number of authored-looking interior ledges after foliage density.
-## These break up the last large flat meadows without touching the main trail,
-## water crossings, landmarks, NPCs or existing tree masses.
+## Adds authored-looking interior ledges and guaranteed mid-sized vegetation
+## pockets after foliage density. These break up the last large flat meadows
+## without touching the main trail, water crossings, landmarks or tree masses.
 
 const TERRAIN_CLIFF := 0
 const TERRAIN_GRASS := 1
 const TERRAIN_DIRT := 3
 const TERRAIN_WATER := 4
+const TERRAIN_TALLGRASS := 5
 const RIDGE_TARGET := 5
+const SHRUB_POCKET_TARGET := 18
 
 
 func _apply_density_pass() -> void:
 	super._apply_density_pass()
 	_add_terrain_ridges()
+	_add_meadow_pockets()
 
 
 func _add_terrain_ridges() -> void:
@@ -48,6 +51,85 @@ func _add_terrain_ridges() -> void:
 	print("lush terrain structure added ", centers.size(), " interior ridges")
 
 
+func _add_meadow_pockets() -> void:
+	var protected: Dictionary = _build_protected_cells(1, true)
+	var placed := 0
+	var pocket_index := 0
+
+	# Scan regularly rather than randomly. If a 6x6-ish slice is still mostly
+	# plain grass after all previous passes, it is guaranteed a small composition.
+	for y: int in range(5, GameState.MAP_H - 5, 6):
+		for x: int in range(5, GameState.MAP_W - 5, 6):
+			if placed >= SHRUB_POCKET_TARGET:
+				break
+			var center := Vector2i(x, y)
+			if not _pocket_area_clear(center, protected):
+				continue
+
+			var changed := 0
+			# A small 3x2 undergrowth bed is the visual base of each pocket.
+			for dy: int in range(-1, 1):
+				for dx: int in range(-1, 2):
+					var p := center + Vector2i(dx, dy)
+					if not _inside(p) or protected.has(p):
+						continue
+					if int(GameState.grid[p.y][p.x]) != TERRAIN_GRASS:
+						continue
+					if _near_tile(p, TERRAIN_DIRT, 0) or _near_tile(p, TERRAIN_WATER, 0):
+						continue
+					GameState.grid[p.y][p.x] = TERRAIN_TALLGRASS
+					changed += 1
+			if changed < 4:
+				continue
+
+			# Layer two different silhouettes around the grass bed so it reads as one
+			# composed feature rather than another isolated flower spawn.
+			var left := center + Vector2i(-2, 1)
+			var right := center + Vector2i(2, 0)
+			if _small_prop_clear(left, protected, 1):
+				var solid_kind := "bush" if pocket_index % 3 != 1 else "rock"
+				GameState.world_props.append({"kind": solid_kind, "pos": left, "blocks": [left]})
+				protected[left] = true
+			if _small_prop_clear(right, protected, 0):
+				var soft_kind := "flowers_a" if pocket_index % 2 == 0 else "flowers_b"
+				GameState.world_props.append({"kind": soft_kind, "pos": right, "blocks": []})
+				protected[right] = true
+
+			placed += 1
+			pocket_index += 1
+
+	print("lush meadow layer added ", placed, " shrub pockets")
+
+
+func _pocket_area_clear(center: Vector2i, protected: Dictionary) -> bool:
+	if not _inside(center):
+		return false
+	if _near_tile(center, TERRAIN_DIRT, 1) or _near_tile(center, TERRAIN_WATER, 1):
+		return false
+	var grass := 0
+	for dy: int in range(-2, 3):
+		for dx: int in range(-3, 4):
+			var p := center + Vector2i(dx, dy)
+			if not _inside(p) or protected.has(p):
+				continue
+			if int(GameState.grid[p.y][p.x]) == TERRAIN_GRASS:
+				grass += 1
+	# Only fill genuinely plain areas. Existing detailed pockets are left alone.
+	return grass >= 23
+
+
+func _small_prop_clear(p: Vector2i, protected: Dictionary, path_buffer: int) -> bool:
+	if not _inside(p) or protected.has(p):
+		return false
+	if int(GameState.grid[p.y][p.x]) != TERRAIN_GRASS:
+		return false
+	if path_buffer > 0 and _near_tile(p, TERRAIN_DIRT, path_buffer):
+		return false
+	if _near_tile(p, TERRAIN_WATER, 0):
+		return false
+	return true
+
+
 func _ridge_area_clear(center: Vector2i, width: int, height: int, protected: Dictionary) -> bool:
 	var x0 := center.x - int(width / 2) - 1
 	var x1 := center.x + int(width / 2) + 1
@@ -63,7 +145,6 @@ func _ridge_area_clear(center: Vector2i, width: int, height: int, protected: Dic
 			total_cells += 1
 			if int(GameState.grid[y][x]) == TERRAIN_GRASS:
 				grass_cells += 1
-	# Ridges belong in genuinely empty meadow, not on top of existing detail.
 	return grass_cells >= int(float(total_cells) * 0.88)
 
 
@@ -77,8 +158,6 @@ func _stamp_ridge(center: Vector2i, width: int, height: int, rng: RandomNumberGe
 			if _inside(p) and int(GameState.grid[p.y][p.x]) == TERRAIN_GRASS:
 				GameState.grid[p.y][p.x] = TERRAIN_CLIFF
 
-	# A couple of foot-of-ledge accents make the formation read as a composed
-	# feature rather than a bare brown obstruction.
 	var accents: Array[Vector2i] = [
 		Vector2i(center.x - half - 1, center.y + height),
 		Vector2i(center.x + half + 1, center.y + height - 1),
