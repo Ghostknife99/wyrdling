@@ -38,13 +38,47 @@ func _run() -> void:
 	var trees_added: int = gs.trees.size() - trees_before
 	var props_added: int = gs.world_props.size() - props_before
 	var tall_added: int = _count_tile(gs, 5) - tall_before
-	print("density additions trees=", trees_added, " props=", props_added, " tall_grass_cells=", tall_added)
+	print("floor 1 density additions trees=", trees_added, " props=", props_added, " tall_grass_cells=", tall_added)
 
 	_expect(trees_added >= 15, "forest framing adds substantial tree density (%d)" % trees_added)
 	_expect(props_added >= 28, "route dressing adds substantial prop density (%d)" % props_added)
 	_expect(tall_added >= 30, "tall-grass gardens fill open meadow space (%d cells)" % tall_added)
 	_expect(_has_walkable_path(gs, gs.player_pos, gs.stairs_pos), "density pass preserves start-to-exit traversal")
 	_expect(_interactions_have_access(gs), "landmark interactions retain adjacent walkable access")
+
+	# Regression coverage for the PR review: GameState.descend() replaces the
+	# whole generated route before the inherited dungeon repaints it. The top
+	# presentation layer must therefore apply the complete scenery chain again
+	# when _paint_map() is called for the new floor.
+	gs.descend()
+	var floor2_trees_before: int = gs.trees.size()
+	var floor2_props_before: int = gs.world_props.size()
+	var floor2_tall_before: int = _count_tile(gs, 5)
+	node.call("_paint_map")
+	await process_frame
+
+	var floor2_trees_added: int = gs.trees.size() - floor2_trees_before
+	var floor2_props_added: int = gs.world_props.size() - floor2_props_before
+	var floor2_tall_added: int = _count_tile(gs, 5) - floor2_tall_before
+	print("floor 2 density additions trees=", floor2_trees_added, " props=", floor2_props_added, " tall_grass_cells=", floor2_tall_added)
+
+	_expect(gs.floor_num == 2, "descended to route 2")
+	_expect(floor2_trees_added >= 10, "route 2 receives forest density (%d)" % floor2_trees_added)
+	_expect(floor2_props_added >= 20, "route 2 receives prop dressing (%d)" % floor2_props_added)
+	_expect(floor2_tall_added >= 20, "route 2 receives tall-grass density (%d cells)" % floor2_tall_added)
+	_expect(_has_walkable_path(gs, gs.player_pos, gs.stairs_pos), "route 2 remains traversable after density")
+	_expect(_interactions_have_access(gs), "route 2 landmark interactions remain accessible")
+
+	# Repainting the same route must be idempotent. Otherwise every refresh would
+	# keep stacking bushes, trees and grass until the map eventually breaks.
+	var stable_trees: int = gs.trees.size()
+	var stable_props: int = gs.world_props.size()
+	var stable_tall: int = _count_tile(gs, 5)
+	node.call("_paint_map")
+	await process_frame
+	_expect(gs.trees.size() == stable_trees, "same-floor repaint does not duplicate trees")
+	_expect(gs.world_props.size() == stable_props, "same-floor repaint does not duplicate props")
+	_expect(_count_tile(gs, 5) == stable_tall, "same-floor repaint does not duplicate tall grass")
 
 	if is_instance_valid(node):
 		node.queue_free()
