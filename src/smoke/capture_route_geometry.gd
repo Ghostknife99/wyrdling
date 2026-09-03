@@ -57,9 +57,9 @@ func _print_geometry_diagnostics() -> void:
 			print("PROP ", kind, " pos=", prop.get("pos"), " interact=", prop.get("interact_pos"), " blocks=", prop.get("blocks", []).size())
 	for y: int in range(gs.MAP_H):
 		var runs: Array[String] = []
-		var run_start := -1
+		var run_start: int = -1
 		for x: int in range(gs.MAP_W + 1):
-			var dirt := x < gs.MAP_W and int(gs.grid[y][x]) == 3
+			var dirt: bool = x < gs.MAP_W and int(gs.grid[y][x]) == 3
 			if dirt and run_start < 0:
 				run_start = x
 			elif not dirt and run_start >= 0:
@@ -98,7 +98,7 @@ func _find_prop(kind: String) -> Dictionary:
 func _focus(target: Vector2i) -> void:
 	var best: Vector2i = target
 	if not gs.walkable(best):
-		var best_distance := 99999.0
+		var best_distance: float = 99999.0
 		for radius: int in range(1, 7):
 			for y: int in range(target.y - radius, target.y + radius + 1):
 				for x: int in range(target.x - radius, target.x + radius + 1):
