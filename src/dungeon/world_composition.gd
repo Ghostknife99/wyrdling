@@ -200,10 +200,14 @@ static func _place_riftstone_landmark(grid: Array, props: Array, trees: Array, c
 		# one oversized junction.
 		if not _looks_like_main_trail(grid, anchor):
 			continue
+		# Keep the two optional discoveries visually distinct. Riftstone joins the
+		# main route clearly north of Echo Cave instead of forming a crossroads.
+		if cave_door.x > -90 and anchor.y > cave_door.y - 5:
+			continue
 		if anchor.distance_to(cave_door) < 6.0:
 			continue
 		for side: int in [-1, 1]:
-			var center := anchor + Vector2i(side * 8, 0)
+			var center := anchor + Vector2i(side * 7, 0)
 			var top_left := center + Vector2i(-1, -2)
 			if not _landmark_area_ok(grid, critical, top_left, width, height):
 				continue
@@ -487,7 +491,6 @@ static func _carve_spur(grid: Array, trees: Array, critical: Dictionary, a: Vect
 	var corridor: Dictionary = {}
 	var p := a
 	var guard := 0
-	var step := 0
 	while p != b and guard < 80:
 		guard += 1
 		corridor[p] = true
@@ -496,14 +499,7 @@ static func _carve_spur(grid: Array, trees: Array, critical: Dictionary, a: Vect
 			direction = Vector2i(signi(b.x - p.x), 0)
 		elif p.y != b.y:
 			direction = Vector2i(0, signi(b.y - p.y))
-		if direction != Vector2i.ZERO and step % 4 != 1:
-			var perpendicular := Vector2i(-direction.y, direction.x)
-			var side: int = 1 if int(step / 6) % 2 == 0 else -1
-			var shoulder := p + perpendicular * side
-			if _inner(shoulder.x, shoulder.y, width, height):
-				corridor[shoulder] = true
 		p += direction
-		step += 1
 	corridor[b] = true
 
 	_remove_trees_in_cells(grid, trees, corridor)
