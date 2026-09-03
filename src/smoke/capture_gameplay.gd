@@ -134,7 +134,7 @@ func _focus_first_npc(dungeon: Node) -> bool:
 		target + Vector2i(-1, 0),
 		target + Vector2i(0, -1),
 	]
-	var chosen := gs.player_pos
+	var chosen: Vector2i = gs.player_pos
 	var found := false
 	for p: Vector2i in approaches:
 		if gs.walkable(p):
@@ -145,7 +145,7 @@ func _focus_first_npc(dungeon: Node) -> bool:
 		return false
 
 	gs.player_pos = chosen
-	var delta := target - chosen
+	var delta: Vector2i = target - chosen
 	if absi(delta.x) >= absi(delta.y):
 		dungeon.last_dir = "right" if delta.x > 0 else "left"
 	else:
