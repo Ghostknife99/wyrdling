@@ -47,11 +47,11 @@ func _run() -> void:
 	await _capture_pair()
 	print("player_pos=", gs.player_pos, " stairs=", gs.stairs_pos)
 
-	if _focus_first_npc(dungeon):
+	if _focus_clear_npc(dungeon):
 		await _wait_frames(10)
 		await _capture("gameplay_npc.png")
 	else:
-		print("FAIL no polished NPC available for live capture")
+		print("FAIL no polished NPC with a clear QA approach")
 		quit(1)
 		return
 
@@ -89,7 +89,7 @@ func _clear_content() -> void:
 
 
 func _wait_frames(n: int) -> void:
-	for i in n:
+	for _i in n:
 		await process_frame
 		await RenderingServer.frame_post_draw
 
@@ -113,37 +113,61 @@ func _capture_pair() -> void:
 		print("wrote ", path, " ", img.get_width(), "x", img.get_height(), " err=", err)
 
 
-func _focus_first_npc(dungeon: Node) -> bool:
-	var npc: Dictionary = {}
+func _focus_clear_npc(dungeon: Node) -> bool:
+	# The QA shot is specifically for judging NPC scale against the Delver. Pick
+	# an NPC with a clear grass/path cell on the same row whenever possible so
+	# neither character is hidden by tall grass or another foreground feature.
+	var fallback_npc: Dictionary = {}
+	var fallback_pos := Vector2i.ZERO
+
 	for raw in gs.world_props:
-		var prop: Dictionary = raw
-		if str(prop.get("kind", "")) == "npc":
-			npc = prop
-			break
-	if npc.is_empty():
-		return false
+		var npc: Dictionary = raw
+		if str(npc.get("kind", "")) != "npc":
+			continue
+		var target: Vector2i = npc.get("pos", Vector2i.ZERO)
+		var horizontal: Array[Vector2i] = [
+			target + Vector2i(2, 0),
+			target + Vector2i(-2, 0),
+			target + Vector2i(3, 0),
+			target + Vector2i(-3, 0),
+		]
+		for p: Vector2i in horizontal:
+			if _clear_qa_cell(p):
+				_place_player_for_npc(dungeon, npc, target, p)
+				return true
 
-	var target: Vector2i = npc.get("pos", Vector2i.ZERO)
-	var approaches: Array[Vector2i] = [
-		target + Vector2i(0, 2),
-		target + Vector2i(2, 0),
-		target + Vector2i(-2, 0),
-		target + Vector2i(0, -2),
-		target + Vector2i(0, 1),
-		target + Vector2i(1, 0),
-		target + Vector2i(-1, 0),
-		target + Vector2i(0, -1),
-	]
-	var chosen: Vector2i = gs.player_pos
-	var found := false
-	for p: Vector2i in approaches:
-		if gs.walkable(p):
-			chosen = p
-			found = true
-			break
-	if not found:
-		return false
+		if fallback_npc.is_empty():
+			var vertical: Array[Vector2i] = [
+				target + Vector2i(0, 2),
+				target + Vector2i(0, -2),
+				target + Vector2i(0, 3),
+				target + Vector2i(0, -3),
+			]
+			for p: Vector2i in vertical:
+				if _clear_qa_cell(p):
+					fallback_npc = npc
+					fallback_pos = p
+					break
 
+	if fallback_npc.is_empty():
+		return false
+	var fallback_target: Vector2i = fallback_npc.get("pos", Vector2i.ZERO)
+	_place_player_for_npc(dungeon, fallback_npc, fallback_target, fallback_pos)
+	return true
+
+
+func _clear_qa_cell(p: Vector2i) -> bool:
+	if p.x < 1 or p.y < 1 or p.x >= gs.MAP_W - 1 or p.y >= gs.MAP_H - 1:
+		return false
+	if not gs.walkable(p):
+		return false
+	var tile: int = int(gs.grid[p.y][p.x])
+	# Grass and dirt keep the complete Delver visible; tall grass is deliberately
+	# excluded because it visually hides the lower half of the character.
+	return tile == 1 or tile == 3
+
+
+func _place_player_for_npc(dungeon: Node, npc: Dictionary, target: Vector2i, chosen: Vector2i) -> void:
 	gs.player_pos = chosen
 	var delta: Vector2i = target - chosen
 	if absi(delta.x) >= absi(delta.y):
@@ -154,8 +178,7 @@ func _focus_first_npc(dungeon: Node) -> bool:
 		dungeon._refresh()
 	if dungeon.has_method("_update_camera"):
 		dungeon._update_camera()
-	print("NPC QA focus variant=", npc.get("variant", -1), " name=", npc.get("name", "NPC"), " npc=", target, " player=", chosen)
-	return true
+	print("NPC QA focus variant=", npc.get("variant", -1), " name=", npc.get("name", "NPC"), " npc=", target, " player=", chosen, " tile=", int(gs.grid[chosen.y][chosen.x]))
 
 
 func _pan_along_dirt(dungeon: Node, steps: int) -> void:
