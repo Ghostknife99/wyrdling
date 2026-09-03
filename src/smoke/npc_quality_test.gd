@@ -1,7 +1,7 @@
 extends SceneTree
 
 const CATALOG = preload("res://src/dungeon/npc_catalog.gd")
-const ATLAS_PATH := "res://art/npcs/npc_atlas.png"
+const NPC_ART = preload("res://src/dungeon/npc_art.gd")
 
 
 func _initialize() -> void:
@@ -18,25 +18,23 @@ func _initialize() -> void:
 	failed += _expect(ids.size() == 20, "all NPC type IDs are unique")
 	failed += _expect(names.size() == 20, "all NPC display names are unique")
 
-	failed += _expect(ResourceLoader.exists(ATLAS_PATH), "polished NPC atlas exists")
-	if ResourceLoader.exists(ATLAS_PATH):
-		var atlas: Texture2D = load(ATLAS_PATH)
-		failed += _expect(atlas != null, "polished NPC atlas imports as a texture")
-		if atlas != null:
-			failed += _expect(atlas.get_width() == CATALOG.FRAME_W * 4, "NPC atlas has four directional columns")
-			failed += _expect(atlas.get_height() == CATALOG.FRAME_H * CATALOG.TYPE_COUNT, "NPC atlas has twenty character rows")
+	var atlas: Texture2D = NPC_ART.make_atlas()
+	failed += _expect(atlas != null, "text-safe polished NPC atlas decodes as a texture")
+	if atlas != null:
+		failed += _expect(atlas.get_width() == CATALOG.FRAME_W * 4, "NPC atlas has four directional columns")
+		failed += _expect(atlas.get_height() == CATALOG.FRAME_H * CATALOG.TYPE_COUNT, "NPC atlas has twenty character rows")
 
-		var image := Image.load_from_file(ATLAS_PATH)
-		failed += _expect(image != null and not image.is_empty(), "NPC atlas pixels can be read")
-		if image != null and not image.is_empty():
-			var populated_frames := 0
-			for variant: int in CATALOG.TYPE_COUNT:
-				for facing: String in CATALOG.DIRECTIONS:
-					var column := CATALOG.direction_column(facing)
-					var frame := image.get_region(Rect2i(column * CATALOG.FRAME_W, variant * CATALOG.FRAME_H, CATALOG.FRAME_W, CATALOG.FRAME_H))
-					if frame.get_used_rect().size != Vector2i.ZERO:
-						populated_frames += 1
-			failed += _expect(populated_frames == 80, "all 80 NPC directional frames contain artwork")
+	var image: Image = NPC_ART.make_image()
+	failed += _expect(image != null and not image.is_empty(), "embedded NPC atlas pixels can be read")
+	if image != null and not image.is_empty():
+		var populated_frames := 0
+		for variant: int in CATALOG.TYPE_COUNT:
+			for facing: String in CATALOG.DIRECTIONS:
+				var column := CATALOG.direction_column(facing)
+				var frame := image.get_region(Rect2i(column * CATALOG.FRAME_W, variant * CATALOG.FRAME_H, CATALOG.FRAME_W, CATALOG.FRAME_H))
+				if frame.get_used_rect().size != Vector2i.ZERO:
+					populated_frames += 1
+		failed += _expect(populated_frames == 80, "all 80 NPC directional frames contain artwork")
 
 	var db: Node = root.get_node_or_null("DataDB")
 	var gs: Node = root.get_node_or_null("GameState")
