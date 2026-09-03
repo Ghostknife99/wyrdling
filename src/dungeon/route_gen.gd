@@ -63,25 +63,10 @@ static func generate(width: int, height: int, floor_num: int, rng: RandomNumberG
 	var stairs_x: int = clampi(int(width / 2) + rng.randi_range(-9, 9), 8, width - 9)
 	var stairs: Vector2i = Vector2i(stairs_x, 5)
 
-	# Main route: long natural sweeps. The centreline is four-connected so it
-	# remains dependable for movement, while the dirt shoulder wanders from side
-	# to side instead of stamping a constant three-tile-wide corridor.
-	var waypoints: Array[Vector2i] = [opening]
-	var bend_count: int = rng.randi_range(4, 5)
-	var curve_sign: int = -1 if rng.randf() < 0.5 else 1
-	for i: int in bend_count:
-		var t: float = float(i + 1) / float(bend_count + 1)
-		var wy: int = int(lerpf(float(opening.y), float(stairs.y), t))
-		var wx: int = int(lerpf(float(opening.x), float(stairs.x), t))
-		var swing: int = rng.randi_range(5, 10)
-		wx += swing * curve_sign
-		waypoints.append(Vector2i(clampi(wx, 7, width - 8), clampi(wy, 8, height - 12)))
-		if rng.randf() < 0.82:
-			curve_sign *= -1
-	waypoints.append(stairs)
-
-	for i: int in range(1, waypoints.size()):
-		_carve_path(grid, width, height, waypoints[i - 1], waypoints[i], rng)
+	# The main route now follows one northbound cubic sweep. Y never reverses,
+	# so the trail cannot fold back into itself and create the large dirt masses
+	# produced by tightly alternating waypoint segments.
+	_carve_main_trail(grid, width, height, opening, stairs, rng)
 	_stamp_path(grid, width, height, stairs.x, stairs.y, 1)
 	_stamp_path(grid, width, height, opening.x, opening.y, 1)
 
@@ -198,12 +183,61 @@ static func _label_fences(fence: Array) -> void:
 			f["kind"] = "post"
 
 
+static func _carve_main_trail(grid: Array, width: int, height: int, opening: Vector2i, stairs: Vector2i, rng: RandomNumberGenerator) -> void:
+	var span_y: int = maxi(opening.y - stairs.y, 1)
+	var midpoint: float = (float(opening.x) + float(stairs.x)) * 0.5
+	var sweep_side: int = -1 if rng.randf() < 0.5 else 1
+	var control_1: float = clampf(midpoint + float(sweep_side * rng.randi_range(8, 13)), 7.0, float(width - 8))
+	var control_2: float = clampf(midpoint - float(sweep_side * rng.randi_range(6, 11)), 7.0, float(width - 8))
+	if rng.randf() < 0.28:
+		# Some routes make one long crescent instead of an S-bend.
+		control_2 = clampf(midpoint + float(sweep_side * rng.randi_range(2, 7)), 7.0, float(width - 8))
+
+	var phase: float = rng.randf_range(0.0, TAU)
+	var p: Vector2i = opening
+	var shoulder_side: int = -1 if rng.randf() < 0.5 else 1
+	var next_shoulder_flip: int = rng.randi_range(6, 9)
+	var step_index := 0
+
+	for y: int in range(opening.y, stairs.y - 1, -1):
+		var t: float = float(opening.y - y) / float(span_y)
+		var u: float = 1.0 - t
+		var curve_x: float = (
+			u * u * u * float(opening.x)
+			+ 3.0 * u * u * t * control_1
+			+ 3.0 * u * t * t * control_2
+			+ t * t * t * float(stairs.x)
+		)
+		curve_x += sin(t * TAU * 1.35 + phase) * 0.55
+		var target_x: int = clampi(int(round(curve_x)), 6, width - 7)
+
+		while p.x != target_x:
+			var direction := Vector2i(signi(target_x - p.x), 0)
+			_stamp_trail_cell(grid, width, height, p, direction, shoulder_side, step_index, rng)
+			p += direction
+			step_index += 1
+			if step_index >= next_shoulder_flip:
+				shoulder_side *= -1
+				next_shoulder_flip += rng.randi_range(6, 9)
+
+		if p.y > y:
+			var direction := Vector2i(0, -1)
+			_stamp_trail_cell(grid, width, height, p, direction, shoulder_side, step_index, rng)
+			p += direction
+			step_index += 1
+			if step_index >= next_shoulder_flip:
+				shoulder_side *= -1
+				next_shoulder_flip += rng.randi_range(6, 9)
+
+	_carve_path(grid, width, height, p, stairs, rng)
+
+
 static func _carve_path(grid: Array, width: int, height: int, a: Vector2i, b: Vector2i, rng: RandomNumberGenerator) -> void:
 	var p: Vector2i = a
 	var total_dx: int = maxi(absi(b.x - a.x), 1)
 	var total_dy: int = maxi(absi(b.y - a.y), 1)
 	var shoulder_side: int = -1 if rng.randf() < 0.5 else 1
-	var last_dir := Vector2i(0, -1)
+	var next_shoulder_flip: int = rng.randi_range(6, 9)
 	var step_index := 0
 	var guard := 0
 
@@ -217,8 +251,6 @@ static func _carve_path(grid: Array, width: int, height: int, a: Vector2i, b: Ve
 		elif remain_x == 0:
 			move_x = false
 		else:
-			# Whichever axis has made less proportional progress gets the next step.
-			# A tiny random bias stops repeated slopes looking mechanically identical.
 			var x_pressure: float = float(remain_x) / float(total_dx)
 			var y_pressure: float = float(remain_y) / float(total_dy)
 			move_x = x_pressure + rng.randf_range(-0.06, 0.06) >= y_pressure
@@ -231,16 +263,13 @@ static func _carve_path(grid: Array, width: int, height: int, a: Vector2i, b: Ve
 		var direction: Vector2i = next - p
 
 		_stamp_trail_cell(grid, width, height, p, direction, shoulder_side, step_index, rng)
-		if direction != last_dir and step_index > 1:
-			_round_trail_turn(grid, width, height, p, last_dir, direction, rng)
-
 		p = next
-		last_dir = direction
 		step_index += 1
-		if step_index % rng.randi_range(5, 8) == 0:
+		if step_index >= next_shoulder_flip:
 			shoulder_side *= -1
+			next_shoulder_flip += rng.randi_range(6, 9)
 
-	_stamp_trail_cell(grid, width, height, b, last_dir, shoulder_side, step_index, rng)
+	_stamp_trail_cell(grid, width, height, b, Vector2i(0, -1), shoulder_side, step_index, rng)
 
 
 static func _stamp_trail_cell(grid: Array, width: int, height: int, p: Vector2i, direction: Vector2i, shoulder_side: int, step_index: int, rng: RandomNumberGenerator) -> void:
@@ -249,23 +278,12 @@ static func _stamp_trail_cell(grid: Array, width: int, height: int, p: Vector2i,
 		return
 
 	var perpendicular := Vector2i(-direction.y, direction.x)
-	# Most of the trail is two tiles across, but the shoulder skips and swaps
-	# often enough to produce a broken, walked-in edge rather than a ribbon.
-	if step_index % 4 != 1 or rng.randf() < 0.28:
+	# A broken shoulder gives mostly two-tile trail width, with frequent one-tile
+	# pinches that make the edges read as walked ground rather than road paving.
+	if step_index % 5 != 2 or rng.randf() < 0.18:
 		_set_dirt(grid, width, height, p + perpendicular * shoulder_side)
-	# Sparse opposite-side wear creates little passing pockets without restoring
-	# the old constant three-tile width.
-	if step_index % 13 == 0 and rng.randf() < 0.52:
+	if step_index % 17 == 0 and rng.randf() < 0.32:
 		_set_dirt(grid, width, height, p - perpendicular * shoulder_side)
-
-
-static func _round_trail_turn(grid: Array, width: int, height: int, p: Vector2i, old_dir: Vector2i, new_dir: Vector2i, rng: RandomNumberGenerator) -> void:
-	if old_dir == Vector2i.ZERO or new_dir == Vector2i.ZERO or old_dir == new_dir:
-		return
-	if rng.randf() > 0.68:
-		return
-	var inside_corner := p + old_dir + new_dir
-	_set_dirt(grid, width, height, inside_corner)
 
 
 static func _set_dirt(grid: Array, width: int, height: int, p: Vector2i) -> void:
