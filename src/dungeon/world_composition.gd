@@ -107,11 +107,17 @@ static func _place_river_crossing(grid: Array, props: Array, trees: Array, criti
 			continue
 		grid[p.y][p.x] = WATER
 
-	# Clean, broad approaches make the bridge read as a destination from both sides.
+	# The bridge still gets a readable landing on each bank, but the landings now
+	# echo the narrow trail instead of stamping two solid 3x4 dirt rectangles.
+	var approach_side: int = -1 if (crossing.x + crossing.y) % 2 == 0 else 1
 	for y: int in range(crossing.y - 6, crossing.y - 2):
-		_stamp_dirt(grid, crossing.x, y, 1, width, height)
+		_stamp_dirt(grid, crossing.x, y, 0, width, height)
+		if (crossing.y - y) % 3 != 0:
+			_stamp_dirt(grid, crossing.x + approach_side, y, 0, width, height)
 	for y: int in range(crossing.y + 3, crossing.y + 7):
-		_stamp_dirt(grid, crossing.x, y, 1, width, height)
+		_stamp_dirt(grid, crossing.x, y, 0, width, height)
+		if (y - crossing.y) % 3 != 0:
+			_stamp_dirt(grid, crossing.x - approach_side, y, 0, width, height)
 
 	props.append({
 		"kind": "bridge",
@@ -467,17 +473,25 @@ static func _carve_spur(grid: Array, trees: Array, critical: Dictionary, a: Vect
 	var corridor: Dictionary = {}
 	var p := a
 	var guard := 0
+	var step := 0
 	while p != b and guard < 80:
 		guard += 1
-		for dy: int in range(-1, 2):
-			for dx: int in range(-1, 2):
-				var c := p + Vector2i(dx, dy)
-				if _inner(c.x, c.y, width, height):
-					corridor[c] = true
+		corridor[p] = true
+		var direction := Vector2i.ZERO
 		if p.x != b.x:
-			p.x += signi(b.x - p.x)
+			direction = Vector2i(signi(b.x - p.x), 0)
 		elif p.y != b.y:
-			p.y += signi(b.y - p.y)
+			direction = Vector2i(0, signi(b.y - p.y))
+		if direction != Vector2i.ZERO and step % 4 != 1:
+			var perpendicular := Vector2i(-direction.y, direction.x)
+			var side: int = 1 if int(step / 6) % 2 == 0 else -1
+			var shoulder := p + perpendicular * side
+			if _inner(shoulder.x, shoulder.y, width, height):
+				corridor[shoulder] = true
+		p += direction
+		step += 1
+	corridor[b] = true
+
 	_remove_trees_in_cells(grid, trees, corridor)
 	for raw_cell in corridor.keys():
 		var c: Vector2i = raw_cell
