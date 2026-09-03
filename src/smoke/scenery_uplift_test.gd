@@ -17,6 +17,21 @@ func _init() -> void:
 		return
 	print("OK    approved HD scenery prop sheet loads 256x128")
 
+	var composition_art = load("res://src/dungeon/composition_art.gd")
+	var bridge: Texture2D = composition_art.make_bridge()
+	if bridge == null or bridge.get_width() != 96 or bridge.get_height() != 160:
+		push_error("Willowspan bridge art failed to build at 96x160")
+		quit(1)
+		return
+	print("OK    Willowspan bridge landmark art builds 96x160")
+
+	var riftstone: Texture2D = composition_art.make_riftstone()
+	if riftstone == null or riftstone.get_width() != 96 or riftstone.get_height() != 96:
+		push_error("Riftstone art failed to build at 96x96")
+		quit(1)
+		return
+	print("OK    Wyrdling riftstone landmark art builds 96x96")
+
 	var builder = load("res://src/dungeon/wilds_tileset.gd")
 	var tileset: TileSet = builder.build()
 	if tileset == null or tileset.get_source_count() < 1:
