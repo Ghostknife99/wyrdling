@@ -29,6 +29,7 @@ static func apply(result: Dictionary, width: int, height: int, floor_num: int, r
 	var fence: Array = result.get("fence", [])
 	var requested_wilds: int = int(result.get("wilds", []).size())
 
+	_slim_cave_spur(grid, props, fence, start, stairs, width, height)
 	var critical: Dictionary = _critical_cells(props, fence, start, stairs)
 	var bridge_info: Dictionary = _place_river_crossing(grid, props, trees, critical, width, height, start, stairs, floor_num, rng)
 	critical = _critical_cells(props, fence, start, stairs)
@@ -107,11 +108,17 @@ static func _place_river_crossing(grid: Array, props: Array, trees: Array, criti
 			continue
 		grid[p.y][p.x] = WATER
 
-	# Clean, broad approaches make the bridge read as a destination from both sides.
+	# The bridge still gets a readable landing on each bank, but the landings now
+	# echo the narrow trail instead of stamping two solid 3x4 dirt rectangles.
+	var approach_side: int = -1 if (crossing.x + crossing.y) % 2 == 0 else 1
 	for y: int in range(crossing.y - 6, crossing.y - 2):
-		_stamp_dirt(grid, crossing.x, y, 1, width, height)
+		_stamp_dirt(grid, crossing.x, y, 0, width, height)
+		if (crossing.y - y) % 3 != 0:
+			_stamp_dirt(grid, crossing.x + approach_side, y, 0, width, height)
 	for y: int in range(crossing.y + 3, crossing.y + 7):
-		_stamp_dirt(grid, crossing.x, y, 1, width, height)
+		_stamp_dirt(grid, crossing.x, y, 0, width, height)
+		if (y - crossing.y) % 3 != 0:
+			_stamp_dirt(grid, crossing.x - approach_side, y, 0, width, height)
 
 	props.append({
 		"kind": "bridge",
@@ -175,25 +182,58 @@ static func _place_riftstone_landmark(grid: Array, props: Array, trees: Array, c
 	var chosen_anchor := Vector2i(-1, -1)
 	var chosen_top_left := Vector2i(-1, -1)
 	var chosen_side := 1
-	var best_score := 999999
 	var crossing: Vector2i = bridge_info.get("crossing", Vector2i(-99, -99))
+	var cave_door := Vector2i(-99, -99)
+	for raw_prop in props:
+		var prop: Dictionary = raw_prop
+		if str(prop.get("kind", "")) == "cave" and prop.has("interact_pos"):
+			cave_door = prop["interact_pos"]
+			break
 
-	for anchor: Vector2i in path_cells:
-		if anchor.y < 10 or anchor.y > height - 13:
-			continue
-		if anchor.distance_to(start) < 11.0 or anchor.distance_to(stairs) < 7.0 or anchor.distance_to(crossing) < 8.0:
-			continue
-		for side: int in [-1, 1]:
-			var center := anchor + Vector2i(side * 8, 0)
-			var top_left := center + Vector2i(-1, -2)
-			if not _landmark_area_ok(grid, critical, top_left, width, height):
+	# Pass one keeps the preferred authored composition: the Riftstone peels off
+	# well north of Echo Cave. If a seed puts the cave too close to the exit for
+	# that to be possible, pass two keeps the landmark on the opposite side of
+	# the main trail instead. That guarantees the feature without rebuilding the
+	# giant cave/riftstone crossroads this geometry pass was meant to remove.
+	for strict_separation: bool in [true, false]:
+		var best_score := 999999
+		for anchor: Vector2i in path_cells:
+			if anchor.y < 10 or anchor.y > height - 13:
 				continue
-			var score := absi(anchor.y - int(height * 0.48)) * 2 + absi(center.x - int(width / 2))
-			if score < best_score:
-				best_score = score
-				chosen_anchor = anchor
-				chosen_top_left = top_left
-				chosen_side = side
+			if anchor.distance_to(start) < 11.0 or anchor.distance_to(stairs) < 7.0 or anchor.distance_to(crossing) < 8.0:
+				continue
+			if not _looks_like_main_trail(grid, anchor):
+				continue
+			if strict_separation:
+				if cave_door.x > -90 and anchor.y > cave_door.y - 5:
+					continue
+				if anchor.distance_to(cave_door) < 6.0:
+					continue
+			else:
+				if anchor.distance_to(cave_door) < 7.0:
+					continue
+
+			var sides: Array[int] = [-1, 1]
+			if not strict_separation and cave_door.x > -90:
+				var away_side: int = 1 if cave_door.x < anchor.x else -1
+				sides = [away_side]
+
+			for side: int in sides:
+				var center := anchor + Vector2i(side * 7, 0)
+				var top_left := center + Vector2i(-1, -2)
+				if not _landmark_area_ok(grid, critical, top_left, width, height):
+					continue
+				var score := absi(anchor.y - int(height * 0.48)) * 2 + absi(center.x - int(width / 2))
+				score += maxi(0, 10 - int(anchor.distance_to(cave_door)))
+				if not strict_separation:
+					score += maxi(0, 4 - absi(anchor.y - cave_door.y)) * 4
+				if score < best_score:
+					best_score = score
+					chosen_anchor = anchor
+					chosen_top_left = top_left
+					chosen_side = side
+		if chosen_anchor.x >= 0:
+			break
 
 	if chosen_anchor.x < 0:
 		return {}
@@ -463,21 +503,85 @@ static func _remove_trees_in_cells(grid: Array, trees: Array, cells: Dictionary)
 		trees.remove_at(i)
 
 
+static func _slim_cave_spur(grid: Array, props: Array, fence: Array, start: Vector2i, stairs: Vector2i, width: int, height: int) -> void:
+	var cave_door := Vector2i(-1, -1)
+	for raw_prop in props:
+		var prop: Dictionary = raw_prop
+		if str(prop.get("kind", "")) == "cave" and prop.has("interact_pos"):
+			cave_door = prop["interact_pos"]
+			break
+	if cave_door.x < 0:
+		return
+
+	var trail_start := cave_door + Vector2i(0, 1)
+	var path_cells: Array[Vector2i] = _cells_of(grid, DIRT)
+	var main_lookup: Dictionary = {}
+	var main_anchor := Vector2i(-1, -1)
+	var best_distance := 99999.0
+	for p: Vector2i in path_cells:
+		if not _looks_like_main_trail(grid, p):
+			continue
+		main_lookup[p] = true
+		var distance: float = p.distance_to(trail_start)
+		if distance < best_distance:
+			best_distance = distance
+			main_anchor = p
+	if main_anchor.x < 0 or best_distance > 16.0:
+		return
+
+	var corridor: Dictionary = {}
+	var cursor := trail_start
+	var guard := 0
+	while cursor.x != main_anchor.x and guard < 40:
+		corridor[cursor] = true
+		cursor.x += signi(main_anchor.x - cursor.x)
+		guard += 1
+	while cursor.y != main_anchor.y and guard < 80:
+		corridor[cursor] = true
+		cursor.y += signi(main_anchor.y - cursor.y)
+		guard += 1
+	corridor[main_anchor] = true
+
+	var protected: Dictionary = _critical_cells(props, fence, start, stairs)
+	var min_x: int = mini(trail_start.x, main_anchor.x) - 2
+	var max_x: int = maxi(trail_start.x, main_anchor.x) + 2
+	var min_y: int = mini(trail_start.y, main_anchor.y) - 2
+	var max_y: int = maxi(trail_start.y, main_anchor.y) + 2
+	for y: int in range(min_y, max_y + 1):
+		for x: int in range(min_x, max_x + 1):
+			if not _inner(x, y, width, height):
+				continue
+			var p := Vector2i(x, y)
+			if int(grid[y][x]) != DIRT:
+				continue
+			if corridor.has(p) or main_lookup.has(p) or protected.has(p):
+				continue
+			grid[y][x] = GRASS
+
+	for raw_cell in corridor.keys():
+		var p: Vector2i = raw_cell
+		if not _inner(p.x, p.y, width, height):
+			continue
+		var tile := int(grid[p.y][p.x])
+		if tile != CLIFF and tile != STAIRS and tile != WATER:
+			grid[p.y][p.x] = DIRT
+
+
 static func _carve_spur(grid: Array, trees: Array, critical: Dictionary, a: Vector2i, b: Vector2i, width: int, height: int) -> void:
 	var corridor: Dictionary = {}
 	var p := a
 	var guard := 0
 	while p != b and guard < 80:
 		guard += 1
-		for dy: int in range(-1, 2):
-			for dx: int in range(-1, 2):
-				var c := p + Vector2i(dx, dy)
-				if _inner(c.x, c.y, width, height):
-					corridor[c] = true
+		corridor[p] = true
+		var direction := Vector2i.ZERO
 		if p.x != b.x:
-			p.x += signi(b.x - p.x)
+			direction = Vector2i(signi(b.x - p.x), 0)
 		elif p.y != b.y:
-			p.y += signi(b.y - p.y)
+			direction = Vector2i(0, signi(b.y - p.y))
+		p += direction
+	corridor[b] = true
+
 	_remove_trees_in_cells(grid, trees, corridor)
 	for raw_cell in corridor.keys():
 		var c: Vector2i = raw_cell
@@ -497,6 +601,25 @@ static func _stamp_dirt(grid: Array, x: int, y: int, radius: int, width: int, he
 			var tile := int(grid[p.y][p.x])
 			if tile != CLIFF and tile != STAIRS and tile != WATER:
 				grid[p.y][p.x] = DIRT
+
+
+static func _looks_like_main_trail(grid: Array, p: Vector2i) -> bool:
+	var north_hits := 0
+	var south_hits := 0
+	for distance: int in [1, 2, 3]:
+		var north_y: int = p.y - distance
+		var south_y: int = p.y + distance
+		if north_y >= 0:
+			for x: int in range(maxi(0, p.x - 1), mini(grid[north_y].size(), p.x + 2)):
+				if int(grid[north_y][x]) == DIRT:
+					north_hits += 1
+					break
+		if south_y < grid.size():
+			for x: int in range(maxi(0, p.x - 1), mini(grid[south_y].size(), p.x + 2)):
+				if int(grid[south_y][x]) == DIRT:
+					south_hits += 1
+					break
+	return north_hits >= 2 and south_hits >= 2
 
 
 static func _near_tile(grid: Array, p: Vector2i, tile_id: int, radius: int) -> bool:
