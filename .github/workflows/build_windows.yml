@@ -1,0 +1,32 @@
+name: Windows playable build
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Godot with export templates
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.4.1
+          use-dotnet: false
+          include-templates: true
+      - name: Import project
+        run: godot --headless --editor --path . --quit
+      - name: Build Windows release
+        run: |
+          mkdir -p build
+          godot --headless --path . --export-release "Windows Desktop" build/Wyrdling.exe
+      - name: Check build
+        run: test -s build/Wyrdling.exe
+      - name: Upload Windows playtest
+        uses: actions/upload-artifact@v4
+        with:
+          name: Wyrdling-Windows-Playtest
+          path: build/Wyrdling.exe
+          if-no-files-found: error
