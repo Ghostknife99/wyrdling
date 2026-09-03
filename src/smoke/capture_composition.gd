@@ -31,8 +31,8 @@ func _run() -> void:
 	root.add_child(dungeon)
 	await _wait_frames(16)
 
-	var bridge := _find_prop("bridge")
-	var riftstone := _find_prop("riftstone")
+	var bridge: Dictionary = _find_prop("bridge")
+	var riftstone: Dictionary = _find_prop("riftstone")
 	if bridge.is_empty() or riftstone.is_empty():
 		print("FAIL composition landmarks missing")
 		quit(1)
@@ -60,15 +60,15 @@ func _find_prop(kind: String) -> Dictionary:
 
 func _focus_prop(prop: Dictionary) -> void:
 	var target: Vector2i = prop.get("interact_pos", prop.get("pos", gs.player_pos))
-	var best := gs.player_pos
-	var best_distance := 99999.0
+	var best: Vector2i = gs.player_pos
+	var best_distance: float = 99999.0
 	for radius: int in range(0, 6):
 		for y: int in range(target.y - radius, target.y + radius + 1):
 			for x: int in range(target.x - radius, target.x + radius + 1):
 				var p := Vector2i(x, y)
 				if not gs.walkable(p):
 					continue
-				var d := p.distance_to(target)
+				var d: float = p.distance_to(target)
 				if d < best_distance:
 					best_distance = d
 					best = p
@@ -92,6 +92,6 @@ func _wait_frames(n: int) -> void:
 func _capture(filename: String) -> void:
 	await RenderingServer.frame_post_draw
 	var img: Image = root.get_texture().get_image()
-	var path := "%s/%s" % [OUT, filename]
-	var err := img.save_png(path)
+	var path: String = "%s/%s" % [OUT, filename]
+	var err: Error = img.save_png(path)
 	print("wrote ", path, " err=", err)
