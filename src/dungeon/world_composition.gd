@@ -183,11 +183,24 @@ static func _place_riftstone_landmark(grid: Array, props: Array, trees: Array, c
 	var chosen_side := 1
 	var best_score := 999999
 	var crossing: Vector2i = bridge_info.get("crossing", Vector2i(-99, -99))
+	var cave_door := Vector2i(-99, -99)
+	for raw_prop in props:
+		var prop: Dictionary = raw_prop
+		if str(prop.get("kind", "")) == "cave" and prop.has("interact_pos"):
+			cave_door = prop["interact_pos"]
+			break
 
 	for anchor: Vector2i in path_cells:
 		if anchor.y < 10 or anchor.y > height - 13:
 			continue
 		if anchor.distance_to(start) < 11.0 or anchor.distance_to(stairs) < 7.0 or anchor.distance_to(crossing) < 8.0:
+			continue
+		# Side branches such as Echo Cave are mostly horizontal. Riftstone should
+		# attach to the northbound route itself, not extend an existing spur into
+		# one oversized junction.
+		if not _looks_like_main_trail(grid, anchor):
+			continue
+		if anchor.distance_to(cave_door) < 9.0:
 			continue
 		for side: int in [-1, 1]:
 			var center := anchor + Vector2i(side * 8, 0)
@@ -195,6 +208,8 @@ static func _place_riftstone_landmark(grid: Array, props: Array, trees: Array, c
 			if not _landmark_area_ok(grid, critical, top_left, width, height):
 				continue
 			var score := absi(anchor.y - int(height * 0.48)) * 2 + absi(center.x - int(width / 2))
+			if best_score < 999999:
+				score += maxi(0, 13 - int(anchor.distance_to(cave_door))) * 2
 			if score < best_score:
 				best_score = score
 				chosen_anchor = anchor
@@ -511,6 +526,25 @@ static func _stamp_dirt(grid: Array, x: int, y: int, radius: int, width: int, he
 			var tile := int(grid[p.y][p.x])
 			if tile != CLIFF and tile != STAIRS and tile != WATER:
 				grid[p.y][p.x] = DIRT
+
+
+static func _looks_like_main_trail(grid: Array, p: Vector2i) -> bool:
+	var north_hits := 0
+	var south_hits := 0
+	for distance: int in [1, 2, 3]:
+		var north_y: int = p.y - distance
+		var south_y: int = p.y + distance
+		if north_y >= 0:
+			for x: int in range(maxi(0, p.x - 1), mini(grid[north_y].size(), p.x + 2)):
+				if int(grid[north_y][x]) == DIRT:
+					north_hits += 1
+					break
+		if south_y < grid.size():
+			for x: int in range(maxi(0, p.x - 1), mini(grid[south_y].size(), p.x + 2)):
+				if int(grid[south_y][x]) == DIRT:
+					south_hits += 1
+					break
+	return north_hits >= 2 and south_hits >= 2
 
 
 static func _near_tile(grid: Array, p: Vector2i, tile_id: int, radius: int) -> bool:
