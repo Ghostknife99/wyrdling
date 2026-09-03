@@ -1,0 +1,111 @@
+extends SceneTree
+
+const OUT := "/workspace/wyrdling/shots"
+const W := 1280
+const H := 720
+
+var db: Node
+var gs: Node
+var dungeon: Node2D
+
+
+func _initialize() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
+	root.size = Vector2i(W, H)
+	db = root.get_node_or_null("DataDB")
+	gs = root.get_node_or_null("GameState")
+	if db == null or gs == null:
+		quit(1)
+		return
+	if db.creatures.is_empty():
+		db._load_data()
+	DirAccess.make_dir_recursive_absolute(OUT)
+
+	gs.rng.seed = 7
+	gs.start_run("glimmerling")
+	gs.wilds = []
+	dungeon = load("res://scenes/dungeon.tscn").instantiate()
+	root.add_child(dungeon)
+	await _wait_frames(16)
+
+	var mid: Vector2i = _best_mid_trail_cell()
+	_focus(mid)
+	await _wait_frames(10)
+	await _capture("route_mid.png")
+
+	var bridge: Dictionary = _find_prop("bridge")
+	if not bridge.is_empty():
+		var bridge_pos: Vector2i = bridge.get("pos", mid)
+		_focus(bridge_pos + Vector2i(1, 4))
+		await _wait_frames(10)
+		await _capture("route_bridge.png")
+
+	print("CAPTURED route geometry")
+	quit(0)
+
+
+func _best_mid_trail_cell() -> Vector2i:
+	var target := Vector2i(int(gs.MAP_W / 2), int(gs.MAP_H / 2))
+	var best: Vector2i = gs.player_pos
+	var best_score := 999999
+	for y: int in range(9, gs.MAP_H - 11):
+		for x: int in range(5, gs.MAP_W - 5):
+			if int(gs.grid[y][x]) != 3:
+				continue
+			var p := Vector2i(x, y)
+			if not gs.walkable(p):
+				continue
+			var score := int(p.distance_to(target) * 10.0)
+			if score < best_score:
+				best_score = score
+				best = p
+	return best
+
+
+func _find_prop(kind: String) -> Dictionary:
+	for raw in gs.world_props:
+		var prop: Dictionary = raw
+		if str(prop.get("kind", "")) == kind:
+			return prop
+	return {}
+
+
+func _focus(target: Vector2i) -> void:
+	var best: Vector2i = target
+	if not gs.walkable(best):
+		var best_distance := 99999.0
+		for radius: int in range(1, 7):
+			for y: int in range(target.y - radius, target.y + radius + 1):
+				for x: int in range(target.x - radius, target.x + radius + 1):
+					var p := Vector2i(x, y)
+					if not gs.walkable(p):
+						continue
+					var d: float = p.distance_to(target)
+					if d < best_distance:
+						best_distance = d
+						best = p
+			if best_distance < 99999.0:
+				break
+	gs.player_pos = best
+	dungeon.last_dir = "up"
+	if dungeon.has_method("_refresh"):
+		dungeon._refresh()
+	if dungeon.has_method("_update_camera"):
+		dungeon._update_camera()
+
+
+func _wait_frames(n: int) -> void:
+	for _i in n:
+		await process_frame
+		await RenderingServer.frame_post_draw
+
+
+func _capture(filename: String) -> void:
+	await RenderingServer.frame_post_draw
+	var image: Image = root.get_texture().get_image()
+	var err: Error = image.save_png("%s/%s" % [OUT, filename])
+	if err != OK:
+		quit(1)
