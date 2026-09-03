@@ -209,7 +209,10 @@ static func _carve_main_trail(grid: Array, width: int, height: int, opening: Vec
 			+ t * t * t * float(stairs.x)
 		)
 		curve_x += sin(t * TAU * 1.35 + phase) * 0.55
-		var target_x: int = clampi(int(round(curve_x)), 6, width - 7)
+		var desired_x: int = clampi(int(round(curve_x)), 6, width - 7)
+		# Never move more than one column per northward row. This is the key to
+		# preventing horizontal switchbacks from merging into large tan islands.
+		var target_x: int = clampi(desired_x, p.x - 1, p.x + 1)
 
 		while p.x != target_x:
 			var direction := Vector2i(signi(target_x - p.x), 0)
