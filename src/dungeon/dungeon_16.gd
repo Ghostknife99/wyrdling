@@ -18,6 +18,7 @@ const PLAYER_FRAME_H := 34
 const WALK_FRAME_MS := 35
 const PLAYER_ART = preload("res://src/dungeon/delver_art.gd")
 const SCENERY_ART = preload("res://src/dungeon/scenery_art_hd.gd")
+const COMPOSITION_ART = preload("res://src/dungeon/composition_art.gd")
 
 var polished_player_idle: Dictionary = {}
 var polished_player_walk: Dictionary = {}
@@ -77,6 +78,13 @@ func _load_polished_scenery() -> void:
 		frame.atlas = scenery_sheet
 		frame.region = regions[key]
 		prop_textures[key] = frame
+
+	var bridge: Texture2D = COMPOSITION_ART.make_bridge()
+	var riftstone: Texture2D = COMPOSITION_ART.make_riftstone()
+	if bridge != null:
+		prop_textures["bridge"] = bridge
+	if riftstone != null:
+		prop_textures["riftstone"] = riftstone
 
 
 func _current_player_frame() -> Texture2D:
