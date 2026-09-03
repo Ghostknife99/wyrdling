@@ -63,9 +63,8 @@ static func generate(width: int, height: int, floor_num: int, rng: RandomNumberG
 	var stairs_x: int = clampi(int(width / 2) + rng.randi_range(-9, 9), 8, width - 9)
 	var stairs: Vector2i = Vector2i(stairs_x, 5)
 
-	# The main route now follows one northbound cubic sweep. Y never reverses,
-	# so the trail cannot fold back into itself and create the large dirt masses
-	# produced by tightly alternating waypoint segments.
+	# The main route is a gentle northbound crescent rather than alternating
+	# switchbacks. It can drift around scenery, but never reads as a racetrack.
 	_carve_main_trail(grid, width, height, opening, stairs, rng)
 	_stamp_path(grid, width, height, stairs.x, stairs.y, 1)
 	_stamp_path(grid, width, height, opening.x, opening.y, 1)
@@ -187,12 +186,10 @@ static func _carve_main_trail(grid: Array, width: int, height: int, opening: Vec
 	var span_y: int = maxi(opening.y - stairs.y, 1)
 	var midpoint: float = (float(opening.x) + float(stairs.x)) * 0.5
 	var sweep_side: int = -1 if rng.randf() < 0.5 else 1
-	var control_1: float = clampf(midpoint + float(sweep_side * rng.randi_range(8, 13)), 7.0, float(width - 8))
-	var control_2: float = clampf(midpoint - float(sweep_side * rng.randi_range(6, 11)), 7.0, float(width - 8))
-	if rng.randf() < 0.28:
-		# Some routes make one long crescent instead of an S-bend.
-		control_2 = clampf(midpoint + float(sweep_side * rng.randi_range(2, 7)), 7.0, float(width - 8))
-
+	# Both controls sit on the same side of the direct line. That gives one broad
+	# crescent, not an S that doubles back across its own dirt shoulders.
+	var control_1: float = clampf(midpoint + float(sweep_side * rng.randi_range(6, 9)), 7.0, float(width - 8))
+	var control_2: float = clampf(midpoint + float(sweep_side * rng.randi_range(4, 7)), 7.0, float(width - 8))
 	var phase: float = rng.randf_range(0.0, TAU)
 	var p: Vector2i = opening
 	var shoulder_side: int = -1 if rng.randf() < 0.5 else 1
@@ -208,10 +205,8 @@ static func _carve_main_trail(grid: Array, width: int, height: int, opening: Vec
 			+ 3.0 * u * t * t * control_2
 			+ t * t * t * float(stairs.x)
 		)
-		curve_x += sin(t * TAU * 1.35 + phase) * 0.55
+		curve_x += sin(t * TAU + phase) * 0.28
 		var desired_x: int = clampi(int(round(curve_x)), 6, width - 7)
-		# Never move more than one column per northward row. This is the key to
-		# preventing horizontal switchbacks from merging into large tan islands.
 		var target_x: int = clampi(desired_x, p.x - 1, p.x + 1)
 
 		while p.x != target_x:
