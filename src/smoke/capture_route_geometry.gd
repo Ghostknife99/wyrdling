@@ -24,7 +24,7 @@ func _run() -> void:
 		db._load_data()
 	DirAccess.make_dir_recursive_absolute(OUT)
 
-	gs.rng.seed = 7
+	gs.rng.seed = 424242
 	gs.start_run("glimmerling")
 	gs.wilds = []
 	_print_geometry_diagnostics()
