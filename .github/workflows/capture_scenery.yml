@@ -22,11 +22,11 @@ jobs:
         run: godot --headless --editor --path . --quit
       - name: Prepare screenshot output
         run: sudo mkdir -p /workspace/wyrdling/shots && sudo chown -R $USER:$USER /workspace/wyrdling
-      - name: Capture live Godot scenes
-        run: xvfb-run -a godot --path . -s res://src/smoke/capture_gameplay.gd
+      - name: Capture composition landmarks
+        run: xvfb-run -a godot --path . -s res://src/smoke/capture_composition.gd
       - name: Upload gameplay screenshots
         uses: actions/upload-artifact@v4
         with:
-          name: composition-live-capture
+          name: composition-landmarks
           path: /workspace/wyrdling/shots/*.png
           if-no-files-found: error
